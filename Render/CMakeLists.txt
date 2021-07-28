@@ -10,11 +10,12 @@ set(HEADERS
 )
 
 set(SOURCES
-    ${PROJECT_SOURCE_DIR}/src/Render.cpp
+    ${PROJECT_SOURCE_DIR}/src/Window.cpp
+    ${PROJECT_SOURCE_DIR}/src/Color.cpp
 )
 
-add_library( ${PROJECT_NAME} STATIC
-             "src/Render.cpp" )
+add_library( ${PROJECT_NAME} STATIC ${HEADERS} ${SOURCES})
+target_link_libraries(${PROJECT_NAME}  opengl32 glfw glew32s soil2-debug)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
