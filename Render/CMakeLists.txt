@@ -14,8 +14,16 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Color.cpp
 )
 
+set(LIBS
+    opengl32 
+    glfw3
+    GLEW::GLEW
+    spdlog::spdlog
+)
+
 add_library( ${PROJECT_NAME} STATIC ${HEADERS} ${SOURCES})
-target_link_libraries(${PROJECT_NAME}  opengl32 glfw glew32s soil2-debug)
+
+target_link_libraries(${PROJECT_NAME}  ${LIBS})
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 

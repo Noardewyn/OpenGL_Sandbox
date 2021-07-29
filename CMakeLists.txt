@@ -1,14 +1,22 @@
 ﻿cmake_minimum_required (VERSION 3.8)
+project(OpenGL_Render)
 
-# 3rd party libs
-add_subdirectory(vendor/glfw)
-include_directories(vendor/glfw/include)
-include_directories(vendor/glew-2.1.0/include)
-include_directories(vendor/glm)
-include_directories("C:/Users/alexey/OneDrive/SOIL2/src")
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+set(CONAN_COMPILER_VERSION 16)
 
-link_directories("vendor/glew-2.1.0/lib")
-link_directories("C:/Users/alexey/OneDrive/lib")
+# Automatic get dependencies with conan package manager
+# https://docs.conan.io/en/latest/introduction.html
+include(cmake/conan_get_dependencies.cmake)
+    
+conan_get_dependencies(
+    ${PROJECT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+find_package(spdlog MODULE REQUIRED)
+find_package(glfw3 MODULE REQUIRED)
+find_package(glm MODULE REQUIRED)
+find_package(GLEW MODULE REQUIRED)
 
 # project modules
 add_subdirectory ("Render")
