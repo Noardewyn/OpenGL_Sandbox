@@ -4,12 +4,12 @@
 #include <iostream>
 
 // OpenGL stuff
-#define GLEW_STATIC
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "Render/Color.h"
+
+namespace Renderer {
 
 class Window {
 public:
@@ -31,5 +31,7 @@ private:
 
   double _delta_time = 0;
 };
+
+} // namespace Renderer
 
 #endif // __RENDER_H__

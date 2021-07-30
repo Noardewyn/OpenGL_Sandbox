@@ -1,5 +1,7 @@
-﻿#ifndef __SHADER_H__
-#define __SHADER_H__
+﻿#ifndef __COLOR_H__
+#define __COLOR_H__
+
+namespace Renderer {
 
 struct Color {
 public:
@@ -20,4 +22,6 @@ public:
   static const Color Magenta;
 };
 
-#endif // __RENDER_H__
+} // namespace Renderer
+
+#endif // __COLOR_H__
