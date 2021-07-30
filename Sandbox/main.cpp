@@ -5,6 +5,7 @@ using namespace std;
 #include "Render/VertexBuffer.h"
 #include "Render/IndexBuffer.h"
 #include "Render/VertexArray.h"
+#include "Render/VertexBufferLayout.h"
 
 GLfloat vertices[] = {
 		 0.5f,  0.5f, 0.0f,
@@ -24,11 +25,13 @@ int main()
 
 	Renderer::VertexArray vao;
 	Renderer::VertexBuffer vbo(vertices, sizeof(vertices));
-	Renderer::IndexBuffer ibo(indices, sizeof(indices));
+	Renderer::VertexBufferLayout layout;
+	layout.push<float>(3);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+	vao.addBuffer(vbo, layout);
 	vao.unbind();
+
+	Renderer::IndexBuffer ibo(indices, sizeof(indices));
 
 	Renderer::Shader plain_shader("./assets/shaders/plain.frag", "./assets/shaders/plain.vs");
 	
@@ -38,9 +41,11 @@ int main()
 		window.display_start();
 
 		plain_shader.bind();
-		plain_shader.setUniform4f("color", 1.0f, 1.0f, 0.0f, 1.0f);
+		plain_shader.setUniform4f("color", 1.0f, 0.0f, 1.0f, 1.0f);
 
 		vao.bind();
+		ibo.bind();
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		window.display_finish();
 	}

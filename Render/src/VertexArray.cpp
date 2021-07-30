@@ -21,4 +21,20 @@ namespace Renderer {
     glBindVertexArray(0);
   }
 
+  void VertexArray::addBuffer(const VertexBuffer& vbo, const VertexBufferLayout& layout) {
+    bind();
+    vbo.bind();
+
+    int index = 0;
+    uint32_t offset = 0;
+
+    for (const auto &element : layout.getElements()) {
+      glEnableVertexAttribArray(index);
+      glVertexAttribPointer(index, element.count, element.type, element.normalized, layout.getStride(), (const void*)offset);
+      
+      offset += element.count * VertexBufferElement::getTypeSize(element.type);
+      ++index;
+    }
+  }
+
 } // namespace Renderer
