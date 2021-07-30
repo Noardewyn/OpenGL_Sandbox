@@ -16,3 +16,12 @@ set(SOURCES
 add_executable (${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 target_link_libraries( ${PROJECT_NAME} Render)
+
+message(${PROJECT_BINARY_DIR})
+
+# Copy assets to project binary dir
+add_custom_command(
+        TARGET ${PROJECT_NAME} PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${PROJECT_SOURCE_DIR}/assets/
+                ${CMAKE_BINARY_DIR}/bin/assets/)

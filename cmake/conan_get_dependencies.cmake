@@ -14,6 +14,9 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(CONAN_COMPILER "Visual Studio")
 endif()
 
+# This is needed to correct search Modules for find_package
+set(CMAKE_MODULE_PATH ${_install_dir})
+
 execute_process(COMMAND conan install ${_conanfile_path} 
                               --build missing 
                               -s build_type=${CMAKE_BUILD_TYPE}
@@ -33,9 +36,6 @@ conan_basic_setup()
 conan_set_vs_runtime()
 conan_set_libcxx()
 conan_output_dirs_setup()
-
-# This is needed to correct search Modules for find_package
-set(CMAKE_MODULE_PATH ${_install_dir})
 
 message(STATUS "-----> Conan - Installing dependencies - done.\n\n")
 

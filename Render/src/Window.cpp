@@ -1,6 +1,6 @@
 ﻿#include "Render/Window.h"
 
-float last_time = 0;
+namespace Renderer {
 
 Window::Window(const uint32_t width, const uint32_t height, const std::string& title)
   : _width(width), _height(height), _title(title) {
@@ -13,14 +13,21 @@ Window::Window(const uint32_t width, const uint32_t height, const std::string& t
 
   _glfw_handle = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
-  if (_glfw_handle == nullptr)
-  {
+  if (_glfw_handle == nullptr) {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
     return;
   }
   
   glfwMakeContextCurrent(_glfw_handle);
+
+  glewExperimental = GL_TRUE;
+  if (glewInit() != GLEW_OK) {
+    std::cout << "Failed to initialize GLEW" << std::endl;
+    return;
+  }
+
+  glViewport(0, 0, width, height);
 }
 
 Window::~Window() {
@@ -45,6 +52,7 @@ void Window::pollEvents() {
 }
 
 void Window::display() {
+  static double last_time = 0;
   double now = glfwGetTime();
   _delta_time = now - last_time;
   last_time = now;
@@ -52,3 +60,5 @@ void Window::display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glfwSwapBuffers(_glfw_handle);
 }
+
+} // namespace Renderer
