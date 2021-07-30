@@ -13,6 +13,9 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Window.cpp
     ${PROJECT_SOURCE_DIR}/src/Color.cpp
     ${PROJECT_SOURCE_DIR}/src/Shader.cpp
+    ${PROJECT_SOURCE_DIR}/src/VertexBuffer.cpp
+    ${PROJECT_SOURCE_DIR}/src/IndexBuffer.cpp
+    ${PROJECT_SOURCE_DIR}/src/VertexArray.cpp
 )
 
 set(LIBS

@@ -18,7 +18,8 @@ public:
 
   bool isOpen() const;
   void clear(const Color &color);
-  void display();
+  void display_start();
+  void display_finish();
   void close();
   void pollEvents();
 

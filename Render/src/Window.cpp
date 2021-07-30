@@ -51,13 +51,16 @@ void Window::pollEvents() {
   glfwPollEvents();
 }
 
-void Window::display() {
+void Window::display_start() {
   static double last_time = 0;
   double now = glfwGetTime();
   _delta_time = now - last_time;
   last_time = now;
   
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Window::display_finish() {
   glfwSwapBuffers(_glfw_handle);
 }
 
