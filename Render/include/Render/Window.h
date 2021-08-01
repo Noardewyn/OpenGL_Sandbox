@@ -22,6 +22,8 @@ public:
   void display_finish();
   void close();
   void pollEvents();
+  
+  inline GLFWwindow* getHandle() { return _glfw_handle; };
 
 private:
   uint32_t _width;

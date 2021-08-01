@@ -20,6 +20,7 @@ Window::Window(const uint32_t width, const uint32_t height, const std::string& t
   }
   
   glfwMakeContextCurrent(_glfw_handle);
+  glfwSwapInterval(1);
 
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {

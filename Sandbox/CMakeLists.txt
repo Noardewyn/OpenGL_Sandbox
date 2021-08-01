@@ -5,19 +5,22 @@ message(STATUS "-----> Current Project: ${PROJECT_NAME}")
 message(STATUS "-----> Current SOURCE directory: ${PROJECT_SOURCE_DIR}")
 message(STATUS "-----> Current BUILD directory: ${CMAKE_CURRENT_BINARY_DIR}")
 
-set(HEADERS
+set(CMAKE_CXX_FLAGS "-DIMGUI_IMPL_OPENGL_LOADER_GLEW")
 
+set(HEADERS
+    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.h
+    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.h
 )
 
 set(SOURCES
+    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp
+    ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.cpp
     ${PROJECT_SOURCE_DIR}/main.cpp
 )
 
 add_executable (${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
-target_link_libraries( ${PROJECT_NAME} Render)
-
-message(${PROJECT_BINARY_DIR})
+target_link_libraries(${PROJECT_NAME} Render imgui::imgui)
 
 # Copy assets to project binary dir
 add_custom_command(
