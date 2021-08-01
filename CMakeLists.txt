@@ -17,6 +17,9 @@ find_package(spdlog MODULE REQUIRED)
 find_package(glfw3 MODULE REQUIRED)
 find_package(glm MODULE REQUIRED)
 find_package(GLEW MODULE REQUIRED)
+find_package(imgui MODULE REQUIRED)
+
+include_directories("./bindings")
 
 # project modules
 add_subdirectory ("Render")
