@@ -22,7 +22,8 @@ public:
   void display_finish();
   void close();
   void pollEvents();
-  
+
+  inline double getDeltaTime() { return _delta_time; };
   inline GLFWwindow* getHandle() { return _glfw_handle; };
 
 private:
