@@ -18,6 +18,7 @@ find_package(glfw3 MODULE REQUIRED)
 find_package(glm MODULE REQUIRED)
 find_package(GLEW MODULE REQUIRED)
 find_package(imgui MODULE REQUIRED)
+find_package(stb MODULE REQUIRED)
 
 include_directories("./bindings")
 
