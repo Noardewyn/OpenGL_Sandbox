@@ -13,8 +13,12 @@ set(HEADERS
 )
 
 set(SOURCES
+    # imgui sources
     ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_opengl3.cpp
     ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.cpp
+    # Sandbox sources
+    ${PROJECT_SOURCE_DIR}/examples/ClearColorExample.cpp
+    ${PROJECT_SOURCE_DIR}/examples/ColoredQuadExample.cpp
     ${PROJECT_SOURCE_DIR}/main.cpp
 )
 
