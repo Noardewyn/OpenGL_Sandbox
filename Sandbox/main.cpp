@@ -7,6 +7,7 @@
 
 #include "examples/ClearColorExample.h"
 #include "examples/ColoredQuadExample.h"
+#include "examples/ExamplesMenu.h"
 
 static void glfw_error_callback(int error, const char* description) {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -26,21 +27,25 @@ int main() {
 	const char* glsl_version = "#version 130";
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
-	std::unique_ptr<Sandbox::BaseScene> current_scene;
-	current_scene = std::make_unique<Sandbox::ColoredQuadExample>(&window);
+	Sandbox::ExamplesMenu menu(&window);
+	menu.registerScene<Sandbox::ClearColorExample>("ClearColorExample", "");
+	menu.registerScene<Sandbox::ColoredQuadExample>("ColoredQuadExample", "");
 
 	while (window.isOpen()) {
 		window.pollEvents();
-		current_scene->onUpdate(window.getDeltaTime());
+		menu.getCurrentScene()->onUpdate(window.getDeltaTime());
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-		current_scene->onImGuiRender();
+		menu.getCurrentScene()->onImGuiRender();
+
+		if(menu.getCurrentScene() != &menu)
+			menu.onImGuiRender();
 		ImGui::Render();
 
 		window.display_start();
-		current_scene->onRender();
+		menu.getCurrentScene()->onRender();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		window.display_finish();
 	}
