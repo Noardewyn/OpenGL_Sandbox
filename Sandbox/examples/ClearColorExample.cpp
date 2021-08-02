@@ -7,7 +7,7 @@
 namespace Sandbox {
 
   ClearColorExample::ClearColorExample(Renderer::Window* window)
-    : BaseScene(window) {
+    : BaseScene(window), _clearColor(Renderer::Color::Green){
 
   }
 
@@ -24,7 +24,7 @@ namespace Sandbox {
   }
 
   void ClearColorExample::onImGuiRender() {
-    ImGui::Begin("Hello, world!");
+    ImGui::Begin("ClearColorExample");
     ImGui::ColorEdit3("clear color", &_clearColor.r);
     ImGui::End();
   }

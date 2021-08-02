@@ -16,6 +16,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/VertexBuffer.cpp
     ${PROJECT_SOURCE_DIR}/src/IndexBuffer.cpp
     ${PROJECT_SOURCE_DIR}/src/VertexArray.cpp
+    ${PROJECT_SOURCE_DIR}/src/Texture.cpp
 )
 
 set(LIBS
@@ -23,6 +24,7 @@ set(LIBS
     glfw3
     GLEW::GLEW
     spdlog::spdlog
+    stb::stb
 )
 
 add_library( ${PROJECT_NAME} STATIC ${HEADERS} ${SOURCES})

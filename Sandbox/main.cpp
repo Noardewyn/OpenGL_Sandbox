@@ -7,6 +7,8 @@
 
 #include "examples/ClearColorExample.h"
 #include "examples/ColoredQuadExample.h"
+#include "examples/TextureExample.h"
+
 #include "examples/ExamplesMenu.h"
 
 static void glfw_error_callback(int error, const char* description) {
@@ -28,8 +30,11 @@ int main() {
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	Sandbox::ExamplesMenu menu(&window);
-	menu.registerScene<Sandbox::ClearColorExample>("ClearColorExample", "");
-	menu.registerScene<Sandbox::ColoredQuadExample>("ColoredQuadExample", "");
+	menu.registerScene<Sandbox::ClearColorExample>("Clear color", "");
+	menu.registerScene<Sandbox::ColoredQuadExample>("Colored quad", "");
+	menu.registerScene<Sandbox::TextureExample>("Textured quad", "");
+
+	menu.startScene(2);
 
 	while (window.isOpen()) {
 		window.pollEvents();

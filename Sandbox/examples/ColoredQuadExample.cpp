@@ -2,13 +2,6 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "Render/Window.h"
-#include "Render/Shader.h"
-#include "Render/VertexBuffer.h"
-#include "Render/IndexBuffer.h"
-#include "Render/VertexArray.h"
-#include "Render/VertexBufferLayout.h"
-
 #include "ColoredQuadExample.h"
 
 static GLfloat vertices[] = {
@@ -28,6 +21,7 @@ namespace Sandbox {
   ColoredQuadExample::ColoredQuadExample(Renderer::Window* window)
     : BaseScene(window) {
 
+    _quadColor = Renderer::Color::Magenta;
     vao = std::make_unique<Renderer::VertexArray>();
     vbo = std::make_unique<Renderer::VertexBuffer>(vertices, sizeof(vertices));
     layout = std::make_unique<Renderer::VertexBufferLayout>();

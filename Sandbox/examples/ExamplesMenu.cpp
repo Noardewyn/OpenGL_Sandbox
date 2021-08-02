@@ -27,15 +27,15 @@ namespace Sandbox {
   void ExamplesMenu::onImGuiRender() {
     ImGui::Begin("Menu");
     ImGui::BeginChild("Scrolling");
-
     for (int i = 0; i < _scenes.size(); i++) {  
       if (_current_item == i) {
         ImGui::Text("-->");
         ImGui::SameLine();
       }
 
-      if (ImGui::Button(_scenes[i].name.c_str())) {
+      if (ImGui::Button(_scenes[i].name.c_str()) && i != _current_item) {
         startScene(i);
+        ImGui::SetNextWindowCollapsed(true);
       }
     }    
     ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
