@@ -26,6 +26,9 @@ public:
   inline double getDeltaTime() { return _delta_time; };
   inline GLFWwindow* getHandle() { return _glfw_handle; };
 
+  inline uint32_t getWidth() { return _width; }
+  inline uint32_t getHeight() { return _height; }
+
 private:
   uint32_t _width;
   uint32_t _height;

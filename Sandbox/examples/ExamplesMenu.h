@@ -25,6 +25,8 @@ public:
   BaseScene *getCurrentScene() { return _current_scene; }
   void startScene(int index);
 
+  inline float scenesCount() { return _scenes.size(); };
+
   inline void addSceneMetadata(const SceneMetadata& metadata) {
     _scenes.push_back(metadata);
   }

@@ -2,13 +2,13 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#include "ColoredQuadExample.h"
+#include "FragmentCircleExample.h"
 
 static GLfloat vertices[] = {
-     0.5f,  0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
-    -0.5f,  0.5f, 0.0f
+     1,  1, 0.0f,
+     1, -1, 0.0f,
+    -1, -1, 0.0f,
+    -1,  1, 0.0f
 };
 
 static GLuint indices[] = {
@@ -18,7 +18,7 @@ static GLuint indices[] = {
 
 namespace Sandbox {
 
-  ColoredQuadExample::ColoredQuadExample(Renderer::Window* window)
+  FragmentCircleExample::FragmentCircleExample(Renderer::Window* window)
     : BaseScene(window) {
 
     _quadColor = Renderer::Color::Magenta;
@@ -31,22 +31,23 @@ namespace Sandbox {
     _vao->unbind();
 
     _ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices));
-    _plain_shader = std::make_unique<Renderer::Shader>("./assets/shaders/plain.frag", "./assets/shaders/plain.vs");
+    _plain_shader = std::make_unique<Renderer::Shader>("./assets/shaders/circle.frag", "./assets/shaders/plain.vs");
   }
 
-  ColoredQuadExample::~ColoredQuadExample() {
+  FragmentCircleExample::~FragmentCircleExample() {
     
   }
 
-  void ColoredQuadExample::onUpdate(float delta_time) {
+  void FragmentCircleExample::onUpdate(float delta_time) {
     
   }
 
-  void ColoredQuadExample::onRender() {
+  void FragmentCircleExample::onRender() {
     window->clear(Renderer::Color::Blue);
 
     _plain_shader->bind();
-    _plain_shader->setUniform4f("color", _quadColor.r, _quadColor.g, _quadColor.b, _quadColor.a);
+    _plain_shader->setUniform2f("iResolution", window->getWidth(), window->getHeight());
+    _plain_shader->setUniform1f("iTime", glfwGetTime());
 
     _vao->bind();
     _ibo->bind();
@@ -54,10 +55,7 @@ namespace Sandbox {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   }
 
-  void ColoredQuadExample::onImGuiRender() {
-    ImGui::Begin("ColoredQuadExample");
-    ImGui::ColorEdit4("Quad color", &_quadColor.r);
-    ImGui::End();
+  void FragmentCircleExample::onImGuiRender() {
   }
 
 } // namespace Sandbox

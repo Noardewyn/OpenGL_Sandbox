@@ -1,5 +1,5 @@
-﻿#ifndef __COLORED_QUAD_EXAMPLE_H__
-#define __COLORED_QUAD_EXAMPLE_H__
+﻿#ifndef __FRAGMENT_CIRCLE_EXAMPLE_H__
+#define __FRAGMENT_CIRCLE_EXAMPLE_H__
 
 #include "Render/Color.h"
 #include "Render/Shader.h"
@@ -12,10 +12,10 @@
 
 namespace Sandbox {
 
-class ColoredQuadExample : public BaseScene {
+class FragmentCircleExample : public BaseScene {
 public:
-  ColoredQuadExample(Renderer::Window* window);
-  virtual ~ColoredQuadExample() override;
+  FragmentCircleExample(Renderer::Window* window);
+  virtual ~FragmentCircleExample() override;
 
   virtual void onUpdate(float delta_time) override;
   virtual void onRender() override;
@@ -32,4 +32,4 @@ private:
 
 } // namespace sandbox
 
-#endif // __COLORED_QUAD_EXAMPLE_H__
+#endif // __FRAGMENT_CIRCLE_EXAMPLE_H__
