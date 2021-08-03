@@ -8,6 +8,7 @@
 #include "examples/ClearColorExample.h"
 #include "examples/ColoredQuadExample.h"
 #include "examples/TextureExample.h"
+#include "examples/FragmentCircleExample.h"
 
 #include "examples/ExamplesMenu.h"
 
@@ -33,8 +34,9 @@ int main() {
 	menu.registerScene<Sandbox::ClearColorExample>("Clear color", "");
 	menu.registerScene<Sandbox::ColoredQuadExample>("Colored quad", "");
 	menu.registerScene<Sandbox::TextureExample>("Textured quad", "");
+	menu.registerScene<Sandbox::FragmentCircleExample>("Fragment shader circle", "");
 
-	menu.startScene(2);
+	menu.startScene(menu.scenesCount()-1);
 
 	while (window.isOpen()) {
 		window.pollEvents();

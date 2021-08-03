@@ -22,17 +22,16 @@ namespace Sandbox {
     : BaseScene(window) {
 
     _quadColor = Renderer::Color::Magenta;
-    vao = std::make_unique<Renderer::VertexArray>();
-    vbo = std::make_unique<Renderer::VertexBuffer>(vertices, sizeof(vertices));
-    layout = std::make_unique<Renderer::VertexBufferLayout>();
+    _vao = std::make_unique<Renderer::VertexArray>();
+    _vbo = std::make_unique<Renderer::VertexBuffer>(vertices, sizeof(vertices));
     Renderer::VertexBufferLayout layout;
     layout.push<float>(3);
 
-    vao->addBuffer(*vbo, layout);
-    vao->unbind();
+    _vao->addBuffer(*_vbo, layout);
+    _vao->unbind();
 
-    ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices));
-    plain_shader = std::make_unique<Renderer::Shader>("./assets/shaders/plain.frag", "./assets/shaders/plain.vs");
+    _ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices));
+    _plain_shader = std::make_unique<Renderer::Shader>("./assets/shaders/plain.frag", "./assets/shaders/plain.vs");
   }
 
   ColoredQuadExample::~ColoredQuadExample() {
@@ -46,11 +45,11 @@ namespace Sandbox {
   void ColoredQuadExample::onRender() {
     window->clear(Renderer::Color::Blue);
 
-    plain_shader->bind();
-    plain_shader->setUniform4f("color", _quadColor.r, _quadColor.g, _quadColor.b, _quadColor.a);
+    _plain_shader->bind();
+    _plain_shader->setUniform4f("color", _quadColor.r, _quadColor.g, _quadColor.b, _quadColor.a);
 
-    vao->bind();
-    ibo->bind();
+    _vao->bind();
+    _ibo->bind();
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
   }

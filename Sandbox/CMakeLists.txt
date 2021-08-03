@@ -21,6 +21,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/examples/ClearColorExample.cpp
     ${PROJECT_SOURCE_DIR}/examples/ColoredQuadExample.cpp
     ${PROJECT_SOURCE_DIR}/examples/TextureExample.cpp
+    ${PROJECT_SOURCE_DIR}/examples/FragmentCircleExample.cpp
     ${PROJECT_SOURCE_DIR}/main.cpp
 )
 

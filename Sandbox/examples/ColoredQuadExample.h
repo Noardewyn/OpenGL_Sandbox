@@ -22,11 +22,10 @@ public:
   virtual void onImGuiRender() override;
 
 private:
-  std::unique_ptr<Renderer::VertexArray> vao;
-  std::unique_ptr<Renderer::VertexBuffer> vbo;
-  std::unique_ptr<Renderer::VertexBufferLayout> layout;
-  std::unique_ptr<Renderer::IndexBuffer> ibo;
-  std::unique_ptr<Renderer::Shader> plain_shader;
+  std::unique_ptr<Renderer::VertexArray> _vao;
+  std::unique_ptr<Renderer::VertexBuffer> _vbo;
+  std::unique_ptr<Renderer::IndexBuffer> _ibo;
+  std::unique_ptr<Renderer::Shader> _plain_shader;
 
   Renderer::Color _quadColor;
 };

@@ -35,8 +35,18 @@ void Shader::setUniform4f(const std::string& name, float v0, float v1, float v2,
 }
 
 void Shader::setUniformMatrix4f(const std::string& name, const glm::mat4& matrix) {
-  GLuint transformLoc = glGetUniformLocation(_shader_id, name.c_str());
-  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+  GLuint uniform = glGetUniformLocation(_shader_id, name.c_str());
+  glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::setUniform2f(const std::string& name, float v0, float v1) {
+  GLuint uniform = glGetUniformLocation(_shader_id, name.c_str());
+  glUniform2f(uniform, v0, v1);
+}
+
+void Shader::setUniform1f(const std::string& name, float value) {
+  GLuint uniform = glGetUniformLocation(_shader_id, name.c_str());
+  glUniform1f(uniform, value);
 }
 
 std::string Shader::loadShaderSource(const std::string &filepath) {

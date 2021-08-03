@@ -17,6 +17,8 @@ public:
 
   void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
   void setUniformMatrix4f(const std::string& name, const glm::mat4& matrix);
+  void setUniform2f(const std::string& name, float v0, float v1);
+  void setUniform1f(const std::string& name, float value);
 
 private:
   enum class shader_type_t { VERTEX, FRAGMENT };
