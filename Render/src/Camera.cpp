@@ -13,15 +13,14 @@ glm::mat4 Camera::getViewMatrix() const {
   return glm::lookAt(transform.position, transform.position + transform.forward, transform.up);
 }
 
-void Camera::move(glm::vec2 direction, float delta_time) {
+void Camera::move(glm::vec2 direction, double delta_time) {
   float velocity = moveSpeed * delta_time;
 
   transform.position += direction.y * transform.forward * velocity;
   transform.position += direction.x * transform.right * velocity;
 }
 
-void Camera::rotate(float xoffset, float yoffset, float zoffset, float delta_time) {
-
+void Camera::rotate(double xoffset, double yoffset, double zoffset, double delta_time) {
   xoffset *= sensitivity;
   yoffset *= sensitivity;
 
@@ -36,9 +35,9 @@ void Camera::rotate(float xoffset, float yoffset, float zoffset, float delta_tim
   updateCameraVectors();
 }
 
-void Camera::zoom(float yoffset) {
+void Camera::zoom(double yoffset, double delta_time) {
   if (zoom_level >= 1.0f && zoom_level <= 45.0f)
-    zoom_level -= yoffset;
+    zoom_level -= yoffset * delta_time;
   if (zoom_level <= 1.0f)
     zoom_level = 1.0f;
   if (zoom_level >= 45.0f)
@@ -50,10 +49,9 @@ void Camera::updateCameraVectors() {
   front.x = cos(glm::radians(transform.rotation.x)) * cos(glm::radians(transform.rotation.y));
   front.y = sin(glm::radians(transform.rotation.y));
   front.z = sin(glm::radians(transform.rotation.x)) * cos(glm::radians(transform.rotation.y));
-
   transform.forward = glm::normalize(front);
 
-  transform.forward = glm::normalize(glm::cross(transform.forward, world_up));
+  transform.right = glm::normalize(glm::cross(transform.forward, world_up));
   transform.up = glm::normalize(glm::cross(transform.right, transform.forward));
 }
 

@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Render/Transform.h"
+#include "Render/InputManager.h"
 
 #include "Camera3DExample.h"
 
@@ -73,6 +74,8 @@ namespace Sandbox {
 
     Renderer::Transform camera_transform;
     camera_transform.position = {0.0f, 0.0f, -4.0f};
+    camera_transform.rotation = {90.0f, 0.0f, 0.0f};
+
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
   }
 
@@ -81,7 +84,39 @@ namespace Sandbox {
   }
 
   void Camera3DExample::onUpdate(float delta_time) {
-    
+    glm::vec2 camera_move_dir(0.0f);
+
+    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_W))
+      camera_move_dir.y += 1.0f;
+    if(tools::InputManager::instance()->keyPressed(GLFW_KEY_S))
+      camera_move_dir.y -= 1.0f;
+    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_A))
+      camera_move_dir.x -= 1.0f;
+    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_D))
+      camera_move_dir.x += 1.0f;
+
+    _camera->move(camera_move_dir, delta_time);
+
+    static double mouse_last_x = window->getCursorPosX();
+    static double mouse_last_y = window->getCursorPosY();
+
+    double mouse_pos_x = tools::InputManager::instance()->mousePosX();
+    double mouse_pos_y = tools::InputManager::instance()->mousePosY();
+
+    GLfloat xoffset = mouse_pos_x - mouse_last_x;
+    GLfloat yoffset = mouse_last_y - mouse_pos_y;
+
+    mouse_last_x = mouse_pos_x;
+    mouse_last_y = mouse_pos_y;
+
+    // Don't rotate camera if cursor is visible, in order to 
+    // have possibility to click UI
+    if (!window->isCursorEnabled())
+      _camera->rotate(xoffset, yoffset, 0, delta_time);
+
+    double wheel = tools::InputManager::instance()->wheelY();
+
+    _camera->zoom(wheel, delta_time);
   }
 
   void Camera3DExample::onRender() {

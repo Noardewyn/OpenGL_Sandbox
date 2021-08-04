@@ -21,9 +21,9 @@ public:
 
   glm::mat4 getViewMatrix() const;
 
-  void move(glm::vec2 direction, float delta_time);
-  void rotate(float xoffset, float yoffset, float zoffset, float delta_time);
-  void zoom(float yoffset);
+  void move(glm::vec2 direction, double delta_time);
+  void rotate(double xoffset, double yoffset, double zoffset, double delta_time);
+  void zoom(double yoffset, double delta_time);
 
 private:
   void updateCameraVectors();

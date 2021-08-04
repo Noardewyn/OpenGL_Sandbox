@@ -19,6 +19,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Texture.cpp
     ${PROJECT_SOURCE_DIR}/src/Transform.cpp
     ${PROJECT_SOURCE_DIR}/src/Camera.cpp
+    ${PROJECT_SOURCE_DIR}/src/InputManager.cpp
 )
 
 set(LIBS

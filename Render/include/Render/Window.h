@@ -23,7 +23,8 @@ public:
   void close();
   void pollEvents();
   
-  inline void setCursorEnabled(bool state);
+  void setCursorEnabled(bool state);
+  bool isCursorEnabled();
 
   inline double getDeltaTime() const { return _delta_time; }
   inline GLFWwindow* getHandle() const { return _glfw_handle; }
@@ -31,7 +32,9 @@ public:
   inline uint32_t getWidth() const { return _width; }
   inline uint32_t getHeight() const { return _height; }
 
-  inline void getCursorPos(double *x , double *y) const { return glfwGetCursorPos(_glfw_handle, x, y); }
+  inline double getCursorPosX() const { double x, y; glfwGetCursorPos(_glfw_handle, &x, &y); return x; }
+  inline double getCursorPosY() const { double x, y; glfwGetCursorPos(_glfw_handle, &y, &y); return y; }
+
   inline void setCursorPos(double x, double y) const { return glfwSetCursorPos(_glfw_handle, x, y); }
 
 private:

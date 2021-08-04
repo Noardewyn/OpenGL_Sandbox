@@ -33,12 +33,12 @@ Window::Window(const uint32_t width, const uint32_t height, const std::string& t
 }
 
 Window::~Window() {
-  close();
+  glfwTerminate();
+  std::cout << "Window closed" << std::endl;
 }
 
 void Window::close() {
-  glfwTerminate();
-  std::cout << "Window closed" << std::endl;
+  glfwSetWindowShouldClose(_glfw_handle, GL_TRUE);
 }
 
 void Window::clear(const Color& color) {
@@ -71,6 +71,10 @@ if(state)
   glfwSetInputMode(_glfw_handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 else
   glfwSetInputMode(_glfw_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+bool Window::isCursorEnabled() {
+  return glfwGetInputMode(_glfw_handle, GLFW_CURSOR) != GLFW_CURSOR_DISABLED;
 }
 
 } // namespace Renderer

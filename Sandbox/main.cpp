@@ -4,6 +4,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "Render/Window.h"
+#include "Render/InputManager.h"
 
 #include "examples/ClearColorExample.h"
 #include "examples/ColoredQuadExample.h"
@@ -21,6 +22,7 @@ int main() {
 	glfwSetErrorCallback(glfw_error_callback);
 
 	Renderer::Window window(1000, 1000, "OpenGL Sandbox");
+	tools::InputManager::init(window);
 
 	// imgui init
 	IMGUI_CHECKVERSION();
@@ -42,15 +44,30 @@ int main() {
 
 	while (window.isOpen()) {
 		window.pollEvents();
+		
+		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_ESCAPE)) {
+			window.close();
+		}
+
+		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_1)) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_9)) {
+			window.setCursorEnabled(true);
+		}
+
+		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_0)) {
+			window.setCursorEnabled(false);
+		}
+
 		menu.getCurrentScene()->onUpdate(window.getDeltaTime());
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		menu.getCurrentScene()->onImGuiRender();
-
-		if(menu.getCurrentScene() != &menu)
-			menu.onImGuiRender();
+		menu.onImGuiRender();
 		ImGui::Render();
 
 		window.display_start();
