@@ -17,6 +17,8 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/IndexBuffer.cpp
     ${PROJECT_SOURCE_DIR}/src/VertexArray.cpp
     ${PROJECT_SOURCE_DIR}/src/Texture.cpp
+    ${PROJECT_SOURCE_DIR}/src/Transform.cpp
+    ${PROJECT_SOURCE_DIR}/src/Camera.cpp
 )
 
 set(LIBS

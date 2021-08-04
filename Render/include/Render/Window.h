@@ -22,12 +22,17 @@ public:
   void display_finish();
   void close();
   void pollEvents();
+  
+  inline void setCursorEnabled(bool state);
 
-  inline double getDeltaTime() { return _delta_time; };
-  inline GLFWwindow* getHandle() { return _glfw_handle; };
+  inline double getDeltaTime() const { return _delta_time; }
+  inline GLFWwindow* getHandle() const { return _glfw_handle; }
 
-  inline uint32_t getWidth() { return _width; }
-  inline uint32_t getHeight() { return _height; }
+  inline uint32_t getWidth() const { return _width; }
+  inline uint32_t getHeight() const { return _height; }
+
+  inline void getCursorPos(double *x , double *y) const { return glfwGetCursorPos(_glfw_handle, x, y); }
+  inline void setCursorPos(double x, double y) const { return glfwSetCursorPos(_glfw_handle, x, y); }
 
 private:
   uint32_t _width;

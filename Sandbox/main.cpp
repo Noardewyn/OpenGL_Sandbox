@@ -9,6 +9,7 @@
 #include "examples/ColoredQuadExample.h"
 #include "examples/TextureExample.h"
 #include "examples/FragmentCircleExample.h"
+#include "examples/Camera3DExample.h"
 
 #include "examples/ExamplesMenu.h"
 
@@ -19,7 +20,7 @@ static void glfw_error_callback(int error, const char* description) {
 int main() {
 	glfwSetErrorCallback(glfw_error_callback);
 
-	Renderer::Window window(800, 800, "OpenGL Sandbox");
+	Renderer::Window window(1000, 1000, "OpenGL Sandbox");
 
 	// imgui init
 	IMGUI_CHECKVERSION();
@@ -35,6 +36,7 @@ int main() {
 	menu.registerScene<Sandbox::ColoredQuadExample>("Colored quad", "");
 	menu.registerScene<Sandbox::TextureExample>("Textured quad", "");
 	menu.registerScene<Sandbox::FragmentCircleExample>("Fragment shader circle", "");
+	menu.registerScene<Sandbox::Camera3DExample>("3d camera", "");
 
 	menu.startScene(menu.scenesCount()-1);
 
