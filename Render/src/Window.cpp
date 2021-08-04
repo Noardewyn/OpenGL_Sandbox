@@ -29,6 +29,7 @@ Window::Window(const uint32_t width, const uint32_t height, const std::string& t
   }
 
   glViewport(0, 0, width, height);
+  glEnable(GL_DEPTH_TEST);
 }
 
 Window::~Window() {
@@ -63,6 +64,13 @@ void Window::display_start() {
 
 void Window::display_finish() {
   glfwSwapBuffers(_glfw_handle);
+}
+
+void Window::setCursorEnabled(bool state) {
+if(state)
+  glfwSetInputMode(_glfw_handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+else
+  glfwSetInputMode(_glfw_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 } // namespace Renderer
