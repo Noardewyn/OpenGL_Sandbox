@@ -23,8 +23,6 @@ void Camera::move(glm::vec2 direction, double delta_time) {
 
   transform.position += direction.y * transform.forward * velocity;
   transform.position += direction.x * transform.right * velocity;
-
-  std::cout << transform.position.x << " " <<  transform.position.y << std::endl;
 }
 
 void Camera::rotate(double xoffset, double yoffset, double zoffset, double delta_time) {

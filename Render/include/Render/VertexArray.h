@@ -16,8 +16,11 @@ namespace Renderer {
     void unbind() const;
 
     void addBuffer(const VertexBuffer &vbo, const VertexBufferLayout &layout);
+    
+    inline uint32_t vertex_count() const { return _vertex_count; }
   private:
     uint32_t _array_id;
+    uint32_t _vertex_count;
   };
 
 } // namespace Renderer
