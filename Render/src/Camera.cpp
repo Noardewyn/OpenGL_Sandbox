@@ -4,8 +4,9 @@
 
 namespace Renderer {
 
-Camera::Camera(const Transform& transform) 
-  : transform(transform), world_up(0.0f, 1.0f, 0.0f) {
+Camera::Camera(const Transform& transform, const glm::mat4& projection)
+  : transform(transform), _projection(projection), 
+    world_up(0.0f, 1.0f, 0.0f) {
   updateCameraVectors();
 }
 
@@ -13,11 +14,17 @@ glm::mat4 Camera::getViewMatrix() const {
   return glm::lookAt(transform.position, transform.position + transform.forward, transform.up);
 }
 
+glm::mat4 Camera::getViewProjectionMatrix() const {
+  return _projection * getViewMatrix();
+}
+
 void Camera::move(glm::vec2 direction, double delta_time) {
   float velocity = moveSpeed * delta_time;
 
   transform.position += direction.y * transform.forward * velocity;
   transform.position += direction.x * transform.right * velocity;
+
+  std::cout << transform.position.x << " " <<  transform.position.y << std::endl;
 }
 
 void Camera::rotate(double xoffset, double yoffset, double zoffset, double delta_time) {
@@ -36,12 +43,12 @@ void Camera::rotate(double xoffset, double yoffset, double zoffset, double delta
 }
 
 void Camera::zoom(double yoffset, double delta_time) {
-  if (zoom_level >= 44.0f && zoom_level <= 47.0f)
-    zoom_level -= yoffset * delta_time;
-  if (zoom_level <= 44.0f)
-    zoom_level = 44.0;
-  if (zoom_level >= 47.0f)
-    zoom_level = 47.0f;
+  if (fov >= 44.0f && fov <= 47.0f)
+    fov -= yoffset * delta_time;
+  if (fov <= 44.0f)
+    fov = 44.0;
+  if (fov >= 47.0f)
+    fov = 47.0f;
 }
 
 void Camera::updateCameraVectors() {
@@ -53,6 +60,15 @@ void Camera::updateCameraVectors() {
 
   transform.right = glm::normalize(glm::cross(transform.forward, world_up));
   transform.up = glm::normalize(glm::cross(transform.right, transform.forward));
+}
+
+void Camera::setPerspective(float aspect) {
+  _projection = glm::perspective(fov, aspect, near_plane, far_plane);
+}
+
+void Camera::setOrtho(float width, float height) {
+  float aspect = height / width;
+  _projection = glm::ortho(0.0f, 1.0f, -1.0f * aspect, 1.0f * aspect, near_plane, far_plane);
 }
 
 } // namespace Renderer
