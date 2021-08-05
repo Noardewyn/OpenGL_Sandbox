@@ -78,7 +78,9 @@ namespace Sandbox {
     camera_transform.rotation = {90.0f, 0.0f, 0.0f};
 
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
+    _camera->setPerspective((float)window->getWidth() / window->getHeight());
 
+    _cubes.emplace_back( 0.0f, -1.0f,  0.0f);
     _cubes.emplace_back( 0.0f, -1.0f, -2.0f);
     _cubes.emplace_back( 0.0f, -1.0f,  2.0f);
     _cubes.emplace_back(-2.0f, -1.0f,  0.0f);
@@ -142,17 +144,10 @@ namespace Sandbox {
       glm::mat4 model = cube.toMatrix();
       _shader->setUniformMatrix4f("model", model);
 
-      // Projection matrix
-      _projection_width = window->getWidth();
-      _projection_height = window->getHeight();
+      _camera->setPerspective((float)window->getWidth() / window->getHeight());
+      //_camera->setOrtho(window->getWidth(), window->getHeight());
 
-      glm::mat4 projection(1.0f);
-      projection = glm::perspective(_camera->zoom_level, _projection_width / _projection_height, 0.1f, 100.0f);
-
-      glm::mat4 viewProjection(1.0f);
-      viewProjection = projection * _camera->getViewMatrix();
-
-      _shader->setUniformMatrix4f("viewProjection", viewProjection);
+      _shader->setUniformMatrix4f("viewProjection", _camera->getViewProjectionMatrix());
 
       _vao->bind();
       //_ibo->bind();
@@ -166,20 +161,21 @@ namespace Sandbox {
     ImGui::Begin("3d camera example");
 
     if (ImGui::CollapsingHeader("Controls legend")) {
-      ImGui::Text("'F2' - enable/disable camera movement");
-      ImGui::Text("'F3' - switch Wireframe mode");
-      ImGui::Text("WASD - move camera");
+      ImGui::Text("F2    - enable/disable camera movement");
+      ImGui::Text("F3    - switch Wireframe mode");
+      ImGui::Text("F10   - fullscreen/windowed");
+      ImGui::Text("WASD  - move camera");
       ImGui::Text("Mouse - rotate camera");
       ImGui::Text("Wheel - zoom camera");
     }
 
-    ImGui::InputFloat("zoom", &_camera->zoom_level);
+    ImGui::InputFloat("zoom", &_camera->fov);
 
     for (int i = 0; i < _cubes.size(); i++) {
       std::string i_str = std::to_string(i);
       if (ImGui::CollapsingHeader(std::string("Cube Transform: " + i_str).c_str())) {
         ImGui::SliderFloat3(std::string("position" + i_str).c_str(), &_cubes[i].position.x, -10, 10);
-        ImGui::SliderFloat3(std::string("scale" + i_str).c_str(), &_cubes[i].scale.x, -100, 100);
+        ImGui::SliderFloat3(std::string("scale" + i_str).c_str(), &_cubes[i].scale.x, -10, 10);
         ImGui::SliderFloat3(std::string("rotation" + i_str).c_str(), &_cubes[i].rotation.x, 0, 360);
       }
     }

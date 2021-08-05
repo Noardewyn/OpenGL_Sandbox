@@ -15,17 +15,28 @@ public:
 
   float moveSpeed = 5.0;
   float sensitivity = 0.1;
-  float zoom_level = 45;
+  float fov = 45;
 
-  Camera(const Transform &transform);
+  float near_plane = 0.1f;
+  float far_plane = 100.0f;
 
-  glm::mat4 getViewMatrix() const;
+  Camera(const Transform &transform, const glm::mat4 &projection = glm::mat4(1));
+
+  void setPerspective(float aspect);
+  void setOrtho(float width, float height);
+  void setProjection(const glm::mat4 &matrix);
+
+  glm::mat4 getViewProjectionMatrix() const;
 
   void move(glm::vec2 direction, double delta_time);
   void rotate(double xoffset, double yoffset, double zoffset, double delta_time);
   void zoom(double yoffset, double delta_time);
 
 private:
+  glm::mat4 _projection;
+
+  glm::mat4 getViewMatrix() const;
+
   void updateCameraVectors();
 };
 

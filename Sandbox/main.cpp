@@ -21,7 +21,7 @@ static void glfw_error_callback(int error, const char* description) {
 int main() {
 	glfwSetErrorCallback(glfw_error_callback);
 
-	Renderer::Window window(1000, 1000, "OpenGL Sandbox");
+	Renderer::Window window(1400, 1000, "OpenGL Sandbox");
 	tools::InputManager::init(window);
 
 	// imgui init
@@ -60,6 +60,11 @@ int main() {
 		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F2)) {
 			static bool cursor_enabled = true;
 			window.setCursorEnabled(cursor_enabled = !cursor_enabled);
+		}
+
+		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F10)) {
+			static bool fullscreen = true;
+			window.setFullscreen(fullscreen = !fullscreen);
 		}
 
 		menu.getCurrentScene()->onUpdate(window.getDeltaTime());
