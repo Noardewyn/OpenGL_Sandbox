@@ -2,6 +2,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "Render/Renderer.h"
+
 #include "TextureExample.h"
 
 static GLfloat vertices[] = {
@@ -47,12 +49,7 @@ namespace Sandbox {
     window->clear(Renderer::Color::Black);
 
     _texture->bind();
-    _shader->bind();
-    
-    _vao->bind();
-    _ibo->bind();
-
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    Renderer::DrawTriangles(*_vao, *_ibo, *_shader);
   }
 
   void TextureExample::onImGuiRender() {

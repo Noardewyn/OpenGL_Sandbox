@@ -4,7 +4,8 @@
 
 namespace Renderer {
 
-  VertexArray::VertexArray() {
+  VertexArray::VertexArray() 
+    :_vertex_count(0) {
     glGenVertexArrays(1, &_array_id);
     glBindVertexArray(_array_id);
   }
@@ -35,6 +36,8 @@ namespace Renderer {
       offset += element.count * VertexBufferElement::getTypeSize(element.type);
       ++index;
     }
+
+    _vertex_count = vbo.size() / offset;
   }
 
 } // namespace Renderer

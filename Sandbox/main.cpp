@@ -63,7 +63,7 @@ int main() {
 		}
 
 		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F10)) {
-			static bool fullscreen = true;
+			static bool fullscreen = false;
 			window.setFullscreen(fullscreen = !fullscreen);
 		}
 

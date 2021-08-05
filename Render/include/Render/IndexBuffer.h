@@ -13,8 +13,10 @@ public:
   void bind() const;
   void unbind() const;
 
+  inline uint32_t count() const { return _count; };
 private:
   uint32_t _buffer_id;
+  uint32_t _count;
 };
 
 } // namespace Renderer

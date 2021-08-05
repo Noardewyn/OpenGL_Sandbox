@@ -8,6 +8,7 @@
 
 #include "Render/Transform.h"
 #include "Render/InputManager.h"
+#include "Render/Renderer.h"
 
 #include "Camera3DExample.h"
 
@@ -136,24 +137,16 @@ namespace Sandbox {
 
   void Camera3DExample::onRender() {
     window->clear(Renderer::Color::Black);
-
     _texture->bind();
-    _shader->bind();
-    
+    _camera->setPerspective((float)window->getWidth() / window->getHeight());
+    //_camera->setOrtho(window->getWidth(), window->getHeight());
+
     for (const auto &cube : _cubes) {
       glm::mat4 model = cube.toMatrix();
       _shader->setUniformMatrix4f("model", model);
-
-      _camera->setPerspective((float)window->getWidth() / window->getHeight());
-      //_camera->setOrtho(window->getWidth(), window->getHeight());
-
       _shader->setUniformMatrix4f("viewProjection", _camera->getViewProjectionMatrix());
 
-      _vao->bind();
-      //_ibo->bind();
-
-      glDrawArrays(GL_TRIANGLES, 0, 36);
-      //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+      Renderer::DrawTriangles(*_vao, *_shader);
     }
   }
 
