@@ -36,12 +36,12 @@ void Camera::rotate(double xoffset, double yoffset, double zoffset, double delta
 }
 
 void Camera::zoom(double yoffset, double delta_time) {
-  if (zoom_level >= 1.0f && zoom_level <= 45.0f)
+  if (zoom_level >= 44.0f && zoom_level <= 47.0f)
     zoom_level -= yoffset * delta_time;
-  if (zoom_level <= 1.0f)
-    zoom_level = 1.0f;
-  if (zoom_level >= 45.0f)
-    zoom_level = 45.0f;
+  if (zoom_level <= 44.0f)
+    zoom_level = 44.0;
+  if (zoom_level >= 47.0f)
+    zoom_level = 47.0f;
 }
 
 void Camera::updateCameraVectors() {
