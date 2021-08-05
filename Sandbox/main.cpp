@@ -45,20 +45,21 @@ int main() {
 	while (window.isOpen()) {
 		window.pollEvents();
 		
-		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_ESCAPE)) {
+		if (tools::InputManager::instance()->keyDown(GLFW_KEY_ESCAPE)) {
 			window.close();
 		}
 
-		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_1)) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F3)) {
+			static bool wireframe_enabled = false;
+			if (wireframe_enabled = !wireframe_enabled)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_9)) {
-			window.setCursorEnabled(true);
-		}
-
-		if (tools::InputManager::instance()->keyPressed(GLFW_KEY_0)) {
-			window.setCursorEnabled(false);
+		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F2)) {
+			static bool cursor_enabled = true;
+			window.setCursorEnabled(cursor_enabled = !cursor_enabled);
 		}
 
 		menu.getCurrentScene()->onUpdate(window.getDeltaTime());

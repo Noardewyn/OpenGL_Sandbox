@@ -13,7 +13,7 @@ public:
   Transform transform;
   glm::vec3 world_up;
 
-  float moveSpeed = 3.0;
+  float moveSpeed = 5.0;
   float sensitivity = 0.1;
   float zoom_level = 45;
 

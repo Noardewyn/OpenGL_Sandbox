@@ -5,6 +5,8 @@
 #include "Render/InputManager.h"
 
 static bool keys[1024];
+static bool keys_down[1024];
+
 static double mouse_pos_x;
 static double mouse_pos_y;
 static double wheel_x;
@@ -12,9 +14,9 @@ static double wheel_y;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
   if (action == GLFW_PRESS)
-    keys[key] = true;
+    keys[key] = keys_down[key] = true;
   else if (action == GLFW_RELEASE)
-    keys[key] = false;
+    keys[key] = keys_down[key] = false;
 }
 
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -51,6 +53,12 @@ bool InputManager::keyPressed(int key_code) const {
   return keys[key_code] == GLFW_PRESS;
 }
 
+bool InputManager::keyDown(int key_code) const {
+  bool temp = keys_down[key_code] == GLFW_PRESS;
+  keys_down[key_code] = false;
+  return temp;
+}
+
 double InputManager::mousePosX() const {
   return mouse_pos_x;
 }
@@ -60,11 +68,15 @@ double InputManager::mousePosY() const {
 }
 
 double InputManager::wheelX() const {
-  return wheel_x;
+  double temp_x = wheel_x;
+  wheel_x = 0;
+  return temp_x;
 }
 
 double InputManager::wheelY() const {
-  return wheel_y;
+  double temp_y = wheel_y;
+  wheel_y = 0;
+  return temp_y;
 }
 
 } // namespace Renderer

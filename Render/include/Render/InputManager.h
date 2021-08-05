@@ -11,6 +11,7 @@ public:
   static InputManager * const instance();
 
   bool keyPressed(int key_code) const;
+  bool keyDown(int key_code) const;
   double mousePosX() const;
   double mousePosY() const;
   double wheelX() const;

@@ -29,6 +29,8 @@ private:
 
   char _text_input_buf[128];
 
+  std::vector<Renderer::Transform> _cubes;
+
   std::unique_ptr<Renderer::VertexArray> _vao;
   std::unique_ptr<Renderer::VertexBuffer> _vbo;
   std::unique_ptr<Renderer::VertexBufferLayout> _layout;

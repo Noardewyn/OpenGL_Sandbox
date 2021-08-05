@@ -1,4 +1,5 @@
-﻿#include <imgui.h>
+﻿#include <string>
+#include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
@@ -73,10 +74,15 @@ namespace Sandbox {
     strcpy(_text_input_buf, _texture_path.c_str());
 
     Renderer::Transform camera_transform;
-    camera_transform.position = {0.0f, 0.0f, -4.0f};
+    camera_transform.position = {0.0f, 0.0f, -6.0f};
     camera_transform.rotation = {90.0f, 0.0f, 0.0f};
 
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
+
+    _cubes.emplace_back( 0.0f, -1.0f, -2.0f);
+    _cubes.emplace_back( 0.0f, -1.0f,  2.0f);
+    _cubes.emplace_back(-2.0f, -1.0f,  0.0f);
+    _cubes.emplace_back( 2.0f, -1.0f,  0.0f);
   }
 
   Camera3DExample::~Camera3DExample() {
@@ -84,18 +90,11 @@ namespace Sandbox {
   }
 
   void Camera3DExample::onUpdate(float delta_time) {
-    glm::vec2 camera_move_dir(0.0f);
 
-    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_W))
-      camera_move_dir.y += 1.0f;
-    if(tools::InputManager::instance()->keyPressed(GLFW_KEY_S))
-      camera_move_dir.y -= 1.0f;
-    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_A))
-      camera_move_dir.x -= 1.0f;
-    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_D))
-      camera_move_dir.x += 1.0f;
-
-    _camera->move(camera_move_dir, delta_time);
+    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_LEFT_SHIFT))
+      _camera->moveSpeed = 15.0f;
+    else
+      _camera->moveSpeed = 5.0f;
 
     static double mouse_last_x = window->getCursorPosX();
     static double mouse_last_y = window->getCursorPosY();
@@ -109,14 +108,28 @@ namespace Sandbox {
     mouse_last_x = mouse_pos_x;
     mouse_last_y = mouse_pos_y;
 
-    // Don't rotate camera if cursor is visible, in order to 
-    // have possibility to click UI
-    if (!window->isCursorEnabled())
-      _camera->rotate(xoffset, yoffset, 0, delta_time);
+    // Don't process camera if cursor is visible, in order to 
+    // have possibility to click UI without camera movement
+    if (window->isCursorEnabled())
+      return;
+
+    _camera->rotate(xoffset, yoffset, 0, delta_time);
 
     double wheel = tools::InputManager::instance()->wheelY();
-
     _camera->zoom(wheel, delta_time);
+
+    glm::vec2 camera_move_dir(0.0f);
+
+    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_W))
+      camera_move_dir.y += 1.0f;
+    if(tools::InputManager::instance()->keyPressed(GLFW_KEY_S))
+      camera_move_dir.y -= 1.0f;
+    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_A))
+      camera_move_dir.x -= 1.0f;
+    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_D))
+      camera_move_dir.x += 1.0f;
+
+    _camera->move(camera_move_dir, delta_time);
   }
 
   void Camera3DExample::onRender() {
@@ -125,41 +138,51 @@ namespace Sandbox {
     _texture->bind();
     _shader->bind();
     
-    glm::mat4 model = cube_transform.toMatrix();
-    _shader->setUniformMatrix4f("model", model);
+    for (const auto &cube : _cubes) {
+      glm::mat4 model = cube.toMatrix();
+      _shader->setUniformMatrix4f("model", model);
 
-    // Projection matrix
-    _projection_width = window->getWidth();
-    _projection_height = window->getHeight();
+      // Projection matrix
+      _projection_width = window->getWidth();
+      _projection_height = window->getHeight();
 
-    glm::mat4 projection(1.0f);
-    projection = glm::perspective(45.0f, _projection_width / _projection_height, 0.1f, 100.0f);
+      glm::mat4 projection(1.0f);
+      projection = glm::perspective(_camera->zoom_level, _projection_width / _projection_height, 0.1f, 100.0f);
 
-    glm::mat4 viewProjection(1.0f);
-    viewProjection = projection * _camera->getViewMatrix();
+      glm::mat4 viewProjection(1.0f);
+      viewProjection = projection * _camera->getViewMatrix();
 
-    _shader->setUniformMatrix4f("viewProjection", viewProjection);
+      _shader->setUniformMatrix4f("viewProjection", viewProjection);
 
-    _vao->bind();
-    //_ibo->bind();
+      _vao->bind();
+      //_ibo->bind();
 
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+      glDrawArrays(GL_TRIANGLES, 0, 36);
+      //glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    }
   }
 
   void Camera3DExample::onImGuiRender() {
     ImGui::Begin("3d camera example");
-    ImGui::Text(_texture_path.c_str());
-    ImGui::InputText("path", _text_input_buf, IM_ARRAYSIZE(_text_input_buf));
-    
-    if (ImGui::Button("Load")) {
-      _texture = std::make_unique<Renderer::Texture>(_text_input_buf);
+
+    if (ImGui::CollapsingHeader("Controls legend")) {
+      ImGui::Text("'F2' - enable/disable camera movement");
+      ImGui::Text("'F3' - switch Wireframe mode");
+      ImGui::Text("WASD - move camera");
+      ImGui::Text("Mouse - rotate camera");
+      ImGui::Text("Wheel - zoom camera");
     }
 
-    ImGui::Text("Cube Transform");
-    ImGui::SliderFloat3("position", &cube_transform.position.x, -10, 10);
-    ImGui::SliderFloat3("scale", &cube_transform.scale.x, -100, 100);
-    ImGui::SliderFloat3("rotaion", &cube_transform.rotation.x, 0, 359);
+    ImGui::InputFloat("zoom", &_camera->zoom_level);
+
+    for (int i = 0; i < _cubes.size(); i++) {
+      std::string i_str = std::to_string(i);
+      if (ImGui::CollapsingHeader(std::string("Cube Transform: " + i_str).c_str())) {
+        ImGui::SliderFloat3(std::string("position" + i_str).c_str(), &_cubes[i].position.x, -10, 10);
+        ImGui::SliderFloat3(std::string("scale" + i_str).c_str(), &_cubes[i].scale.x, -100, 100);
+        ImGui::SliderFloat3(std::string("rotation" + i_str).c_str(), &_cubes[i].rotation.x, 0, 360);
+      }
+    }
 
     ImGui::End();
   }
