@@ -38,9 +38,6 @@ private:
   std::unique_ptr<Renderer::Shader> _shader;
   std::unique_ptr<Renderer::Texture> _texture;
   std::unique_ptr<Renderer::Camera> _camera;
-
-  float _projection_width;
-  float _projection_height;
 };
 
 } // namespace sandbox
