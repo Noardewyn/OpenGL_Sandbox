@@ -162,11 +162,14 @@ namespace Sandbox {
 
     _shader->bind();
     _texture->bind();
-    _shader->setUniformMatrix4f("viewProjection", _camera->getViewProjectionMatrix());
+    _shader->setUniformMatrix4f("view", _camera->getViewMatrix());
+    _shader->setUniformMatrix4f("projection", _camera->getProjectionMatrix());
+
     _shader->setUniform3f("lightColor", _lights[0].second.r, _lights[0].second.g, _lights[0].second.b);
     _shader->setUniform3f("ambientStrength", _ambient.r, _ambient.g, _ambient.b);
     _shader->setUniform3f("lightPos", _lights[0].first.position.x, _lights[0].first.position.y, _lights[0].first.position.z);
     _shader->setUniform3f("viewPos", _camera->transform.position.x, _camera->transform.position.y, _camera->transform.position.z);
+
 
     for (const auto &cube : _cubes) {
       glm::mat4 model = cube.toMatrix();

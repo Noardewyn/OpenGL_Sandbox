@@ -26,8 +26,11 @@ public:
   void setOrtho(float width, float height);
   void setProjection(const glm::mat4 &matrix);
 
-  glm::mat4 getViewProjectionMatrix() const;
+  glm::mat4 getViewMatrix() const;
+  glm::mat4 getProjectionMatrix() const;
 
+  glm::mat4 getViewProjectionMatrix() const;
+   
   void move(glm::vec2 direction, double delta_time);
   void rotate(double xoffset, double yoffset, double zoffset, double delta_time);
   void zoom(double yoffset, double delta_time);
@@ -35,7 +38,6 @@ public:
 private:
   glm::mat4 _projection;
 
-  glm::mat4 getViewMatrix() const;
 
   void updateCameraVectors();
 };
