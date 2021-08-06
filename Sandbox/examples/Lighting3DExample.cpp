@@ -83,15 +83,15 @@ namespace Sandbox {
 
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
 
-    _cubes.emplace_back( 0.0f, 0.0f,  0.0f);
-    
+    _cubes.emplace_back(0.0f, 0.0f,  0.0f);
+    _cubes.emplace_back(-2.0f, 0.0f, 0.0f);
+    _cubes.emplace_back(2.0f, 0.0f, 0.0f);
+
     Renderer::Transform light_transform;
     light_transform.position = { 2.0f, 0.0f, -1.0f };
     light_transform.scale = { 0.3f, 0.3f, 0.3f };
 
     _lights.push_back({light_transform, Renderer::Color::White});
-
-    _ambient = Renderer::Color(0.1, 0.1, 0.1);
   }
 
   Lighting3DExample::~Lighting3DExample() {
@@ -165,11 +165,27 @@ namespace Sandbox {
     _shader->setUniformMatrix4f("view", _camera->getViewMatrix());
     _shader->setUniformMatrix4f("projection", _camera->getProjectionMatrix());
 
-    _shader->setUniform3f("lightColor", _lights[0].second.r, _lights[0].second.g, _lights[0].second.b);
-    _shader->setUniform3f("ambientStrength", _ambient.r, _ambient.g, _ambient.b);
-    _shader->setUniform3f("lightPos", _lights[0].first.position.x, _lights[0].first.position.y, _lights[0].first.position.z);
-    _shader->setUniform3f("viewPos", _camera->transform.position.x, _camera->transform.position.y, _camera->transform.position.z);
+    _shader->setUniform1f("useFillColor", !_textured_cubes);
 
+    if(!_textured_cubes) {
+      _shader->setUniform4f("fillColor", 1.0, 1.0, 1.0, 1.0);
+    }
+
+    glm::vec3 diffuseColor = glm::vec3(_lights[0].second.r, _lights[0].second.g, _lights[0].second.b) * glm::vec3(0.8f);
+    glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+
+    _shader->setUniform3f("light.ambient", ambientColor.x, ambientColor.y, ambientColor.z);
+    _shader->setUniform3f("light.diffuse", diffuseColor.x, diffuseColor.x, diffuseColor.z);
+    _shader->setUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
+    //_shader->setUniform3f("light.position", _lights[0].first.position.x, _lights[0].first.position.y, _lights[0].first.position.z);
+
+    // Gold material
+    _shader->setUniform3f("material.ambient", 0.24725f, 0.1995f, 0.0745f);
+    _shader->setUniform3f("material.diffuse", 0.75164f, 0.60648f, 0.22648f);
+    _shader->setUniform3f("material.specular", 0.628281f, 0.555802f, 0.366065f);
+    _shader->setUniform1f("material.shininess", 0.4 * 128.0f);
+
+    _shader->setUniform3f("lightPos", _lights[0].first.position.x, _lights[0].first.position.y, _lights[0].first.position.z);
 
     for (const auto &cube : _cubes) {
       glm::mat4 model = cube.toMatrix();
@@ -192,6 +208,8 @@ namespace Sandbox {
     }
 
     ImGui::InputFloat("zoom", &_camera->fov);
+
+    ImGui::Checkbox("Textured qubes", &_textured_cubes);
 
     ImGui::Text("Objects");
 
@@ -217,6 +235,8 @@ namespace Sandbox {
         ImGui::ColorEdit4(std::string("light rotation" + i_str).c_str(), &_lights[i].second.r);
       }
     }
+
+
     ImGui::End();
   }
 

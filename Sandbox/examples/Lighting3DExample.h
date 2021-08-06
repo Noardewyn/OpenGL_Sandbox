@@ -24,14 +24,15 @@ public:
   virtual void onImGuiRender() override;
 
 private:
-  std::string _texture_path = "assets/box.jpg";
+  std::string _texture_path = "assets/gold.jpg";
   Renderer::Transform cube_transform;
 
   char _text_input_buf[128];
 
-  Renderer::Color _ambient;
   float _light_speed = 1.0f;
   float _light_radius = 2.0f;
+
+  bool _textured_cubes = false;
 
   std::vector<Renderer::Transform> _cubes;
   std::vector<std::pair<Renderer::Transform, Renderer::Color>> _lights;
