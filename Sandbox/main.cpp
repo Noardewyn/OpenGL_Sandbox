@@ -11,6 +11,7 @@
 #include "examples/TextureExample.h"
 #include "examples/FragmentCircleExample.h"
 #include "examples/Camera3DExample.h"
+#include "examples/Lighting3DExample.h"
 
 #include "examples/ExamplesMenu.h"
 
@@ -39,6 +40,7 @@ int main() {
 	menu.registerScene<Sandbox::TextureExample>("Textured quad", "");
 	menu.registerScene<Sandbox::FragmentCircleExample>("Fragment shader circle", "");
 	menu.registerScene<Sandbox::Camera3DExample>("3d camera", "");
+	menu.registerScene<Sandbox::Lighting3DExample>("3d lighting", "");
 
 	menu.startScene(menu.scenesCount()-1);
 
