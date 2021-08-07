@@ -70,7 +70,7 @@ namespace Sandbox {
     _vao->addBuffer(*_vbo, layout);
     _vao->unbind();
 
-    //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices));
+    //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices) / sizeof(indices[0]);
     _shader = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_light.frag", "./assets/shaders/mvp_light.vs");
     _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
 
@@ -209,7 +209,7 @@ namespace Sandbox {
 
     ImGui::InputFloat("zoom", &_camera->fov);
 
-    ImGui::Checkbox("Textured qubes", &_textured_cubes);
+    ImGui::Checkbox("Textured cubes", &_textured_cubes);
 
     ImGui::Text("Objects");
 

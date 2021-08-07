@@ -3,7 +3,7 @@
 namespace Renderer {
 
 Window::Window(const uint32_t width, const uint32_t height, const std::string& title)
-  : _title(title) {
+  : _size_windowed({0, 0}), _pos_windowed({0, 0}), _title(title) {
 
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -87,8 +87,8 @@ void Window::resize(int width, int height) {
   _size_windowed[0] = width;
   _size_windowed[1] = height;
 
-  width = ((float)width / height) * height;
-  height = ((float)height / width) * width;
+  width = int(((float)width / height) * height);
+  height = int(((float)height / width) * width);
   glViewport(0, 0, width, height);
 }
 
@@ -125,7 +125,7 @@ bool Window::isCursorEnabled() {
 
 void Window::resizeCallback(GLFWwindow* window, int width, int height) {
   void* ptr = glfwGetWindowUserPointer(window);
-  if (Window* wnd_ptr = static_cast<Window*>(ptr)) {
+  if (auto* wnd_ptr = static_cast<Window*>(ptr)) {
     wnd_ptr->resize(width, height);
   }
 }

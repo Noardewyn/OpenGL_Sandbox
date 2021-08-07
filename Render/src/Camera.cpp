@@ -5,7 +5,7 @@
 namespace Renderer {
 
 Camera::Camera(const Transform& transform, const glm::mat4& projection)
-  : transform(transform), _projection(projection), 
+  : _projection(projection), transform(transform),
     world_up(0.0f, 1.0f, 0.0f) {
   updateCameraVectors();
 }
@@ -22,14 +22,14 @@ glm::mat4 Camera::getViewProjectionMatrix() const {
   return _projection * getViewMatrix();
 }
 
-void Camera::move(glm::vec2 direction, double delta_time) {
-  float velocity = moveSpeed * delta_time;
+void Camera::move(glm::vec2 direction, float delta_time) {
+  const float velocity = moveSpeed * delta_time;
 
   transform.position += direction.y * transform.forward * velocity;
   transform.position += direction.x * transform.right * velocity;
 }
 
-void Camera::rotate(double xoffset, double yoffset, double zoffset, double delta_time) {
+void Camera::rotate(float xoffset, float yoffset, float zoffset, float delta_time) {
   xoffset *= sensitivity;
   yoffset *= sensitivity;
 
@@ -44,7 +44,7 @@ void Camera::rotate(double xoffset, double yoffset, double zoffset, double delta
   updateCameraVectors();
 }
 
-void Camera::zoom(double yoffset, double delta_time) {
+void Camera::zoom(float yoffset, float delta_time) {
   if (fov >= 44.0f && fov <= 47.0f)
     fov -= yoffset * delta_time;
   if (fov <= 44.0f)
