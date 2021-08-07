@@ -76,6 +76,7 @@ namespace Sandbox {
 
     _texture_diffuse = std::make_unique<Renderer::Texture>("assets/container2.png");
     _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
+    _texture_emission = std::make_unique<Renderer::Texture>("assets/matrix.jpg");
 
     Renderer::Transform camera_transform;
     camera_transform.position = {1.0f, 2.0f, -4.0f};
@@ -143,7 +144,11 @@ namespace Sandbox {
 
   void AdvancedLighting3DExample::onRender() {
     window->clear(Renderer::Color::Black);
-    
+
+    //_emission_strength.r = abs(sin(glfwGetTime()));
+    _emission_strength.g = abs(sin(glfwGetTime()));
+    //_emission_strength.b = abs(sin(glfwGetTime()));
+
     _camera->setPerspective((float)window->getWidth() / window->getHeight());
 
     _shader_light->bind();
@@ -170,7 +175,7 @@ namespace Sandbox {
       _shader->setUniform4f("fillColor", 1.0, 1.0, 1.0, 1.0);
     }
 
-    glm::vec3 diffuseColor = glm::vec3(_lights[0].second.r, _lights[0].second.g, _lights[0].second.b);
+    glm::vec3 diffuseColor = glm::vec3(_lights[0].second.r, _lights[0].second.g, _lights[0].second.b) * 0.8f;
     glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
 
     _shader->setUniform3f("light.ambient", ambientColor.x, ambientColor.y, ambientColor.z);
@@ -180,11 +185,14 @@ namespace Sandbox {
 
     _shader->setUniform1i("material.diffuse", 0);
     _shader->setUniform1i("material.specular", 1);
+    _shader->setUniform1i("material.emission", 2);
+    _shader->setUniform3f("material.emissionStrength", _emission_strength.r, _emission_strength.g, _emission_strength.b);
     _shader->setUniform1f("material.shininess", 32);
     _shader->setUniform3f("lightPos", _lights[0].first.position.x, _lights[0].first.position.y, _lights[0].first.position.z);
 
     _texture_diffuse->bind(0);
     _texture_specular->bind(1);
+    _texture_emission->bind(2);
 
     for (const auto &cube : _cubes) {
       glm::mat4 model = cube.toMatrix();
@@ -209,6 +217,8 @@ namespace Sandbox {
     ImGui::InputFloat("zoom", &_camera->fov);
 
     ImGui::Checkbox("Textured cubes", &_textured_cubes);
+
+    ImGui::ColorEdit3("emission", &_emission_strength.r);
 
     ImGui::Text("Objects");
 

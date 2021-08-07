@@ -9,6 +9,8 @@ out vec4 color;
 struct Material {
     sampler2D diffuse;
     sampler2D specular;
+    sampler2D emission;
+    vec3      emissionStrength;
     float     shininess;
 }; 
 
@@ -42,7 +44,13 @@ void main()
     // ambient light
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
 
-    vec4 resultLight = vec4(ambient + diffuse + specular, 1.0f);
+    // emission light
+    
+    vec3 useEmission = step(vec3(texture(material.specular, TexCoord)), vec3(0.0f, 0.0f, 0.0f));
+    
+    vec3 emission = useEmission * material.emissionStrength * vec3(texture(material.emission, TexCoord));
+
+    vec4 resultLight = vec4(emission + ambient + diffuse + specular, 1.0f);
     
     if(useFillColor) {
         color = fillColor * resultLight;

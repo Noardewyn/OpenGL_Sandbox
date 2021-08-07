@@ -25,6 +25,7 @@ public:
 
 private:
   Renderer::Transform cube_transform;
+  Renderer::Color _emission_strength;
 
   float _light_speed = 1.0f;
   float _light_radius = 2.0f;
@@ -44,6 +45,7 @@ private:
 
   std::unique_ptr<Renderer::Texture> _texture_diffuse;
   std::unique_ptr<Renderer::Texture> _texture_specular;
+  std::unique_ptr<Renderer::Texture> _texture_emission;
 
 };
 
