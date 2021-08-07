@@ -24,6 +24,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/examples/FragmentCircleExample.cpp
     ${PROJECT_SOURCE_DIR}/examples/Camera3DExample.cpp
     ${PROJECT_SOURCE_DIR}/examples/Lighting3DExample.cpp
+    ${PROJECT_SOURCE_DIR}/examples/AdvancedLighting3DExample.cpp
 
     ${PROJECT_SOURCE_DIR}/main.cpp
 )

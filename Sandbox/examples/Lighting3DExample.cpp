@@ -196,7 +196,7 @@ namespace Sandbox {
   }
 
   void Lighting3DExample::onImGuiRender() {
-    ImGui::Begin("3d camera example");
+    ImGui::Begin("Lighting example");
 
     if (ImGui::CollapsingHeader("Controls legend")) {
       ImGui::Text("F2    - enable/disable camera movement");
@@ -235,7 +235,6 @@ namespace Sandbox {
         ImGui::ColorEdit4(std::string("light rotation" + i_str).c_str(), &_lights[i].second.r);
       }
     }
-
 
     ImGui::End();
   }

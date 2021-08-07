@@ -35,6 +35,9 @@ Window::Window(const uint32_t width, const uint32_t height, const std::string& t
   }
 
   glEnable(GL_DEPTH_TEST);
+
+  const std::string versionString = std::string((const char*)glGetString(GL_VERSION));
+  std::cout << "OpenGL version: " << versionString << std::endl;
 }
 
 Window::~Window() {
