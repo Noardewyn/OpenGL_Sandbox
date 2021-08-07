@@ -9,7 +9,7 @@ class Texture {
 public:
   Texture(const std::string &image_path);
 
-  void bind() const;
+  void bind(int unit = 0) const;
   void unbind() const;
 
   int width, height, nrChannels;

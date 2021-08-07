@@ -10,7 +10,7 @@
 #include "Render/InputManager.h"
 #include "Render/Renderer.h"
 
-#include "Lighting3DExample.h"
+#include "AdvancedLighting3DExample.h"
 
 static float vertices[] = {
     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f,
@@ -58,7 +58,7 @@ static float vertices[] = {
 
 namespace Sandbox {
 
-  Lighting3DExample::Lighting3DExample(Renderer::Window* window)
+  AdvancedLighting3DExample::AdvancedLighting3DExample(Renderer::Window* window)
     : BaseScene(window) {
     _vao = std::make_unique<Renderer::VertexArray>();
     _vbo = std::make_unique<Renderer::VertexBuffer>(vertices, sizeof(vertices));
@@ -71,11 +71,11 @@ namespace Sandbox {
     _vao->unbind();
 
     //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices) / sizeof(indices[0]);
-    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_light.frag", "./assets/shaders/mvp_light.vs");
+    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_light2.frag", "./assets/shaders/mvp_light2.vs");
     _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
 
-    _texture = std::make_unique<Renderer::Texture>(_texture_path);
-    strcpy(_text_input_buf, _texture_path.c_str());
+    _texture_diffuse = std::make_unique<Renderer::Texture>("assets/container2.png");
+    _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
 
     Renderer::Transform camera_transform;
     camera_transform.position = {1.0f, 2.0f, -4.0f};
@@ -94,11 +94,11 @@ namespace Sandbox {
     _lights.push_back({light_transform, Renderer::Color::White});
   }
 
-  Lighting3DExample::~Lighting3DExample() {
+  AdvancedLighting3DExample::~AdvancedLighting3DExample() {
     
   }
 
-  void Lighting3DExample::onUpdate(float delta_time) {
+  void AdvancedLighting3DExample::onUpdate(float delta_time) {
 
     if (tools::InputManager::instance()->keyPressed(GLFW_KEY_LEFT_SHIFT))
       _camera->moveSpeed = 15.0f;
@@ -141,7 +141,7 @@ namespace Sandbox {
     _camera->move(camera_move_dir, delta_time);
   }
 
-  void Lighting3DExample::onRender() {
+  void AdvancedLighting3DExample::onRender() {
     window->clear(Renderer::Color::Black);
     
     _camera->setPerspective((float)window->getWidth() / window->getHeight());
@@ -161,7 +161,6 @@ namespace Sandbox {
     }
 
     _shader->bind();
-    _texture->bind();
     _shader->setUniformMatrix4f("view", _camera->getViewMatrix());
     _shader->setUniformMatrix4f("projection", _camera->getProjectionMatrix());
 
@@ -171,7 +170,7 @@ namespace Sandbox {
       _shader->setUniform4f("fillColor", 1.0, 1.0, 1.0, 1.0);
     }
 
-    glm::vec3 diffuseColor = glm::vec3(_lights[0].second.r, _lights[0].second.g, _lights[0].second.b) * glm::vec3(0.8f);
+    glm::vec3 diffuseColor = glm::vec3(_lights[0].second.r, _lights[0].second.g, _lights[0].second.b);
     glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
 
     _shader->setUniform3f("light.ambient", ambientColor.x, ambientColor.y, ambientColor.z);
@@ -179,13 +178,13 @@ namespace Sandbox {
     _shader->setUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
     //_shader->setUniform3f("light.position", _lights[0].first.position.x, _lights[0].first.position.y, _lights[0].first.position.z);
 
-    // Gold material
-    _shader->setUniform3f("material.ambient", 0.24725f, 0.1995f, 0.0745f);
-    _shader->setUniform3f("material.diffuse", 0.75164f, 0.60648f, 0.22648f);
-    _shader->setUniform3f("material.specular", 0.628281f, 0.555802f, 0.366065f);
-    _shader->setUniform1f("material.shininess", 0.4 * 128.0f);
-
+    _shader->setUniform1i("material.diffuse", 0);
+    _shader->setUniform1i("material.specular", 1);
+    _shader->setUniform1f("material.shininess", 32);
     _shader->setUniform3f("lightPos", _lights[0].first.position.x, _lights[0].first.position.y, _lights[0].first.position.z);
+
+    _texture_diffuse->bind(0);
+    _texture_specular->bind(1);
 
     for (const auto &cube : _cubes) {
       glm::mat4 model = cube.toMatrix();
@@ -195,8 +194,8 @@ namespace Sandbox {
     }
   }
 
-  void Lighting3DExample::onImGuiRender() {
-    ImGui::Begin("Lighting example");
+  void AdvancedLighting3DExample::onImGuiRender() {
+    ImGui::Begin("Advanced lighting example");
 
     if (ImGui::CollapsingHeader("Controls legend")) {
       ImGui::Text("F2    - enable/disable camera movement");
@@ -235,6 +234,7 @@ namespace Sandbox {
         ImGui::ColorEdit4(std::string("light rotation" + i_str).c_str(), &_lights[i].second.r);
       }
     }
+
 
     ImGui::End();
   }
