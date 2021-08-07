@@ -39,7 +39,7 @@ public:
   inline GLFWwindow* getHandle() const { return _glfw_handle; }
 
   inline double getCursorPosX() const { double x, y; glfwGetCursorPos(_glfw_handle, &x, &y); return x; }
-  inline double getCursorPosY() const { double x, y; glfwGetCursorPos(_glfw_handle, &y, &y); return y; }
+  inline double getCursorPosY() const { double x, y; glfwGetCursorPos(_glfw_handle, &x, &y); return y; }
 
   inline void setCursorPos(double x, double y) const { return glfwSetCursorPos(_glfw_handle, x, y); }
 
@@ -49,8 +49,8 @@ private:
 
   std::string _title;
 
-  GLFWmonitor *_monitor;
-  GLFWwindow  *_glfw_handle;
+  GLFWmonitor *_monitor = nullptr;
+  GLFWwindow  *_glfw_handle = nullptr;
 
   double _delta_time = 0;
 

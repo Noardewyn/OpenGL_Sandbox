@@ -13,9 +13,9 @@ public:
   Transform transform;
   glm::vec3 world_up;
 
-  float moveSpeed = 5.0;
-  float sensitivity = 0.1;
-  float fov = 45;
+  float moveSpeed = 5.0f;
+  float sensitivity = 0.1f;
+  float fov = 45.0f;
 
   float near_plane = 0.1f;
   float far_plane = 100.0f;
@@ -31,9 +31,9 @@ public:
 
   glm::mat4 getViewProjectionMatrix() const;
    
-  void move(glm::vec2 direction, double delta_time);
-  void rotate(double xoffset, double yoffset, double zoffset, double delta_time);
-  void zoom(double yoffset, double delta_time);
+  void move(glm::vec2 direction, float delta_time);
+  void rotate(float xoffset, float yoffset, float zoffset, float delta_time);
+  void zoom(float yoffset, float delta_time);
 
 private:
   glm::mat4 _projection;

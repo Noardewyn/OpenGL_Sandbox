@@ -7,16 +7,16 @@ namespace Renderer {
 
 class VertexBuffer {
 public:
-  VertexBuffer(const void* data, uint32_t size);
+  VertexBuffer(const void* data, size_t size);
   ~VertexBuffer();
 
   void bind() const;
   void unbind() const;
 
-  inline uint32_t size() const { return _size; };
+  inline size_t size() const { return _size; }
 private:
   uint32_t _buffer_id;
-  uint32_t _size;
+  size_t _size;
 };
 
 } // namespace Renderer
