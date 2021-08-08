@@ -9,11 +9,11 @@
 #include "Render/VertexBufferLayout.h"
 #include "Render/Texture.h"
 
-#include "BaseScene.h"
+#include "engine/BaseScene.h"
 
 namespace Sandbox {
 
-class TextureExample : public BaseScene {
+class TextureExample : public engine::BaseScene {
 public:
   TextureExample(Renderer::Window* window);
   virtual ~TextureExample() override;

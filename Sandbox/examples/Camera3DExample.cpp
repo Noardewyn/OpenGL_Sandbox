@@ -59,7 +59,7 @@ static float vertices[] = {
 namespace Sandbox {
 
   Camera3DExample::Camera3DExample(Renderer::Window* window)
-    : BaseScene(window) {
+    : engine::BaseScene(window) {
     _vao = std::make_unique<Renderer::VertexArray>();
     _vbo = std::make_unique<Renderer::VertexBuffer>(vertices, sizeof(vertices));
     _layout = std::make_unique<Renderer::VertexBufferLayout>();

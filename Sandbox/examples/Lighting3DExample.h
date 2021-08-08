@@ -10,11 +10,11 @@
 #include "Render/Texture.h"
 #include "Render/Camera.h"
 
-#include "BaseScene.h"
+#include "engine/BaseScene.h"
 
 namespace Sandbox {
 
-class Lighting3DExample : public BaseScene {
+class Lighting3DExample : public engine::BaseScene {
 public:
   Lighting3DExample(Renderer::Window* window);
   virtual ~Lighting3DExample() override;

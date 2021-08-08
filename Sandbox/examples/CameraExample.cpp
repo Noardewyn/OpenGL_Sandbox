@@ -7,7 +7,7 @@
 namespace Sandbox {
 
   ClearColorExample::ClearColorExample(Renderer::Window* window)
-    : BaseScene(window) {
+    : engine::BaseScene(window) {
 
   }
 

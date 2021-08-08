@@ -3,17 +3,17 @@
 
 #include <unordered_map>
 #include <functional>
-#include "BaseScene.h"
+#include "engine/BaseScene.h"
 
 namespace Sandbox {
 
 struct SceneMetadata {
   std::string name; 
   std::string description;
-  std::function<std::unique_ptr<BaseScene> (Renderer::Window* w)> build_function;
+  std::function<std::unique_ptr<engine::BaseScene> (Renderer::Window* w)> build_function;
 };
 
-class ExamplesMenu : public BaseScene {
+class ExamplesMenu : public engine::BaseScene {
 public:
   ExamplesMenu(Renderer::Window* window);
   virtual ~ExamplesMenu() override;

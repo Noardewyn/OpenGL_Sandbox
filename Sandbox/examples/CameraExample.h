@@ -1,12 +1,12 @@
 ﻿#ifndef __CAMERA_EXAMPLE_H__
 #define __CAMERA_EXAMPLE_H__
 
-#include "BaseScene.h"
+#include ""
 #include "Render/Color.h"
 
 namespace Sandbox {
 
-class ClearColorExample : public BaseScene {
+class ClearColorExample : public engine::BaseScene {
 public:
   ClearColorExample(Renderer::Window* window);
   virtual ~ClearColorExample() override;
