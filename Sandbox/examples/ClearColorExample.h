@@ -1,12 +1,12 @@
 ﻿#ifndef __CLEAR_COLOR_H__
 #define __CLEAR_COLOR_H__
 
-#include "BaseScene.h"
+#include "engine/BaseScene.h"
 #include "Render/Color.h"
 
 namespace Sandbox {
 
-class ClearColorExample : public BaseScene {
+class ClearColorExample : public engine::BaseScene {
 public:
   ClearColorExample(Renderer::Window* window);
   virtual ~ClearColorExample() override;

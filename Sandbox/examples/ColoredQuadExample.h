@@ -8,11 +8,11 @@
 #include "Render/VertexArray.h"
 #include "Render/VertexBufferLayout.h"
 
-#include "BaseScene.h"
+#include "engine/BaseScene.h"
 
 namespace Sandbox {
 
-class ColoredQuadExample : public BaseScene {
+class ColoredQuadExample : public engine::BaseScene {
 public:
   ColoredQuadExample(Renderer::Window* window);
   virtual ~ColoredQuadExample() override;

@@ -13,6 +13,7 @@
 #include "examples/Camera3DExample.h"
 #include "examples/Lighting3DExample.h"
 #include "examples/AdvancedLighting3DExample.h"
+#include "examples/SceneGraphExample.h"
 
 #include "examples/ExamplesMenu.h"
 
@@ -43,6 +44,7 @@ int main() {
 	menu.registerScene<Sandbox::Camera3DExample>("3d camera", "");
 	menu.registerScene<Sandbox::Lighting3DExample>("3d lighting", "");
 	menu.registerScene<Sandbox::AdvancedLighting3DExample>("advanced 3d lighting", "");
+	menu.registerScene<Sandbox::SceneGraphExample>("scene graph", "");
 
 	menu.startScene(menu.scenesCount()-1);
 

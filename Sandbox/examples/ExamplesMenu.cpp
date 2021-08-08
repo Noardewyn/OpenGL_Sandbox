@@ -7,7 +7,7 @@
 namespace Sandbox {
 
   ExamplesMenu::ExamplesMenu(Renderer::Window* window)
-    : BaseScene(window), _current_scene(this) {
+    : engine::BaseScene(window), _current_scene(this) {
 
   }
 

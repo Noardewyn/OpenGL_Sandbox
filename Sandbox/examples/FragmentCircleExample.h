@@ -8,11 +8,11 @@
 #include "Render/VertexArray.h"
 #include "Render/VertexBufferLayout.h"
 
-#include "BaseScene.h"
+#include "engine/BaseScene.h"
 
 namespace Sandbox {
 
-class FragmentCircleExample : public BaseScene {
+class FragmentCircleExample : public engine::BaseScene {
 public:
   FragmentCircleExample(Renderer::Window* window);
   virtual ~FragmentCircleExample() override;

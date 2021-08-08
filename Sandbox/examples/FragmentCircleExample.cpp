@@ -19,7 +19,7 @@ static GLuint indices[] = {
 namespace Sandbox {
 
   FragmentCircleExample::FragmentCircleExample(Renderer::Window* window)
-    : BaseScene(window) {
+    : engine::BaseScene(window) {
 
     _quadColor = Renderer::Color::Magenta;
     _vao = std::make_unique<Renderer::VertexArray>();
