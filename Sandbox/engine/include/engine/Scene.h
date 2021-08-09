@@ -22,6 +22,18 @@ public:
   void addEntity(Entity *entity);
   Entity& findEntity(const std::string& name);
 
+  template<typename T>
+  std::list<Entity*> getEntitiesWithComponent() {
+    std::list<Entity*> result;
+
+    for(const auto& entity : _entities) {
+      if(entity->hasComponent<T>())
+        result.push_back(entity.get());
+    }
+
+    return result;
+  }
+
   void setMainCamera(Renderer::Camera* cam);
   Renderer::Camera& mainCamera();
 

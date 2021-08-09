@@ -23,7 +23,10 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/Component.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Material.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Mesh.cpp
+
+    # Components
     ${PROJECT_SOURCE_DIR}/engine/src/components/MeshRenderer.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/components/Light.cpp
     
     # Sandbox sources
     ${PROJECT_SOURCE_DIR}/examples/ExamplesMenu.cpp

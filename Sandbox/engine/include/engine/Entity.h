@@ -32,24 +32,28 @@ public:
   void onInit() {}
   void onDelete() {}
 
-  template<typename T>
-  T* addComponent() {
+  template<typename T, typename... Args>
+  T* addComponent(Args... args) {
     assert(!hasComponent<T>() && "Component was already added to the Entity");
-    //return *_components.emplace_back<T>(this);
-    _components.push_back(new T(this));
-    return dynamic_cast<T*>(_components.back());
+    _components.push_back(std::make_unique<T>(this, std::forward<Args>(args)...));
+    return dynamic_cast<T*>(_components.back().get());
   }
 
   template<typename T>
-  T& getComponent() {
+  T* getComponent() {
     assert(hasComponent<T>() && "Component is not exists on the Entity");
-    auto predicate = [](Component* component) { return dynamic_cast<T*>(component) != nullptr; };
-    return *std::find_if(_components.begin(), _components.end(), predicate);
+    auto predicate = [](std::unique_ptr<Component>& component)
+      { return dynamic_cast<T*>(component.get()) != nullptr; };
+
+    const auto &found_component = std::find_if(_components.begin(), _components.end(), predicate);
+    return dynamic_cast<T*>(found_component->get());
   }
 
   template<typename T>
   bool hasComponent() {
-    auto predicate = [](Component* component) { return dynamic_cast<T*>(component) != nullptr; };
+    auto predicate = [](std::unique_ptr<Component>& component)
+      { return dynamic_cast<T*>(component.get()) != nullptr; };
+
     return std::find_if(_components.begin(), _components.end(), predicate) != _components.end();
   }
 
@@ -58,7 +62,7 @@ protected:
   Entity* _parent;
   Scene *_scene;
 
-  std::list<Component*> _components;
+  std::list<std::unique_ptr<Component>> _components;
 };
 
 } // namespace engine

@@ -24,9 +24,12 @@ void Mesh::draw(Renderer::Shader& shader) {
   shader.setUniform1i("material.diffuse", 0);
   shader.setUniform1i("material.specular", 1);
   shader.setUniform1i("material.emission", 2);
+  shader.setUniform3f("material.emissionStrength", material->emission_strength.r, material->emission_strength.g, material->emission_strength.b);
+  shader.setUniform1f("material.shininess", material->shininess);
   material->texture_diffuse->bind(0);
   material->texture_specular->bind(1);
   material->texture_emission->bind(2);
+
   Renderer::DrawTriangles(_vao, shader);
 }
 } // namespace engine
