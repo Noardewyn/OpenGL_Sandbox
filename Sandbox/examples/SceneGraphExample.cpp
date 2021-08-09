@@ -80,11 +80,10 @@ namespace Sandbox {
 
     _shader = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
     _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
-    _shader_red = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
 
-    _shader_red->bind();
-    _shader_red->setUniform4f("color", 1.0, 0.3, 0.3, 1.0);
-    _shader_red->unbind();
+    _shader_light->bind();
+    _shader_light->setUniform4f("color", 1.0, 0.3, 0.3, 1.0);
+    _shader_light->unbind();
 
     setMainCamera(_camera.get());
 
@@ -100,8 +99,8 @@ namespace Sandbox {
 
     _box_material = std::make_unique<engine::Material>();
     _box_material->texture_diffuse = _texture_diffuse.get();
-    _box_material->texture_emission = _texture_specular.get();
-    _box_material->texture_specular = _texture_emission.get();
+    _box_material->texture_emission = _texture_emission.get();
+    _box_material->texture_specular = _texture_specular.get();
 
     _cube_mesh = std::make_unique<engine::Mesh>(vbo, layout);
     _cube_mesh->material = _box_material.get();
@@ -112,13 +111,31 @@ namespace Sandbox {
     mesh_renderer->mesh = _cube_mesh.get();
     mesh_renderer->shader = _shader.get();
 
-    engine::Entity& spot_light_entity = createEntity("Spot light");
-    spot_light_entity.transform.position = { 1.0, -1.0, 0.0 };
-    mesh_renderer = spot_light_entity.addComponent<engine::MeshRenderer>();
+    engine::Entity& light_entity1 = createEntity("Point light 1");
+    light_entity1.transform.position = { 1.0, 1.0, 0.0 };
+    mesh_renderer = light_entity1.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _cube_mesh.get();
-    mesh_renderer->shader = _shader_red.get();
+    mesh_renderer->shader = _shader_light.get();
 
-    engine::Light* light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Point);
+    engine::Light* light_component = light_entity1.addComponent<engine::Light>(engine::Light::LightType::Point);
+
+    engine::Entity& light_entity2 = createEntity("Point light 2");
+    light_entity2.transform.position = { -1.0, -1.0, 0.0 };
+    mesh_renderer = light_entity2.addComponent<engine::MeshRenderer>();
+    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->shader = _shader_light.get();
+
+    light_component = light_entity2.addComponent<engine::Light>(engine::Light::LightType::Point);
+    light_component->color = Renderer::Color::Red;
+
+    engine::Entity& directional_light_entity1 = createEntity("Directional light 1");
+    mesh_renderer = directional_light_entity1.addComponent<engine::MeshRenderer>();
+    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->shader = _shader_light.get();
+
+    light_component = directional_light_entity1.addComponent<engine::Light>(engine::Light::LightType::Directional);
+    light_component->color = Renderer::Color::Blue;
+    light_component->direction = { -0.2f, -1.0f, -0.3f };
   }
 
   SceneGraphExample::~SceneGraphExample() {
@@ -146,26 +163,26 @@ namespace Sandbox {
 
     // Don't process camera if cursor is visible, in order to 
     // have possibility to click UI without camera movement
-    if (window->isCursorEnabled())
-      return;
+    if (!window->isCursorEnabled()) {
+      _camera->rotate(xoffset, yoffset, 0, delta_time);
 
-    _camera->rotate(xoffset, yoffset, 0, delta_time);
+      double wheel = tools::InputManager::instance()->wheelY();
+      _camera->zoom(wheel, delta_time);
 
-    double wheel = tools::InputManager::instance()->wheelY();
-    _camera->zoom(wheel, delta_time);
+      glm::vec2 camera_move_dir(0.0f);
 
-    glm::vec2 camera_move_dir(0.0f);
+      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_W))
+        camera_move_dir.y += 1.0f;
+      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_S))
+        camera_move_dir.y -= 1.0f;
+      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_A))
+        camera_move_dir.x -= 1.0f;
+      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_D))
+        camera_move_dir.x += 1.0f;
 
-    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_W))
-      camera_move_dir.y += 1.0f;
-    if(tools::InputManager::instance()->keyPressed(GLFW_KEY_S))
-      camera_move_dir.y -= 1.0f;
-    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_A))
-      camera_move_dir.x -= 1.0f;
-    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_D))
-      camera_move_dir.x += 1.0f;
-
-    _camera->move(camera_move_dir, delta_time);
+      _camera->move(camera_move_dir, delta_time);
+    }
+   
     Scene::onUpdate(delta_time);
   }
 

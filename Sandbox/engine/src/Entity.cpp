@@ -11,7 +11,8 @@ namespace engine {
 
   void Entity::onRender() {
     for (const auto& component : _components) {
-      component->onRender();
+      if (component->active)
+        component->onRender();
     }
   }
 
@@ -26,6 +27,7 @@ namespace engine {
 
     for (const auto& component : _components) {
       if (ImGui::CollapsingHeader(component->getName().c_str())) {
+        ImGui::Checkbox("Active", &component->active);
         component->onGuiItemRender();
       }
     }
@@ -33,7 +35,8 @@ namespace engine {
 
   void Entity::onUpdate(float delta_time) {
     for(const auto &component : _components) {
-      component->onUpdate(delta_time);
+      if(component->active)
+        component->onUpdate(delta_time);
     }
   }
 

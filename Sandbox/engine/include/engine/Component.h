@@ -10,6 +10,7 @@ class Entity;
 
 class Component {
 public:
+  bool active;
 
   explicit Component(Entity *parent = nullptr);
   virtual ~Component() = default;
@@ -22,6 +23,9 @@ public:
   virtual void onDelete() {}
 
   std::string getName() const { return _name; }
+
+  bool isActive() const { return active; }
+  void setActive(bool state) { active = state; }
 
 protected:
   Entity     *_parent;

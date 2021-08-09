@@ -4,7 +4,7 @@
 namespace engine {
 
   Component::Component(Entity* parent)
-    : _parent(parent), _name("Component") {
+    : _parent(parent), _name("Component"), active(true) {
     
   }
 
