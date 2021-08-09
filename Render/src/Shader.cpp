@@ -1,11 +1,11 @@
-﻿#include "Render/Shader.h"
-
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <string>
 
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "Render/Shader.h"
 
 namespace Renderer {
 
@@ -27,6 +27,11 @@ void Shader::bind() const {
 
 void Shader::unbind() const {
   glUseProgram(0);
+}
+
+void Shader::setUniformColor(const std::string& name, const Color& color) {
+  GLuint uniform = glGetUniformLocation(_shader_id, name.c_str());
+  glUniform4f(uniform, color.r, color.g, color.b, color.a);
 }
 
 void Shader::setUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {

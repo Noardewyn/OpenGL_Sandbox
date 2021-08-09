@@ -1,5 +1,5 @@
-﻿#ifndef __MESH_RENDERER_H__
-#define __MESH_RENDERER_H__
+﻿#ifndef __MESH_RENDERER_COMPONENT_H__
+#define __MESH_RENDERER_COMPONENT_H__
 
 #include "engine/Component.h"
 #include "engine/Mesh.h"
@@ -18,8 +18,14 @@ public:
   virtual void onRender() override;
   virtual void onGuiItemRender() override;
   virtual void onUpdate(float delta_time) override;
+
+private:
+  bool _calculate_lighting = true;
+  bool _use_textures = true;
+  
+  void calculateLighting();
 };
 
 } // namespace engine
 
-#endif // __MESH_RENDERER_H__
+#endif // __MESH_RENDERER_COMPONENT_H__
