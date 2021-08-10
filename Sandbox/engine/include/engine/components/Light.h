@@ -18,11 +18,15 @@ public:
   Renderer::Color diffuse;
   Renderer::Color specular = {1, 1, 1, 1};
 
+  float constant = 1.0f;
+  float linear = 0.09f;
+  float quadratic = 0.032f;
+
   float range = 10;
   float intensity = 5;
   float specular_percent = 1.0f;
   float diffuse_percent =  0.8f;
-  float ambient_percent =  0.2f;
+  float ambient_percent =  0.1f;
 
   glm::vec3 direction;
 

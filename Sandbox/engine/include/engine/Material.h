@@ -7,9 +7,9 @@
 namespace engine {
 
 struct Material {
-  Renderer::Texture *texture_diffuse;
-  Renderer::Texture *texture_specular;
-  Renderer::Texture *texture_emission;
+  Renderer::Texture *texture_diffuse = nullptr;
+  Renderer::Texture *texture_specular = nullptr;
+  Renderer::Texture *texture_emission = nullptr;
 
   Renderer::Color color;
   Renderer::Color emission_strength;

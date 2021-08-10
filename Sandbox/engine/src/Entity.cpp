@@ -1,39 +1,46 @@
 ﻿#include "engine/Entity.h"
 #include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 
 namespace engine {
   Entity::Entity(Scene* scene, const std::string& name)
-    :_name(name), _scene(scene) {
+    :_name(name), _scene(scene), _active(true) {
     
   }
 
   void Entity::onRender() {
+    if(!_active) return;
+
     for (const auto& component : _components) {
-      if (component->active)
-        component->onRender();
+      component->onRender();
     }
   }
 
   void Entity::onGuiRender() {
-    ImGui::Text("Components");
+    ImGui::Indent(10);
+    ImGui::Checkbox("Active", &getActive());
 
-    if (ImGui::CollapsingHeader("Transform")) {
+    ImGui::SetNextTreeNodeOpen(true);
+    if (ImGui::TreeNode("Transform")) {
       ImGui::SliderFloat3("position", &transform.position.x, -10, 10);
       ImGui::SliderFloat3("scale", &transform.scale.x, -10, 10);
       ImGui::SliderFloat3("rotation", &transform.rotation.x, 0, 360);
+      ImGui::TreePop();
     }
 
     for (const auto& component : _components) {
-      if (ImGui::CollapsingHeader(component->getName().c_str())) {
+      if (ImGui::TreeNode(component->getName().c_str())) {
         ImGui::Checkbox("Active", &component->active);
         component->onGuiItemRender();
+        ImGui::TreePop();
       }
     }
+
+    ImGui::Indent(-10);
   }
 
   void Entity::onUpdate(float delta_time) {
+    if(!_active) return;
+
     for(const auto &component : _components) {
       if(component->active)
         component->onUpdate(delta_time);

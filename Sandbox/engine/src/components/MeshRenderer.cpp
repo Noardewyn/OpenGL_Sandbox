@@ -21,7 +21,7 @@ namespace engine {
     for(const auto& entity : light_sources) {
       const auto& light  = entity->getComponent<Light>();
 
-      if(!light->isActive())
+      if(!light->isActive() || !entity->isActive())
         continue;
 
       if(light->getType() == Light::LightType::Point) {
@@ -35,9 +35,9 @@ namespace engine {
         shader->setUniformColor(point_index_str + "diffuse", light->diffuse);
         shader->setUniformColor(point_index_str + "specular", light->specular);
 
-        shader->setUniform1f(point_index_str + "constant", 1.0f);
-        shader->setUniform1f(point_index_str + "linear", 0.09f);
-        shader->setUniform1f(point_index_str + "quadratic", 0.032f);
+        shader->setUniform1f(point_index_str + "constant", light->constant);
+        shader->setUniform1f(point_index_str + "linear", light->linear);
+        shader->setUniform1f(point_index_str + "quadratic", light->quadratic);
         point_light_index++;
       }
       else if(light->getType() == Light::LightType::Directional) {
@@ -46,6 +46,7 @@ namespace engine {
         shader->setUniformColor("dirLight.ambient", light->ambient);
         shader->setUniformColor("dirLight.diffuse", light->diffuse);
         shader->setUniformColor("dirLight.specular", light->specular);
+        shader->setUniform1f("dirLight.intensity", light->intensity);
         directional_light_index++;
       }
 
@@ -55,7 +56,8 @@ namespace engine {
   }
 
   void MeshRenderer::onRender() {
-    if(!mesh) return;
+    if(!isActive() || !mesh)
+      return;
 
     shader->bind();
     const auto &main_camera = _parent->getScene().mainCamera();
@@ -63,24 +65,24 @@ namespace engine {
     shader->setUniformMatrix4f("view", main_camera.getViewMatrix());
     shader->setUniformMatrix4f("projection", main_camera.getProjectionMatrix());
 
-    shader->setUniform1f("useFillColor", !_use_textures);
-
-    if (!_use_textures) {
-      shader->setUniformColor("fillColor", mesh->material->color);
-    }
-
     if(_calculate_lighting)
       calculateLighting();
 
+    shader->setUniform1i("calculate_light", _calculate_lighting);
+
     mesh->draw(*shader);
+    shader->unbind();
   }
 
   void MeshRenderer::onGuiItemRender() {
     ImGui::Checkbox("Calculate lighting", &_calculate_lighting);
-    ImGui::Checkbox("Use textures", &_use_textures);
 
-    if(!_use_textures) {
+    if (ImGui::TreeNode("Mesh settings")) {
       ImGui::ColorEdit3("fill color", &mesh->material->color.r);
+      ImGui::Text("diffuse map %u", mesh->material->texture_diffuse);
+      ImGui::Text("specular map %u", mesh->material->texture_specular);
+      ImGui::Text("emission map %u", mesh->material->texture_emission);
+      ImGui::TreePop();
     }
   }
 
