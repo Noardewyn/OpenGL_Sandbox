@@ -1,7 +1,4 @@
-﻿#include <string>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
+﻿#include <imgui.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -79,7 +76,7 @@ namespace Sandbox {
     //_lights.push_back({light_transform, Renderer::Color::White});
 
     _shader = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
-    _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
+    _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
 
     _shader_light->bind();
     _shader_light->setUniform4f("color", 1.0, 0.3, 0.3, 1.0);
@@ -102,8 +99,14 @@ namespace Sandbox {
     _box_material->texture_emission = _texture_emission.get();
     _box_material->texture_specular = _texture_specular.get();
 
+    _light_source_material = std::make_unique<engine::Material>();
+    _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
+
     _cube_mesh = std::make_unique<engine::Mesh>(vbo, layout);
     _cube_mesh->material = _box_material.get();
+
+    _light_mesh = std::make_unique<engine::Mesh>(vbo, layout);
+    _light_mesh->material = _light_source_material.get();
 
     engine::Entity& cube1_entity = createEntity("Cube 1");
     cube1_entity.transform.position = {0.0, 0.0, 0.0};
@@ -113,16 +116,19 @@ namespace Sandbox {
 
     engine::Entity& light_entity1 = createEntity("Point light 1");
     light_entity1.transform.position = { 1.0, 1.0, 0.0 };
+    light_entity1.transform.scale = { 0.2, 0.2, 0.2 };
     mesh_renderer = light_entity1.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->mesh = _light_mesh.get();
     mesh_renderer->shader = _shader_light.get();
+
 
     engine::Light* light_component = light_entity1.addComponent<engine::Light>(engine::Light::LightType::Point);
 
     engine::Entity& light_entity2 = createEntity("Point light 2");
     light_entity2.transform.position = { -1.0, -1.0, 0.0 };
+    light_entity2.transform.scale = { 0.2, 0.2, 0.2 };
     mesh_renderer = light_entity2.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->mesh = _light_mesh.get();
     mesh_renderer->shader = _shader_light.get();
 
     light_component = light_entity2.addComponent<engine::Light>(engine::Light::LightType::Point);
@@ -130,11 +136,10 @@ namespace Sandbox {
 
     engine::Entity& directional_light_entity1 = createEntity("Directional light 1");
     mesh_renderer = directional_light_entity1.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->mesh = _light_mesh.get();
     mesh_renderer->shader = _shader_light.get();
 
     light_component = directional_light_entity1.addComponent<engine::Light>(engine::Light::LightType::Directional);
-    light_component->color = Renderer::Color::Blue;
     light_component->direction = { -0.2f, -1.0f, -0.3f };
   }
 
@@ -188,7 +193,7 @@ namespace Sandbox {
 
   void SceneGraphExample::onRender() {
     window->clear(Renderer::Color::Black);
-    _camera->setPerspective((float)window->getWidth() / (float)window->getHeight());
+    _camera->setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
     Scene::onRender();
   }

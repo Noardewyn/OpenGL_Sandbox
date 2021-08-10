@@ -26,10 +26,14 @@ void Scene::onRender() {
 void Scene::onImGuiRender() {
   ImGui::Text("Objects");
 
+  int index = 0;
   for(const auto& entity : _entities) {
     if (ImGui::CollapsingHeader(entity->getName().c_str())) {
+      ImGui::PushID(std::to_string(index).c_str());
       entity->onGuiRender();
+      ImGui::PopID();
     }
+    index++;
   }
 }
 

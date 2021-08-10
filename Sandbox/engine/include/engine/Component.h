@@ -25,7 +25,7 @@ public:
   std::string getName() const { return _name; }
 
   bool isActive() const { return active; }
-  void setActive(bool state) { active = state; }
+  bool& getActive() { return active; }
 
 protected:
   Entity     *_parent;

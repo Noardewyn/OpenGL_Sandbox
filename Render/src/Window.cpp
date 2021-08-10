@@ -87,6 +87,9 @@ uint32_t Window::getHeight() const {
 }
 
 void Window::resize(int width, int height) {
+  if(width == 0 || height == 0)
+    return;
+
   _size_windowed[0] = width;
   _size_windowed[1] = height;
 

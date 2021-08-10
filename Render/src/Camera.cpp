@@ -69,7 +69,7 @@ void Camera::setPerspective(float aspect) {
 }
 
 void Camera::setOrtho(float width, float height) {
-  float aspect = height / width;
+  float aspect = height / std::max(width, 1.0f);
   _projection = glm::ortho(0.0f, 1.0f, -1.0f * aspect, 1.0f * aspect, near_plane, far_plane);
 }
 

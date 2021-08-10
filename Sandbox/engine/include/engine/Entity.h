@@ -23,6 +23,9 @@ public:
   std::string getName() const { return _name; }
   void setName(const std::string &name) { _name = name; }
 
+  bool& getActive() { return _active; }
+  bool isActive() const { return _active; }
+
   Scene& getScene() { return *_scene; }
 
   void onRender();
@@ -41,11 +44,14 @@ public:
 
   template<typename T>
   T* getComponent() {
-    assert(hasComponent<T>() && "Component is not exists on the Entity");
     auto predicate = [](std::unique_ptr<Component>& component)
       { return dynamic_cast<T*>(component.get()) != nullptr; };
 
     const auto &found_component = std::find_if(_components.begin(), _components.end(), predicate);
+
+    if(found_component == _components.end())
+      return nullptr;
+
     return dynamic_cast<T*>(found_component->get());
   }
 
@@ -59,6 +65,7 @@ public:
 
 protected:
   std::string _name;
+  bool _active;
   Entity* _parent;
   Scene *_scene;
 

@@ -1,4 +1,6 @@
 ﻿#include <imgui.h>
+#include "engine/Entity.h"
+#include "engine/components/MeshRenderer.h"
 
 #include "engine/components/Light.h"
 
@@ -10,7 +12,13 @@ namespace engine {
   }
 
   void Light::onRender() {
+    if(!isActive()) return;
 
+    auto meshRenderer = _parent->getComponent<MeshRenderer>();
+
+    if(meshRenderer) {
+      meshRenderer->getCalculateLighting() = false;
+    }
   }
 
   void Light::onGuiItemRender() {
@@ -36,6 +44,12 @@ namespace engine {
     ImGui::ColorEdit3("ambient", &ambient.r);
     ImGui::ColorEdit3("diffuse", &diffuse.r);
     ImGui::ColorEdit3("specular", &specular.r);
+
+    if(_light_type == LightType::Directional) {
+      ImGui::InputFloat("constant", &constant);
+      ImGui::InputFloat("quadratic", &quadratic);
+      ImGui::InputFloat("linear", &linear);
+    }
 
     if(_light_type == LightType::Directional) {
       ImGui::SliderFloat3("direction", &direction.x, -1.0, 1.0);

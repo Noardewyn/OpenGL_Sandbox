@@ -39,15 +39,15 @@ struct Material {
     sampler2D diffuse;
     sampler2D specular;
     sampler2D emission;
+
+    vec4      fillColor;
     vec3      emissionStrength;
     float     shininess;
 }; 
 
-uniform bool useFillColor;
-uniform vec4 fillColor;
-
-uniform int point_light_count;
-uniform int directional_light_count;
+uniform bool calculate_light;
+uniform int  point_light_count;
+uniform int  directional_light_count;
 
 uniform Material material;
 
@@ -67,7 +67,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     diffuse = diffuse * light.intensity;
     specular = specular * light.intensity;
 
-    return (ambient + diffuse + specular);
+    return (diffuse + specular + ambient);
 }  
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
@@ -95,16 +95,20 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 void main()
 {
-    vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(-FragPos);
-    
-    vec3 resultLight = vec3(0.0);
+    if (calculate_light) 
+    {
+      vec3 norm = normalize(Normal);
+      vec3 viewDir = normalize(-FragPos);
+      vec3 resultLight = vec3(0.0);
+      resultLight += CalcDirLight(iDirLight, norm, viewDir);
 
-    resultLight += CalcDirLight(iDirLight, norm, viewDir);
-
-    for(int i = 0; i < point_light_count; i++)
+      for (int i = 0; i < point_light_count; i++)
         resultLight += CalcPointLight(iPointLights[i], norm, FragPos, viewDir);
 
-    color = vec4(resultLight, 1.0);
-    
+      color = vec4(resultLight, 1.0) + material.fillColor;
+    }
+    else 
+    {
+      color = texture(material.diffuse, TexCoord) + material.fillColor;
+    } 
 }
