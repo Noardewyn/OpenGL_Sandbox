@@ -12,7 +12,28 @@ namespace Renderer {
   }
 
   VertexBuffer::~VertexBuffer() {
-    glDeleteBuffers(1, &_buffer_id);
+    if(_buffer_id != 0) {
+      std::cout << "VertexBuffer delete" << std::endl;
+      glDeleteBuffers(1, &_buffer_id);
+    }
+  }
+
+  VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept {
+    _buffer_id = other._buffer_id;
+    _size = other._size;
+    other._buffer_id = 0;
+    other._size = 0;
+  }
+
+  VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) {
+    if (this != &other) {
+      _buffer_id = other._buffer_id;
+      _size = other._size;
+      other._buffer_id = 0;
+      other._size = 0;
+    }
+
+    return *this;
   }
 
   void VertexBuffer::bind() const {

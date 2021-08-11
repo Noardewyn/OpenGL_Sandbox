@@ -10,6 +10,9 @@ public:
   VertexBuffer(const void* data, size_t size);
   ~VertexBuffer();
 
+  VertexBuffer(VertexBuffer&& other) noexcept;
+  VertexBuffer& operator=(VertexBuffer&& other);
+
   void bind() const;
   void unbind() const;
 

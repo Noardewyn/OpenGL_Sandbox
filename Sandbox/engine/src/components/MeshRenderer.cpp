@@ -69,9 +69,7 @@ namespace engine {
       calculateLighting();
 
     shader->setUniform1i("calculate_light", _calculate_lighting);
-
     mesh->draw(*shader, *material);
-    shader->unbind();
   }
 
   void MeshRenderer::onGuiItemRender() {

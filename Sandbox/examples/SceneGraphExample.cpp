@@ -25,17 +25,10 @@ namespace Sandbox {
     camera_transform.rotation = {110.0f, -30.0f, 0.0f};
 
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
-
-    Renderer::Transform light_transform;
-    light_transform.position = { 2.0f, 0.0f, -1.0f };
-    light_transform.scale = { 0.3f, 0.3f, 0.3f };
-
-    //_lights.push_back({light_transform, Renderer::Color::White});
+    setMainCamera(_camera.get());
 
     _shader = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
-    _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
-
-    setMainCamera(_camera.get());
+    _shader_white_color = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
 
     _texture_diffuse = std::make_unique<Renderer::Texture>("assets/container2.png");
     _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
@@ -45,48 +38,51 @@ namespace Sandbox {
     _box_material->texture_diffuse = _texture_diffuse.get();
     _box_material->texture_emission = _texture_emission.get();
     _box_material->texture_specular = _texture_specular.get();
+    _box_material->color = Renderer::Color::White;
 
     _light_source_material = std::make_unique<engine::Material>("light source");
     _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
 
     _cube_mesh = engine::generateCubeMesh();
+    _sphere_mesh = engine::generateSphereMesh(16);
 
     engine::Entity& cube1_entity = createEntity("Cube 1");
     cube1_entity.transform.position = {0.0, 0.0, 0.0};
     engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->mesh = _sphere_mesh.get();
     mesh_renderer->material = _box_material.get();
+    mesh_renderer->shader = _shader_white_color.get();
+
+    /*addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
+    addPointLightEntity("Point light 2", { -1.0, -1.0, 0.0 }, Renderer::Color::Blue);
+
+    addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::Red);*/
+  }
+
+  void SceneGraphExample::addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color) {
+    engine::Entity& light_entity = createEntity(name);
+    light_entity.transform.position = position;
+    light_entity.transform.scale = { 0.2, 0.2, 0.2 };
+
+    engine::MeshRenderer* mesh_renderer = light_entity.addComponent<engine::MeshRenderer>();
+    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader.get();
 
-    engine::Entity& light_entity1 = createEntity("Point light 1");
-    light_entity1.transform.position = { 1.0, 1.0, 0.0 };
-    light_entity1.transform.scale = { 0.2, 0.2, 0.2 };
-    mesh_renderer = light_entity1.addComponent<engine::MeshRenderer>();
+    engine::Light* light_component = light_entity.addComponent<engine::Light>(engine::Light::LightType::Point);
+    light_component->color = color;
+  }
+
+  void SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color) {
+    engine::Entity& directional_light_entity = createEntity(name);
+    engine::MeshRenderer* mesh_renderer = mesh_renderer = directional_light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _cube_mesh.get();
     mesh_renderer->material = _light_source_material.get();
-    mesh_renderer->shader = _shader_light.get();
+    mesh_renderer->shader = _shader.get();
 
-    engine::Light* light_component = light_entity1.addComponent<engine::Light>(engine::Light::LightType::Point);
-
-    engine::Entity& light_entity2 = createEntity("Point light 2");
-    light_entity2.transform.position = { -1.0, -1.0, 0.0 };
-    light_entity2.transform.scale = { 0.2, 0.2, 0.2 };
-    mesh_renderer = light_entity2.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
-    mesh_renderer->material = _light_source_material.get();
-    mesh_renderer->shader = _shader_light.get();
-
-    light_component = light_entity2.addComponent<engine::Light>(engine::Light::LightType::Point);
-    light_component->color = Renderer::Color::Red;
-
-    engine::Entity& directional_light_entity1 = createEntity("Directional light 1");
-    mesh_renderer = directional_light_entity1.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
-    mesh_renderer->material = _light_source_material.get();
-    mesh_renderer->shader = _shader_light.get();
-
-    light_component = directional_light_entity1.addComponent<engine::Light>(engine::Light::LightType::Directional);
-    light_component->direction = { -0.2f, -1.0f, -0.3f };
+    engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
+    light_component->direction = direction;
+    light_component->color = color;
   }
 
   SceneGraphExample::~SceneGraphExample() {

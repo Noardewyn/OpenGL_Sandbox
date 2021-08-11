@@ -4,15 +4,13 @@
 
 namespace engine {
 
-Mesh::Mesh(const Renderer::VertexBuffer &vbo, const Renderer::VertexBufferLayout &layout)
-  : _vbo(vbo), _layout(layout) {
-  _vao.bind();
+Mesh::Mesh(Renderer::VertexBuffer&& vbo, const Renderer::VertexBufferLayout& layout)
+  : _vbo(std::move(vbo)), _layout(layout) {
   _vao.addBuffer(_vbo, _layout);
-  _vao.unbind();
 }
 
-Mesh::Mesh(const Renderer::VertexBuffer& vbo, const Renderer::IndexBuffer& ibo, const Renderer::VertexBufferLayout &layout)
-  : _vbo(vbo), _layout(layout), _ibo(ibo) {
+Mesh::Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Renderer::VertexBufferLayout& layout)
+  : _vbo(std::move(vbo)), _ibo(std::move(ibo)), _layout(layout) {
   _vao.bind();
   _ibo.bind();
   _vao.addBuffer(_vbo, _layout);
@@ -24,6 +22,7 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
   shader.setUniform3f("material.emissionStrength", material.emission_strength.r, material.emission_strength.g, material.emission_strength.b);
   shader.setUniform1f("material.shininess", material.shininess);
   shader.setUniformColor("material.fillColor", material.color);
+  shader.setUniformColor("color", material.color);
 
   if(material.texture_diffuse) {
     shader.setUniform1i("material.diffuse", 0);
@@ -49,7 +48,10 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
     shader.setUniform1i("material.emission", 10);
   }
 
-  Renderer::DrawTriangles(_vao, shader);
+  if(_ibo.count())
+    DrawTriangles(_vao, _ibo, shader);
+  else
+    DrawTriangles(_vao, shader);
 
   if (material.texture_diffuse)
     material.texture_diffuse->unbind();
