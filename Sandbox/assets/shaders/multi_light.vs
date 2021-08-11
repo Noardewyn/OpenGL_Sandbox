@@ -57,7 +57,4 @@ void main()
 
     iDirLight = dirLight;
     iDirLight.direction = mat3(transpose(inverse(view))) * dirLight.direction;
-    //dirLight.direction.x += 0.5;
-    //iDirLight.direction = vec3(view * model * vec4(-dirLight.direction, 1.0));
-
 }

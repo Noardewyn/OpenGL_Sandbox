@@ -13,12 +13,10 @@ namespace engine {
 
 class Mesh {
 public:
-  Material *material;
-
   Mesh(const Renderer::VertexBuffer &vbo, const Renderer::VertexBufferLayout &layout);
   Mesh(const Renderer::VertexBuffer &vbo, const Renderer::IndexBuffer &ibo, const Renderer::VertexBufferLayout &layout);
 
-  void draw(Renderer::Shader &shader);
+  void draw(Renderer::Shader &shader, const Material &material);
 
 private:
   Renderer::VertexArray _vao;
