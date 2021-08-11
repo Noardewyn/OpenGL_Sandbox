@@ -34,11 +34,16 @@ namespace Sandbox {
     _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
     _texture_emission = std::make_unique<Renderer::Texture>("assets/matrix.jpg");
 
+    _texture_earth = std::make_unique<Renderer::Texture>("assets/earth.jpg");
+
     _box_material = std::make_unique<engine::Material>("textured box");
     _box_material->texture_diffuse = _texture_diffuse.get();
     _box_material->texture_emission = _texture_emission.get();
     _box_material->texture_specular = _texture_specular.get();
-    _box_material->color = Renderer::Color::White;
+    //_box_material->color = Renderer::Color::White;
+
+    _earth_material = std::make_unique<engine::Material>("earth material");
+    _earth_material->texture_diffuse = _texture_earth.get();
 
     _light_source_material = std::make_unique<engine::Material>("light source");
     _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
@@ -46,17 +51,17 @@ namespace Sandbox {
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
 
-    engine::Entity& cube1_entity = createEntity("Cube 1");
+    engine::Entity& cube1_entity = createEntity("Earth");
     cube1_entity.transform.position = {0.0, 0.0, 0.0};
     engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _sphere_mesh.get();
-    mesh_renderer->material = _box_material.get();
-    mesh_renderer->shader = _shader_white_color.get();
+    mesh_renderer->material = _earth_material.get();
+    mesh_renderer->shader = _shader.get();
 
-    /*addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
+    //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
     addPointLightEntity("Point light 2", { -1.0, -1.0, 0.0 }, Renderer::Color::Blue);
 
-    addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::Red);*/
+    //addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
   }
 
   void SceneGraphExample::addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color) {
@@ -65,7 +70,7 @@ namespace Sandbox {
     light_entity.transform.scale = { 0.2, 0.2, 0.2 };
 
     engine::MeshRenderer* mesh_renderer = light_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->mesh = _sphere_mesh.get();
     mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader.get();
 

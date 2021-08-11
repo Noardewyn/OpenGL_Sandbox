@@ -94,33 +94,34 @@ namespace engine {
     int sector_count = detalization * 2;
     int stack_count = detalization;
 
-    float sector_step = 2 * M_PI / sector_count;
+    float inverse_normals = 1.0;
+    float sector_step = 2.0 * M_PI / sector_count;
     float stack_step = M_PI / stack_count;
 
     for(int i = 0; i <= stack_count; i++) {
-      float stack_angle = M_PI / 2 - (i * stack_step);
-      float xy = cosf(stack_angle);
-      float z = sinf(stack_angle);
+      float stack_angle = M_PI / 2 - i * stack_step;
+      float xy = cos(stack_angle);
+      float z = sin(stack_angle);
 
       for (int j = 0; j <= sector_count; j++) {
         float sector_angle = j * sector_step;
 
-        float x = xy * cosf(sector_angle);
-        float y = xy * sinf(sector_angle);
+        float x = xy * cos(sector_angle);
+        float y = xy * sin(sector_angle);
 
         // vertices
         vertices.push_back(x);
-        vertices.push_back(y);
         vertices.push_back(z);
-
-        //normals
-        vertices.push_back(x);
         vertices.push_back(y);
-        vertices.push_back(z);
 
         // tex coords
         vertices.push_back((float)j / sector_count);
         vertices.push_back((float)i / stack_count);
+
+        //normals
+        vertices.push_back(inverse_normals * x);
+        vertices.push_back(inverse_normals * z);
+        vertices.push_back(inverse_normals * y);
       }
     }
 

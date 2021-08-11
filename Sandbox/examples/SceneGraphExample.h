@@ -29,10 +29,13 @@ private:
   std::unique_ptr<Renderer::Shader> _shader_white_color;
 
   std::unique_ptr<engine::Material> _box_material;
+  std::unique_ptr<engine::Material> _earth_material;
+
   std::unique_ptr<engine::Material> _light_source_material;
   std::unique_ptr<Renderer::Texture> _texture_diffuse;
   std::unique_ptr<Renderer::Texture> _texture_specular;
   std::unique_ptr<Renderer::Texture> _texture_emission;
+  std::unique_ptr<Renderer::Texture> _texture_earth;
 
   std::unique_ptr<engine::Mesh> _cube_mesh;
   std::unique_ptr<engine::Mesh> _sphere_mesh;
