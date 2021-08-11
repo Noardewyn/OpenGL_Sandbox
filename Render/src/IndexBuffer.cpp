@@ -17,7 +17,28 @@ IndexBuffer::IndexBuffer(const uint32_t* data, uint32_t count)
 }
 
 IndexBuffer::~IndexBuffer() {
-  glDeleteBuffers(1, &_buffer_id);
+  if(_buffer_id != 0) {
+    std::cout << "IndexBuffer delete" << std::endl;
+    glDeleteBuffers(1, &_buffer_id);
+  }
+}
+
+IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept {
+  _buffer_id = other._buffer_id;
+  _count = other._count;
+  other._buffer_id = 0;
+  other._count = 0;
+}
+
+IndexBuffer& IndexBuffer::operator=(IndexBuffer&& other) {
+  if (this != &other) {
+    _buffer_id = other._buffer_id;
+    _count = other._count;
+    other._buffer_id = 0;
+    other._count = 0;
+  }
+
+  return *this;
 }
 
 void IndexBuffer::bind() const {

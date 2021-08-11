@@ -1,12 +1,7 @@
 ﻿#ifndef __SCENE_GRAPH_EXAMPLE_H__
 #define __SCENE_GRAPH_EXAMPLE_H__
 
-#include "Render/Color.h"
 #include "Render/Shader.h"
-#include "Render/VertexBuffer.h"
-#include "Render/IndexBuffer.h"
-#include "Render/VertexArray.h"
-#include "Render/VertexBufferLayout.h"
 #include "Render/Texture.h"
 #include "Render/Camera.h"
 
@@ -25,10 +20,13 @@ public:
   virtual void onRender() override;
   virtual void onImGuiRender() override;
 
+  void addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color);
+  void addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color);
+
 private:
   std::unique_ptr<Renderer::Camera> _camera;
   std::unique_ptr<Renderer::Shader> _shader;
-  std::unique_ptr<Renderer::Shader> _shader_light;
+  std::unique_ptr<Renderer::Shader> _shader_white_color;
 
   std::unique_ptr<engine::Material> _box_material;
   std::unique_ptr<engine::Material> _light_source_material;
@@ -37,6 +35,7 @@ private:
   std::unique_ptr<Renderer::Texture> _texture_emission;
 
   std::unique_ptr<engine::Mesh> _cube_mesh;
+  std::unique_ptr<engine::Mesh> _sphere_mesh;
 };
 
 } // namespace sandbox

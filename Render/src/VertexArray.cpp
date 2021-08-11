@@ -11,7 +11,7 @@ namespace Renderer {
   }
 
   VertexArray::~VertexArray() {
-
+    std::cout << "VertexArray delete" << std::endl;
   }
 
   void VertexArray::bind() const {

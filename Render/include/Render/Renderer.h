@@ -13,6 +13,9 @@
 #include "Render/InputManager.h"
 
 namespace Renderer {
+
+  void CheckGLError(const char* op);
+
   void DrawTriangles(const VertexArray& vao, const Shader& shader);
   void DrawTriangles(const VertexArray& vao, const IndexBuffer &ibo, const Shader& shader);
 } // namespace Renderer
