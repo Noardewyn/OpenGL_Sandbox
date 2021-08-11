@@ -26,25 +26,9 @@ public:
   virtual void onImGuiRender() override;
 
 private:
-  Renderer::Transform cube_transform;
-  Renderer::Color _emission_strength;
-
-  float _light_speed = 1.0f;
-  float _light_radius = 2.0f;
-
-  bool _textured_cubes = true;
-
-  std::vector<Renderer::Transform> _cubes;
-  std::vector<std::pair<Renderer::Transform, Renderer::Color>> _lights;
-
-  std::unique_ptr<Renderer::VertexArray> _vao;
-  std::unique_ptr<Renderer::VertexBuffer> _vbo;
-  std::unique_ptr<Renderer::VertexBufferLayout> _layout;
-  std::unique_ptr<Renderer::IndexBuffer> _ibo;
+  std::unique_ptr<Renderer::Camera> _camera;
   std::unique_ptr<Renderer::Shader> _shader;
   std::unique_ptr<Renderer::Shader> _shader_light;
-  std::unique_ptr<Renderer::Shader> _shader_red;
-  std::unique_ptr<Renderer::Camera> _camera;
 
   std::unique_ptr<engine::Material> _box_material;
   std::unique_ptr<engine::Material> _light_source_material;
@@ -53,7 +37,6 @@ private:
   std::unique_ptr<Renderer::Texture> _texture_emission;
 
   std::unique_ptr<engine::Mesh> _cube_mesh;
-  std::unique_ptr<engine::Mesh> _light_mesh;
 };
 
 } // namespace sandbox

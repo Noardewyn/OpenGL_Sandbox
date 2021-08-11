@@ -19,31 +19,31 @@ Mesh::Mesh(const Renderer::VertexBuffer& vbo, const Renderer::IndexBuffer& ibo, 
   _vao.unbind();
 }
 
-void Mesh::draw(Renderer::Shader& shader) {
+void Mesh::draw(Renderer::Shader& shader, const Material& material) {
   shader.bind();
-  shader.setUniform3f("material.emissionStrength", material->emission_strength.r, material->emission_strength.g, material->emission_strength.b);
-  shader.setUniform1f("material.shininess", material->shininess);
-  shader.setUniformColor("material.fillColor", material->color);
+  shader.setUniform3f("material.emissionStrength", material.emission_strength.r, material.emission_strength.g, material.emission_strength.b);
+  shader.setUniform1f("material.shininess", material.shininess);
+  shader.setUniformColor("material.fillColor", material.color);
 
-  if(material->texture_diffuse) {
+  if(material.texture_diffuse) {
     shader.setUniform1i("material.diffuse", 0);
-    material->texture_diffuse->bind(0);
+    material.texture_diffuse->bind(0);
   }
   else {
     shader.setUniform1i("material.diffuse", 10);
   }
 
-  if (material->texture_specular) {
+  if (material.texture_specular) {
     shader.setUniform1i("material.specular", 1);
-    material->texture_specular->bind(1);
+    material.texture_specular->bind(1);
   }
   else {
     shader.setUniform1i("material.specular", 10);
   }
 
-  if (material->texture_emission) {
+  if (material.texture_emission) {
     shader.setUniform1i("material.emission", 2);
-    material->texture_emission->bind(2);
+    material.texture_emission->bind(2);
   }
   else {
     shader.setUniform1i("material.emission", 10);
@@ -51,14 +51,14 @@ void Mesh::draw(Renderer::Shader& shader) {
 
   Renderer::DrawTriangles(_vao, shader);
 
-  if (material->texture_diffuse)
-    material->texture_diffuse->unbind();
+  if (material.texture_diffuse)
+    material.texture_diffuse->unbind();
 
-  if (material->texture_specular)
-    material->texture_specular->unbind();
+  if (material.texture_specular)
+    material.texture_specular->unbind();
 
-  if (material->texture_emission)
-    material->texture_emission->unbind();
+  if (material.texture_emission)
+    material.texture_emission->unbind();
 }
 
 } // namespace engine

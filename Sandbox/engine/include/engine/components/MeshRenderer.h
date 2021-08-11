@@ -10,7 +10,8 @@ namespace engine {
 class MeshRenderer : public Component {
 public:
 
-  Mesh *mesh;
+  Mesh*             mesh;
+  Material*         material;
   Renderer::Shader* shader;
 
   explicit MeshRenderer(Entity* parent = nullptr);

@@ -9,54 +9,11 @@
 
 #include "engine/Entity.h"
 #include "engine/Mesh.h"
+#include "engine/MeshProvider.h"
 #include "engine/components/MeshRenderer.h"
 #include "engine/components/Light.h"
 
 #include "SceneGraphExample.h"
-
-static float vertices[] = {
-    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-     0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,  0.0f, -1.0f,
-
-    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f, 1.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f,  0.5f, 1.0f, 0.0f,-1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f, 1.0f, 1.0f,-1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,-1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,-1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,-1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f, 1.0f, 0.0f,-1.0f,  0.0f,  0.0f,
-
-     0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 1.0f,  0.0f,  0.0f,
-
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, -1.0f,  0.0f,
-
-    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f, -0.5f, 1.0f, 1.0f, 0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  1.0f,  0.0f
-};
 
 namespace Sandbox {
 
@@ -78,49 +35,36 @@ namespace Sandbox {
     _shader = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
     _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
 
-    _shader_light->bind();
-    _shader_light->setUniform4f("color", 1.0, 0.3, 0.3, 1.0);
-    _shader_light->unbind();
-
     setMainCamera(_camera.get());
 
     _texture_diffuse = std::make_unique<Renderer::Texture>("assets/container2.png");
     _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
     _texture_emission = std::make_unique<Renderer::Texture>("assets/matrix.jpg");
 
-    Renderer::VertexBuffer vbo(vertices, sizeof(vertices));
-    Renderer::VertexBufferLayout layout;
-    layout.push<float>(3);
-    layout.push<float>(2);
-    layout.push<float>(3);
-
-    _box_material = std::make_unique<engine::Material>();
+    _box_material = std::make_unique<engine::Material>("textured box");
     _box_material->texture_diffuse = _texture_diffuse.get();
     _box_material->texture_emission = _texture_emission.get();
     _box_material->texture_specular = _texture_specular.get();
 
-    _light_source_material = std::make_unique<engine::Material>();
+    _light_source_material = std::make_unique<engine::Material>("light source");
     _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
 
-    _cube_mesh = std::make_unique<engine::Mesh>(vbo, layout);
-    _cube_mesh->material = _box_material.get();
-
-    _light_mesh = std::make_unique<engine::Mesh>(vbo, layout);
-    _light_mesh->material = _light_source_material.get();
+    _cube_mesh = engine::generateCubeMesh();
 
     engine::Entity& cube1_entity = createEntity("Cube 1");
     cube1_entity.transform.position = {0.0, 0.0, 0.0};
     engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->material = _box_material.get();
     mesh_renderer->shader = _shader.get();
 
     engine::Entity& light_entity1 = createEntity("Point light 1");
     light_entity1.transform.position = { 1.0, 1.0, 0.0 };
     light_entity1.transform.scale = { 0.2, 0.2, 0.2 };
     mesh_renderer = light_entity1.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _light_mesh.get();
+    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader_light.get();
-
 
     engine::Light* light_component = light_entity1.addComponent<engine::Light>(engine::Light::LightType::Point);
 
@@ -128,7 +72,8 @@ namespace Sandbox {
     light_entity2.transform.position = { -1.0, -1.0, 0.0 };
     light_entity2.transform.scale = { 0.2, 0.2, 0.2 };
     mesh_renderer = light_entity2.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _light_mesh.get();
+    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader_light.get();
 
     light_component = light_entity2.addComponent<engine::Light>(engine::Light::LightType::Point);
@@ -136,7 +81,8 @@ namespace Sandbox {
 
     engine::Entity& directional_light_entity1 = createEntity("Directional light 1");
     mesh_renderer = directional_light_entity1.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _light_mesh.get();
+    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader_light.get();
 
     light_component = directional_light_entity1.addComponent<engine::Light>(engine::Light::LightType::Directional);

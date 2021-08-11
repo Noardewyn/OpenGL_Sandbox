@@ -23,6 +23,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/Component.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Material.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Mesh.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/MeshProvider.cpp
 
     # Components
     ${PROJECT_SOURCE_DIR}/engine/src/components/MeshRenderer.cpp

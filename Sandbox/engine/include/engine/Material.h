@@ -7,6 +7,7 @@
 namespace engine {
 
 struct Material {
+  std::string name;
   Renderer::Texture *texture_diffuse = nullptr;
   Renderer::Texture *texture_specular = nullptr;
   Renderer::Texture *texture_emission = nullptr;
@@ -14,6 +15,8 @@ struct Material {
   Renderer::Color color;
   Renderer::Color emission_strength;
   float shininess = 32;
+
+  Material(const std::string& name);
 };
 
 } // namespace engine
