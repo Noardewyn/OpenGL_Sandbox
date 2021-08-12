@@ -53,13 +53,15 @@ namespace Sandbox {
 
     engine::Entity& cube1_entity = createEntity("Earth");
     cube1_entity.transform.position = {0.0, 0.0, 0.0};
+    cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
+
     engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _sphere_mesh.get();
     mesh_renderer->material = _earth_material.get();
     mesh_renderer->shader = _shader.get();
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
-    addPointLightEntity("Point light 2", { -1.0, -1.0, 0.0 }, Renderer::Color::Blue);
+    addPointLightEntity("Point light 2", { 1.5, 1.0, -1.5 }, Renderer::Color::White);
 
     //addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
   }
@@ -88,10 +90,6 @@ namespace Sandbox {
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
     light_component->direction = direction;
     light_component->color = color;
-  }
-
-  SceneGraphExample::~SceneGraphExample() {
-    
   }
 
   void SceneGraphExample::onUpdate(float delta_time) {

@@ -1,5 +1,6 @@
-﻿#include "engine/Component.h"
-#include "engine/Entity.h"
+﻿#include "engine/Entity.h"
+
+#include "engine/Component.h"
 
 namespace engine {
 

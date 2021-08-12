@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Render/Logger.h"
+
 #include "Render/Shader.h"
 
 namespace Renderer {
@@ -18,6 +20,7 @@ Shader::Shader(const std::string& fragment_path, const std::string& vertex_path)
 }
 
 Shader::~Shader() {
+  LOG_CORE_TRACE("Deleting Shader with id={}", _shader_id);
   glDeleteProgram(_shader_id);
 }
 
