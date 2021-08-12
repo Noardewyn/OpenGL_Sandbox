@@ -5,6 +5,7 @@
 
 #include "Render/Window.h"
 #include "Render/InputManager.h"
+#include "Render/Logger.h"
 
 #include "examples/ClearColorExample.h"
 #include "examples/ColoredQuadExample.h"
@@ -23,6 +24,9 @@ static void glfw_error_callback(int error, const char* description) {
 
 int main() {
 	glfwSetErrorCallback(glfw_error_callback);
+
+	tools::Logger::Init(spdlog::level::trace);
+	LOG_APP_DEBUG("Hello world {}!", 123);
 
 	Renderer::Window window(1400, 1000, "OpenGL Sandbox");
 	tools::InputManager::init(window);

@@ -20,6 +20,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Transform.cpp
     ${PROJECT_SOURCE_DIR}/src/Camera.cpp
     ${PROJECT_SOURCE_DIR}/src/InputManager.cpp
+    ${PROJECT_SOURCE_DIR}/src/Logger.cpp
     ${PROJECT_SOURCE_DIR}/src/Renderer.cpp
 )
 
