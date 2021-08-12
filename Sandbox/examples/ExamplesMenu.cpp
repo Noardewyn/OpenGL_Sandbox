@@ -1,6 +1,6 @@
 ﻿#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
+
+#include "Render/Logger.h"
 
 #include "ExamplesMenu.h"
 
@@ -49,5 +49,7 @@ namespace Sandbox {
 
     _current_scene = _scenes.at(index).build_function(window).release();
     _current_item = index;
+
+    LOG_APP_INFO("Menu: Scene '{}' started", _scenes.at(_current_item).name);
   }
 } // namespace Sandbox

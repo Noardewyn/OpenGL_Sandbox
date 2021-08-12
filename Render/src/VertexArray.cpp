@@ -1,6 +1,8 @@
-﻿#include "Render/VertexArray.h"
+﻿#include <GL/glew.h>
 
-#include <GL/glew.h>
+#include "Render/Logger.h"
+
+#include "Render/VertexArray.h"
 
 namespace Renderer {
 
@@ -11,7 +13,7 @@ namespace Renderer {
   }
 
   VertexArray::~VertexArray() {
-    std::cout << "VertexArray delete" << std::endl;
+    LOG_CORE_TRACE("Deleting VertexArray with id={}", _array_id);
   }
 
   void VertexArray::bind() const {

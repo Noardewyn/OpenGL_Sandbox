@@ -14,7 +14,6 @@ namespace Sandbox {
 class SceneGraphExample : public engine::Scene {
 public:
   SceneGraphExample(Renderer::Window* window);
-  virtual ~SceneGraphExample() override;
 
   virtual void onUpdate(float delta_time) override;
   virtual void onRender() override;

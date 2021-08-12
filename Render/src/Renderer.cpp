@@ -3,9 +3,9 @@
 #include "Render/Renderer.h"
 
 namespace Renderer {
-  void CheckGLError(const char* op) {
+  void CheckGLError(const char* func, const char* file, int line) {
     for (GLint error = glGetError(); error; error = glGetError()) {
-      printf("after %s() glError (0x%x)\n", op, error);
+      LOG_CORE_ERROR("GL_ERROR errcode={}\n\tfunc={} file={} line={}", error, func, file, line);
     }
   }
 
@@ -13,7 +13,7 @@ namespace Renderer {
     shader.bind();
     vao.bind();
     glDrawArrays(GL_TRIANGLES, 0, vao.vertex_count());
-    CheckGLError("glDrawArrays");
+    CHECK_OPENGL_ERROR();
   }
 
   void DrawTriangles(const VertexArray& vao, const IndexBuffer& ibo, const Shader& shader) {
@@ -21,6 +21,7 @@ namespace Renderer {
     vao.bind();
     ibo.bind();
     glDrawElements(GL_TRIANGLES, ibo.count(), GL_UNSIGNED_INT, 0);
-    CheckGLError("glDrawElements");
+    CHECK_OPENGL_ERROR();
   }
+
 } // namespace Renderer

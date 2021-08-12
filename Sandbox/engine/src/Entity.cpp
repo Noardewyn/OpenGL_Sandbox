@@ -1,5 +1,6 @@
-﻿#include "engine/Entity.h"
-#include <imgui.h>
+﻿#include <imgui.h>
+
+#include "engine/Entity.h"
 
 namespace engine {
   Entity::Entity(Scene* scene, const std::string& name)

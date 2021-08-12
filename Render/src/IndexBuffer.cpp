@@ -1,4 +1,5 @@
-﻿#include "Render/IndexBuffer.h"
+﻿#include "Render/Logger.h"
+#include "Render/IndexBuffer.h"
 
 #include <GL/glew.h>
 
@@ -18,7 +19,7 @@ IndexBuffer::IndexBuffer(const uint32_t* data, uint32_t count)
 
 IndexBuffer::~IndexBuffer() {
   if(_buffer_id != 0) {
-    std::cout << "IndexBuffer delete" << std::endl;
+    LOG_CORE_TRACE("Deleting IndexBuffer with id={}", _buffer_id);
     glDeleteBuffers(1, &_buffer_id);
   }
 }

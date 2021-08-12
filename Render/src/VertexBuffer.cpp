@@ -1,6 +1,8 @@
-﻿#include "Render/VertexBuffer.h"
+﻿#include <GL/glew.h>
 
-#include <GL/glew.h>
+#include "Render/Logger.h"
+
+#include "Render/VertexBuffer.h"
 
 namespace Renderer {
 
@@ -13,7 +15,7 @@ namespace Renderer {
 
   VertexBuffer::~VertexBuffer() {
     if(_buffer_id != 0) {
-      std::cout << "VertexBuffer delete" << std::endl;
+      LOG_CORE_TRACE("Deleting VertexBuffer with id={}", _buffer_id);
       glDeleteBuffers(1, &_buffer_id);
     }
   }

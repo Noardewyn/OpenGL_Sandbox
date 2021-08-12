@@ -3,6 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include "Render/Logger.h"
+
 #include "Render/Texture.h"
 
 namespace Renderer {
@@ -11,9 +13,8 @@ namespace Renderer {
     unsigned char* data = stbi_load(image_path.c_str(), &width, &height, &nrChannels, STBI_rgb_alpha);
 
     if(!data){
-      std::cout << "Failed to load image: " << image_path << std::endl;
+      LOG_CORE_ERROR("Failed to load texture: '{}'", image_path);
     }
-
 
     glGenTextures(1, &_render_id);
     glBindTexture(GL_TEXTURE_2D, _render_id);
