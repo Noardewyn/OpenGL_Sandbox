@@ -23,6 +23,7 @@ find_package(glm MODULE REQUIRED)
 find_package(GLEW MODULE REQUIRED)
 find_package(imgui MODULE REQUIRED)
 find_package(stb MODULE REQUIRED)
+find_package(assimp MODULE REQUIRED)
 
 include_directories("./bindings")
 

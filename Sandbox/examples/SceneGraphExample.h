@@ -7,6 +7,7 @@
 
 #include "engine/Material.h"
 #include "engine/Mesh.h"
+#include "engine/Model.h"
 #include "engine/Scene.h"
 
 namespace Sandbox {
@@ -38,6 +39,8 @@ private:
 
   std::unique_ptr<engine::Mesh> _cube_mesh;
   std::unique_ptr<engine::Mesh> _sphere_mesh;
+
+  std::unique_ptr<engine::Model> _model;
 };
 
 } // namespace sandbox

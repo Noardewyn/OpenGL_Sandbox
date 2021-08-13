@@ -13,6 +13,7 @@ class TestConan(ConanFile):
      self.requires("stb/20200203");
      self.requires("spdlog/1.8.5");
      self.requires("imgui/1.83");
+     self.requires("assimp/5.0.1");
 
    def imports(self):
        self.copy("*.dll", dst="bin", src="bin")

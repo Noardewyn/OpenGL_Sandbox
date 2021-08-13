@@ -11,6 +11,8 @@ struct Material {
   Renderer::Texture *texture_diffuse = nullptr;
   Renderer::Texture *texture_specular = nullptr;
   Renderer::Texture *texture_emission = nullptr;
+  Renderer::Texture* texture_height = nullptr;
+  Renderer::Texture* texture_normal = nullptr;
 
   Renderer::Color color;
   Renderer::Color emission_strength;
