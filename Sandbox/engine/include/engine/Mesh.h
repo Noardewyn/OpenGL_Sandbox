@@ -11,19 +11,27 @@
 
 namespace engine {
 
-class Mesh {
-public:
-  Mesh(Renderer::VertexBuffer&& vbo, const Renderer::VertexBufferLayout &layout);
-  Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Renderer::VertexBufferLayout &layout);
+  struct Vertex {
+    glm::vec3 position;
+    glm::vec2 texCoords;
+    glm::vec3 normal;
+    glm::vec3 tangent;
+    glm::vec3 bitangent;
+  };
 
-  void draw(Renderer::Shader &shader, const Material &material);
+  class Mesh {
+  public:
+    Mesh(Renderer::VertexBuffer&& vbo, const Renderer::VertexBufferLayout &layout);
+    Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Renderer::VertexBufferLayout &layout);
 
-private:
-  Renderer::VertexArray _vao;
-  Renderer::VertexBuffer _vbo;
-  Renderer::IndexBuffer _ibo;
-  Renderer::VertexBufferLayout _layout;
-};
+    void draw(Renderer::Shader &shader, const std::vector<Material*>& materials);
+
+  private:
+    Renderer::VertexArray _vao;
+    Renderer::VertexBuffer _vbo;
+    Renderer::IndexBuffer _ibo;
+    Renderer::VertexBufferLayout _layout;
+  };
 
 } // namespace engine
 

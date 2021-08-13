@@ -23,6 +23,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/Component.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Material.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Mesh.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/Model.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/MeshProvider.cpp
 
     # Components
@@ -43,9 +44,15 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/main.cpp
 )
 
+set(LIBS
+    Render 
+    imgui::imgui
+    assimp::assimp
+)
+
 add_executable (${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} Render imgui::imgui)
+target_link_libraries(${PROJECT_NAME} ${LIBS})
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC

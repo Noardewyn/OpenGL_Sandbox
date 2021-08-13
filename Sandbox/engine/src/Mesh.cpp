@@ -17,8 +17,12 @@ Mesh::Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Rend
   _vao.unbind();
 }
 
-void Mesh::draw(Renderer::Shader& shader, const Material& material) {
+void Mesh::draw(Renderer::Shader& shader, const std::vector<Material*>& materials) {
+
   shader.bind();
+
+  const auto& material = *materials[0];
+
   shader.setUniform3f("material.emissionStrength", material.emission_strength.r, material.emission_strength.g, material.emission_strength.b);
   shader.setUniform1f("material.shininess", material.shininess);
   shader.setUniformColor("material.fillColor", material.color);
@@ -46,6 +50,22 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
   }
   else {
     shader.setUniform1i("material.emission", 10);
+  }
+
+  if (material.texture_normal) {
+    shader.setUniform1i("material.normal", 3);
+    material.texture_normal->bind(3);
+  }
+  else {
+    shader.setUniform1i("material.normal", 10);
+  }
+
+  if (material.texture_height) {
+    shader.setUniform1i("material.height", 4);
+    material.texture_height->bind(4);
+  }
+  else {
+    shader.setUniform1i("material.height", 10);
   }
 
   if(_ibo.count())
