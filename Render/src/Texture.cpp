@@ -14,6 +14,7 @@ namespace Renderer {
 
     if(!data){
       LOG_CORE_ERROR("Failed to load texture: '{}'", image_path);
+      return;
     }
 
     glGenTextures(1, &_render_id);

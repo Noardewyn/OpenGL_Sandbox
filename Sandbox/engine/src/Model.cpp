@@ -23,13 +23,14 @@ namespace engine {
   }
 
   void Model::draw(Renderer::Shader& shader, const std::vector<Material*>& materials) {
-    for(auto& mesh : _meshes)
+    for(auto& mesh : _meshes) {
       mesh->draw(shader, materials);
+    }
   }
 
   void Model::loadModel(const std::string& path) {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
       LOG_CORE_ERROR("Load model assimp error: {}", import.GetErrorString());
@@ -44,7 +45,15 @@ namespace engine {
   void Model::processNode(aiNode* node, const aiScene* scene) {
     for(unsigned int i = 0; i < node->mNumMeshes; i++) {
       aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-      _meshes.push_back(processMesh(mesh, scene));
+      auto final_mesh = processMesh(mesh, scene);
+      const auto offset = node->mTransformation;
+
+      final_mesh->offset[0] = { offset.a1, offset.a2, offset.a3, offset.a4 };
+      final_mesh->offset[1] = { offset.b1, offset.b2, offset.b3, offset.b4 };
+      final_mesh->offset[2] = { offset.c1, offset.c2, offset.c3, offset.c4 };
+      final_mesh->offset[3] = { offset.d1, offset.d2, offset.d3, offset.d4 };
+
+      _meshes.push_back(std::move(final_mesh));
     }
 
     for(unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -54,7 +63,7 @@ namespace engine {
 
   std::unique_ptr<Mesh> Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
+    std::vector<uint32_t> indices;
     std::vector<Renderer::Texture> textures;
 
     // walk through each of the mesh's vertices
@@ -131,7 +140,7 @@ namespace engine {
     if (!tempHeightMaps.empty()) heightMaps = tempHeightMaps;
 
     Renderer::IndexBuffer ibo(indices.data(), indices.size());
-    Renderer::VertexBuffer vbo(vertices.data(), vertices.size() * sizeof(float));
+    Renderer::VertexBuffer vbo(vertices.data(), vertices.size() * sizeof(Vertex));
     Renderer::VertexBufferLayout layout;
     layout.push<float>(3); // position
     layout.push<float>(2); // uv
