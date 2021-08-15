@@ -11,7 +11,7 @@ class MeshRenderer : public Component {
 public:
 
   Mesh*                  mesh;
-  std::vector<Material*> materials;
+  Material*              material;
   Renderer::Shader*      shader;
 
   explicit MeshRenderer(Entity* parent = nullptr);

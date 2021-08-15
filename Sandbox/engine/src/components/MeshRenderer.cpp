@@ -69,22 +69,21 @@ namespace engine {
       calculateLighting();
 
     shader->setUniform1i("calculate_light", _calculate_lighting);
-    mesh->draw(*shader, materials);
+
+    mesh->draw(*shader, *material);
   }
 
   void MeshRenderer::onGuiItemRender() {
     ImGui::Checkbox("Calculate lighting", &_calculate_lighting);
 
-    for(int i = 0; i < materials.size(); i++) {
-      ImGui::Text("material name: %u", materials[i]->name);
+    ImGui::Text("material name: %u", material->name);
 
-      if (ImGui::TreeNode("Mesh settings")) {
-        ImGui::ColorEdit3("fill color", &materials[i]->color.r);
-        ImGui::Text("diffuse map: %u", materials[i]->texture_diffuse);
-        ImGui::Text("specular map: %u", materials[i]->texture_specular);
-        ImGui::Text("emission map: %u", materials[i]->texture_emission);
-        ImGui::TreePop();
-      }
+    if (ImGui::TreeNode("Mesh settings")) {
+      ImGui::ColorEdit3("fill color", &material->color.r);
+      ImGui::Text("diffuse map: %u", material->texture_diffuse);
+      ImGui::Text("specular map: %u", material->texture_specular);
+      ImGui::Text("emission map: %u", material->texture_emission);
+      ImGui::TreePop();
     }
   }
 

@@ -7,12 +7,15 @@ namespace Renderer {
 
 class Texture {
 public:
+  int width, height, nrChannels;
+  std::string image_path;
+
+  Texture();
   Texture(const std::string &image_path);
 
   void bind(int unit = 0) const;
   void unbind() const;
 
-  int width, height, nrChannels;
 
 private:
   uint32_t _render_id;

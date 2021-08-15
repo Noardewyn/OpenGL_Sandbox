@@ -4,33 +4,29 @@
 #include "engine/Model.h"
 
 namespace engine {
-  Model::Model(const std::string& path) {
+  Model::Model(const std::string& path)
+    : obj_path(path) {
     loadModel(path);
-
-    _materials.emplace_back("Model");
-
-    if (!diffuseMaps.empty())
-      _materials[0].texture_diffuse = &diffuseMaps[0];
-
-    if (!specularMaps.empty())
-      _materials[0].texture_specular = &specularMaps[0];
-
-    if (!normalMaps.empty())
-      _materials[0].texture_normal = &normalMaps[0];
-
-    if (!heightMaps.empty())
-      _materials[0].texture_height = &heightMaps[0];
   }
 
-  void Model::draw(Renderer::Shader& shader, const std::vector<Material*>& materials) {
+  void Model::draw(Renderer::Shader& shader) {
     for(auto& mesh : _meshes) {
-      mesh->draw(shader, materials);
+      if(mesh->material) {
+        const auto& mat = *mesh->material;
+        mesh->draw(shader, mat);
+      }
+      else {
+        Material mat("Invalid material");
+        mesh->draw(shader, mat);
+        LOG_CORE_WARN("No available material for object: {}, mesh: {}", obj_path, mesh->name);
+      }
     }
   }
 
   void Model::loadModel(const std::string& path) {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | 
+      aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
       LOG_CORE_ERROR("Load model assimp error: {}", import.GetErrorString());
@@ -39,20 +35,47 @@ namespace engine {
 
     _directory = path.substr(0, path.find_last_of('/'));
 
+    loadMaterials(scene);
+
     processNode(scene->mRootNode, scene);
+  }
+
+  void Model::loadMaterials(const aiScene* scene) {
+    for(unsigned i = 0; i < scene->mNumMaterials; i++) {
+      aiMaterial* material = scene->mMaterials[i];
+
+      Material mat(material->GetName().C_Str());
+
+      auto tempDiffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE);
+      if(tempDiffuseMap) {
+        mat.texture_diffuse = tempDiffuseMap;
+      }
+
+      auto tempSpecularMap = loadMaterialTexture(material, aiTextureType_SPECULAR);
+      if(tempSpecularMap) {
+        mat.texture_specular = tempSpecularMap;
+      }
+
+      auto tempNormalMap = loadMaterialTexture(material, aiTextureType_HEIGHT);
+      if (tempNormalMap) {
+        mat.texture_normal = tempNormalMap;
+      }
+
+      auto tempHeightMap = loadMaterialTexture(material, aiTextureType_AMBIENT);
+      if (tempHeightMap) {
+        mat.texture_height = tempHeightMap;
+      }
+
+      _materials.push_back(mat);
+    }
   }
 
   void Model::processNode(aiNode* node, const aiScene* scene) {
     for(unsigned int i = 0; i < node->mNumMeshes; i++) {
       aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
       auto final_mesh = processMesh(mesh, scene);
-      const auto offset = node->mTransformation;
-
-      final_mesh->offset[0] = { offset.a1, offset.a2, offset.a3, offset.a4 };
-      final_mesh->offset[1] = { offset.b1, offset.b2, offset.b3, offset.b4 };
-      final_mesh->offset[2] = { offset.c1, offset.c2, offset.c3, offset.c4 };
-      final_mesh->offset[3] = { offset.d1, offset.d2, offset.d3, offset.d4 };
-
+      final_mesh->material = &_materials[mesh->mMaterialIndex];
+      final_mesh->name = mesh->mName.C_Str();
       _meshes.push_back(std::move(final_mesh));
     }
 
@@ -120,25 +143,6 @@ namespace engine {
         indices.push_back(face.mIndices[j]);
     }
 
-    // process materials
-    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-    // 1. diffuse maps
-    std::vector<Renderer::Texture> tempDiffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE);
-    if(!tempDiffuseMaps.empty()) diffuseMaps = tempDiffuseMaps;
-
-    // 2. specular maps
-    std::vector<Renderer::Texture> tempSpecularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR);
-    if (!tempSpecularMaps.empty()) specularMaps = tempSpecularMaps;
-
-    // 3. normal maps
-    std::vector<Renderer::Texture> tempNormalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT);
-    if (!tempNormalMaps.empty()) normalMaps = tempNormalMaps;
-
-    // 4. height maps
-    std::vector<Renderer::Texture> tempHeightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT);
-    if (!tempHeightMaps.empty()) heightMaps = tempHeightMaps;
-
     Renderer::IndexBuffer ibo(indices.data(), indices.size());
     Renderer::VertexBuffer vbo(vertices.data(), vertices.size() * sizeof(Vertex));
     Renderer::VertexBufferLayout layout;
@@ -158,8 +162,8 @@ namespace engine {
     return Renderer::Texture(filepath);
   }
 
-  std::vector<Renderer::Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type) {
-    std::vector<Renderer::Texture> textures;
+  Renderer::Texture* Model::loadMaterialTexture(aiMaterial* mat, aiTextureType type) {
+    Renderer::Texture* out_texture = nullptr;
 
     for(unsigned i = 0; i < mat->GetTextureCount(type); i++) {
       aiString str;
@@ -167,21 +171,21 @@ namespace engine {
 
       mat->GetTexture(type, i, &str);
 
-      for(unsigned j = 0; j < _loaded_textures.size(); j++) {
-        if(_loaded_textures[j] == str.C_Str()) {
-          skip = true;
-          break;
-        }
+      auto exists_texture = _loaded_textures.find(str.C_Str());
+      if(exists_texture != _loaded_textures.end() ) {
+        out_texture = &exists_texture->second;
+        skip = true;
+        break;
       }
 
       if (!skip) {
         Renderer::Texture texture = TextureFromFile(str.C_Str(), _directory);
-        textures.push_back(texture);
-        _loaded_textures.emplace_back(str.C_Str());
+        _loaded_textures.insert(std::pair(str.C_Str(), texture));
+        out_texture = &_loaded_textures.at(str.C_Str());
       }
     }
 
-    return textures;
+    return out_texture;
   }
   
 } // namespace engine

@@ -17,11 +17,8 @@ Mesh::Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Rend
   _vao.unbind();
 }
 
-void Mesh::draw(Renderer::Shader& shader, const std::vector<Material*>& materials) {
-
+void Mesh::draw(Renderer::Shader& shader, const Material& material) {
   shader.bind();
-
-  const auto& material = *materials[0];
 
   shader.setUniform3f("material.emissionStrength", material.emission_strength.r, material.emission_strength.g, material.emission_strength.b);
   shader.setUniform1f("material.shininess", material.shininess);

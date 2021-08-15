@@ -21,10 +21,13 @@ namespace engine {
 
   class Mesh {
   public:
+    std::string name;
+    Material *material;
+
     Mesh(Renderer::VertexBuffer&& vbo, const Renderer::VertexBufferLayout &layout);
     Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Renderer::VertexBufferLayout &layout);
 
-    void draw(Renderer::Shader &shader, const std::vector<Material*>& materials);
+    void draw(Renderer::Shader &shader, const Material& material);
 
   private:
     Renderer::VertexArray _vao;
