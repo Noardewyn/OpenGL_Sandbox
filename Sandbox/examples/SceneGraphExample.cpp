@@ -49,27 +49,26 @@ namespace Sandbox {
     _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
 
     _obj_model = std::make_unique<engine::Model>("assets/models/link/pose.obj");
-
-  /*  engine::Entity& model_entity = createEntity("Backpack");
-    model_entity.transform.position = { 0.0, 0.0, 0.0 };
-
-     mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _obj_model->_meshes[0].get();
-    mesh_renderer->materials.push_back(&_obj_model->_materials[0]);
-    mesh_renderer->shader = _shader.get();*/
-
-    return;
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
 
-    engine::Entity& cube1_entity = createEntity("Earth");
-    cube1_entity.transform.position = {0.0, 0.0, 0.0};
-    cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
-
-    engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _sphere_mesh.get();
-    mesh_renderer->material = _earth_material.get();
+    // Entities
+    engine::Entity& model_entity = createEntity("3d Model");
+    model_entity.transform.position = { 0.0, 0.0, 0.0 };
+    model_entity.transform.scale = { 0.2, 0.2, 0.2 };
+     
+    engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
+    mesh_renderer->target = _obj_model.get();
     mesh_renderer->shader = _shader.get();
+
+    //engine::Entity& cube1_entity = createEntity("Earth");
+    //cube1_entity.transform.position = {0.0, 0.0, 0.0};
+    //cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
+
+    //engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
+    //mesh_renderer->target = _sphere_mesh.get();
+    //mesh_renderer->material = _earth_material.get();
+    //mesh_renderer->shader = _shader.get();
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
     addPointLightEntity("Point light 2", { 1.5, 1.0, -1.5 }, Renderer::Color::White);
@@ -83,7 +82,7 @@ namespace Sandbox {
     light_entity.transform.scale = { 0.2, 0.2, 0.2 };
 
     engine::MeshRenderer* mesh_renderer = light_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _sphere_mesh.get();
+    mesh_renderer->target = _sphere_mesh.get();
     mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader.get();
 
@@ -94,7 +93,7 @@ namespace Sandbox {
   void SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color) {
     engine::Entity& directional_light_entity = createEntity(name);
     engine::MeshRenderer* mesh_renderer = mesh_renderer = directional_light_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _cube_mesh.get();
+    mesh_renderer->target = _cube_mesh.get();
     mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader.get();
 
@@ -148,22 +147,10 @@ namespace Sandbox {
   }
 
   void SceneGraphExample::onRender() {
-    window->clear(Renderer::Color(0.2, 0.2, 0.2));
+    window->clear(_clear_color);
     _camera->setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
-    _shader->bind();
-    Renderer::Transform transform;
-    transform.scale = {0.2, 0.2, 0.2};
-
-    _shader->setUniformMatrix4f("model", transform.toMatrix());
-    _shader->setUniformMatrix4f("view",  _camera->getViewMatrix());
-    _shader->setUniformMatrix4f("projection", _camera->getProjectionMatrix());
-
-    _shader->setUniform1i("calculate_light", false);
-
-    _obj_model->draw(*_shader);
-
-    //Scene::onRender();
+    Scene::onRender();
   }
 
   void SceneGraphExample::onImGuiRender() {
@@ -177,6 +164,8 @@ namespace Sandbox {
       ImGui::Text("Mouse - rotate camera");
       ImGui::Text("Wheel - zoom camera");
     }
+
+    ImGui::ColorEdit4("Clear color", &_clear_color.r);
 
     ImGui::Text("Scene graph");
     Scene::onImGuiRender();

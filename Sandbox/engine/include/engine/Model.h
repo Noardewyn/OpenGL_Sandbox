@@ -8,20 +8,18 @@
 #include "engine/Mesh.h"
 
 namespace engine {
-  class Model
-  {
+  class Model : public IRenderable {
   public:
-    std::vector<std::unique_ptr<Mesh>> _meshes;
-    std::vector<Material> _materials;
+    std::string directory;
     std::string obj_path;
+    std::vector<std::unique_ptr<Mesh>> meshes;
+    std::vector<Material> _materials;
+    std::unordered_map<std::string, Renderer::Texture> loaded_textures;
 
     Model(const std::string& path);
-    void draw(Renderer::Shader& shader);
+    void draw(Renderer::Shader& shader, const Material& material) override;
 
   private:
-    std::string _directory;
-    std::unordered_map<std::string, Renderer::Texture> _loaded_textures;
-
     void loadModel(const std::string& path);
     void loadMaterials(const aiScene* scene);
     void processNode(aiNode* node, const aiScene* scene);
