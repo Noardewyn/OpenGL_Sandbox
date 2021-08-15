@@ -13,23 +13,20 @@ namespace engine {
   public:
     std::vector<std::unique_ptr<Mesh>> _meshes;
     std::vector<Material> _materials;
+    std::string obj_path;
 
     Model(const std::string& path);
-    void draw(Renderer::Shader& shader, const std::vector<Material*>& materials);
+    void draw(Renderer::Shader& shader);
 
   private:
     std::string _directory;
-    std::vector<std::string> _loaded_textures;
-
-    std::vector<Renderer::Texture> diffuseMaps;
-    std::vector<Renderer::Texture> specularMaps;
-    std::vector<Renderer::Texture> normalMaps;
-    std::vector<Renderer::Texture> heightMaps;
+    std::unordered_map<std::string, Renderer::Texture> _loaded_textures;
 
     void loadModel(const std::string& path);
+    void loadMaterials(const aiScene* scene);
     void processNode(aiNode* node, const aiScene* scene);
     std::unique_ptr<Mesh> processMesh(aiMesh* mesh, const aiScene* scene);
-    std::vector<Renderer::Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type);
+    Renderer::Texture* Model::loadMaterialTexture(aiMaterial* mat, aiTextureType type);
   };
 } // namespace engine
 

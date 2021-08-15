@@ -8,25 +8,36 @@
 #include "Render/Texture.h"
 
 namespace Renderer {
-  Texture::Texture(const std::string& image_path) {
+  Texture::Texture()
+    : _render_id(0), width(0), height(0), nrChannels(0) {
+    
+  }
+
+  Texture::Texture(const std::string& image_path)
+    : image_path(image_path), _render_id(0), width(0), height(0), nrChannels(0) {
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(image_path.c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(image_path.c_str(), &width, &height, &nrChannels, 3);
+
+    nrChannels = 3;
+
+    if(stbi_failure_reason())
+      LOG_CORE_WARN("Texture load: {}", stbi_failure_reason());
 
     if(!data){
       LOG_CORE_ERROR("Failed to load texture: '{}'", image_path);
       return;
     }
 
-    glGenTextures(1, &_render_id);
-    glBindTexture(GL_TEXTURE_2D, _render_id);
-
-    GLenum format;
+    GLenum format = GL_RED;
     if (nrChannels == 1)
       format = GL_RED;
     else if (nrChannels == 3)
       format = GL_RGB;
     else if (nrChannels == 4)
       format = GL_RGBA;
+
+    glGenTextures(1, &_render_id);
+    glBindTexture(GL_TEXTURE_2D, _render_id);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);

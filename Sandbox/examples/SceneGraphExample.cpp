@@ -48,15 +48,15 @@ namespace Sandbox {
     _light_source_material = std::make_unique<engine::Material>("light source");
     _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
 
-    _model = std::make_unique<engine::Model>("assets/models/backpack/backpack.obj");
+    _obj_model = std::make_unique<engine::Model>("assets/models/link/pose.obj");
 
-    engine::Entity& model_entity = createEntity("Backpack");
+  /*  engine::Entity& model_entity = createEntity("Backpack");
     model_entity.transform.position = { 0.0, 0.0, 0.0 };
 
-    engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->mesh = _model->_meshes[0].get();
-    mesh_renderer->materials.push_back(&_model->_materials[0]);
-    mesh_renderer->shader = _shader.get();
+     mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
+    mesh_renderer->mesh = _obj_model->_meshes[0].get();
+    mesh_renderer->materials.push_back(&_obj_model->_materials[0]);
+    mesh_renderer->shader = _shader.get();*/
 
     return;
     _cube_mesh = engine::generateCubeMesh();
@@ -66,9 +66,9 @@ namespace Sandbox {
     cube1_entity.transform.position = {0.0, 0.0, 0.0};
     cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
 
-    mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
+    engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _sphere_mesh.get();
-    mesh_renderer->materials.push_back(_earth_material.get());
+    mesh_renderer->material = _earth_material.get();
     mesh_renderer->shader = _shader.get();
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
@@ -84,7 +84,7 @@ namespace Sandbox {
 
     engine::MeshRenderer* mesh_renderer = light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _sphere_mesh.get();
-    mesh_renderer->materials.push_back(_light_source_material.get());
+    mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader.get();
 
     engine::Light* light_component = light_entity.addComponent<engine::Light>(engine::Light::LightType::Point);
@@ -95,7 +95,7 @@ namespace Sandbox {
     engine::Entity& directional_light_entity = createEntity(name);
     engine::MeshRenderer* mesh_renderer = mesh_renderer = directional_light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->mesh = _cube_mesh.get();
-    mesh_renderer->materials.push_back(_light_source_material.get());
+    mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader.get();
 
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
@@ -148,10 +148,22 @@ namespace Sandbox {
   }
 
   void SceneGraphExample::onRender() {
-    window->clear(Renderer::Color::Black);
+    window->clear(Renderer::Color(0.2, 0.2, 0.2));
     _camera->setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
-    Scene::onRender();
+    _shader->bind();
+    Renderer::Transform transform;
+    transform.scale = {0.2, 0.2, 0.2};
+
+    _shader->setUniformMatrix4f("model", transform.toMatrix());
+    _shader->setUniformMatrix4f("view",  _camera->getViewMatrix());
+    _shader->setUniformMatrix4f("projection", _camera->getProjectionMatrix());
+
+    _shader->setUniform1i("calculate_light", false);
+
+    _obj_model->draw(*_shader);
+
+    //Scene::onRender();
   }
 
   void SceneGraphExample::onImGuiRender() {
