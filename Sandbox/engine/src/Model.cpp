@@ -9,8 +9,8 @@ namespace engine {
     loadModel(path);
   }
 
-  void Model::draw(Renderer::Shader& shader) {
-    for(auto& mesh : _meshes) {
+  void Model::draw(Renderer::Shader& shader, const Material& material) {
+    for(auto& mesh : meshes) {
       if(mesh->material) {
         const auto& mat = *mesh->material;
         mesh->draw(shader, mat);
@@ -33,7 +33,7 @@ namespace engine {
       return;
     }
 
-    _directory = path.substr(0, path.find_last_of('/'));
+    directory = path.substr(0, path.find_last_of('/'));
 
     loadMaterials(scene);
 
@@ -76,7 +76,7 @@ namespace engine {
       auto final_mesh = processMesh(mesh, scene);
       final_mesh->material = &_materials[mesh->mMaterialIndex];
       final_mesh->name = mesh->mName.C_Str();
-      _meshes.push_back(std::move(final_mesh));
+      meshes.push_back(std::move(final_mesh));
     }
 
     for(unsigned int i = 0; i < node->mNumChildren; i++) {
@@ -171,17 +171,17 @@ namespace engine {
 
       mat->GetTexture(type, i, &str);
 
-      auto exists_texture = _loaded_textures.find(str.C_Str());
-      if(exists_texture != _loaded_textures.end() ) {
+      auto exists_texture = loaded_textures.find(str.C_Str());
+      if(exists_texture != loaded_textures.end() ) {
         out_texture = &exists_texture->second;
         skip = true;
         break;
       }
 
       if (!skip) {
-        Renderer::Texture texture = TextureFromFile(str.C_Str(), _directory);
-        _loaded_textures.insert(std::pair(str.C_Str(), texture));
-        out_texture = &_loaded_textures.at(str.C_Str());
+        Renderer::Texture texture = TextureFromFile(str.C_Str(), directory);
+        loaded_textures.insert(std::pair(str.C_Str(), texture));
+        out_texture = &loaded_textures.at(str.C_Str());
       }
     }
 

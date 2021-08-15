@@ -6,8 +6,8 @@
 #include "Render/IndexBuffer.h"
 #include "Render/VertexBufferLayout.h"
 #include "Render/Shader.h"
-
 #include "engine/Material.h"
+#include "engine/IRenderable.h"
 
 namespace engine {
 
@@ -19,7 +19,7 @@ namespace engine {
     glm::vec3 bitangent;
   };
 
-  class Mesh {
+  class Mesh : public IRenderable {
   public:
     std::string name;
     Material *material;
@@ -27,7 +27,7 @@ namespace engine {
     Mesh(Renderer::VertexBuffer&& vbo, const Renderer::VertexBufferLayout &layout);
     Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Renderer::VertexBufferLayout &layout);
 
-    void draw(Renderer::Shader &shader, const Material& material);
+    void draw(Renderer::Shader &shader, const Material& material) override;
 
   private:
     Renderer::VertexArray _vao;

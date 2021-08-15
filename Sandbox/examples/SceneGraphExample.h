@@ -24,6 +24,8 @@ public:
   void addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color);
 
 private:
+  Renderer::Color _clear_color;
+
   std::unique_ptr<Renderer::Camera> _camera;
   std::unique_ptr<Renderer::Shader> _shader;
   std::unique_ptr<Renderer::Shader> _shader_white_color;

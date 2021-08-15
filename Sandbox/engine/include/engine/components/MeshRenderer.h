@@ -10,7 +10,7 @@ namespace engine {
 class MeshRenderer : public Component {
 public:
 
-  Mesh*                  mesh;
+  IRenderable*           target;
   Material*              material;
   Renderer::Shader*      shader;
 
