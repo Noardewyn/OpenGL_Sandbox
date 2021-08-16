@@ -61,6 +61,16 @@ namespace Sandbox {
     mesh_renderer->target = _obj_model.get();
     mesh_renderer->shader = _shader.get();
 
+    engine::Entity& cube1_entity = createEntity("Floor");
+    cube1_entity.transform.position = {0.0, 0.0, 0.0};
+    cube1_entity.transform.scale = { 100.0, 0.2, 100.0 };
+    
+    mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
+    mesh_renderer->target = _cube_mesh.get();
+    mesh_renderer->material = _box_material.get();
+    mesh_renderer->shader = _shader.get();
+
+
     //engine::Entity& cube1_entity = createEntity("Earth");
     //cube1_entity.transform.position = {0.0, 0.0, 0.0};
     //cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
@@ -72,6 +82,7 @@ namespace Sandbox {
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
     addPointLightEntity("Point light 2", { 1.5, 1.0, -1.5 }, Renderer::Color::White);
+    addSpotLightEntity("Spot light 1", { 0.0f, 2.0f, 0.0f } , { -0.2f, -1.0f, -0.3f }, Renderer::Color::Red);
 
     //addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
   }
@@ -92,12 +103,23 @@ namespace Sandbox {
 
   void SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color) {
     engine::Entity& directional_light_entity = createEntity(name);
-    engine::MeshRenderer* mesh_renderer = mesh_renderer = directional_light_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->target = _cube_mesh.get();
+
+    engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
+    light_component->direction = direction;
+    light_component->color = color;
+  }
+
+  void SceneGraphExample::addSpotLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color) {
+    engine::Entity& spot_light_entity = createEntity(name);
+    spot_light_entity.transform.position = position;
+    spot_light_entity.transform.scale = { 0.2, 0.2, 0.2 };
+
+    engine::MeshRenderer* mesh_renderer = mesh_renderer = spot_light_entity.addComponent<engine::MeshRenderer>();
+    mesh_renderer->target = _sphere_mesh.get();
     mesh_renderer->material = _light_source_material.get();
     mesh_renderer->shader = _shader.get();
 
-    engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
+    engine::Light* light_component = light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Spot);
     light_component->direction = direction;
     light_component->color = color;
   }

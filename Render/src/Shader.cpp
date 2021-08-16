@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Render/Logger.h"
+#include "Render/Renderer.h"
 
 #include "Render/Shader.h"
 
@@ -83,7 +84,7 @@ std::string Shader::loadShaderSource(const std::string &filepath) {
     shader_file.close();
   }
   else {
-    std::cout << "Unable to open shader file: " << filepath << std::endl;
+    LOG_CORE_ERROR("Unable to open shader file: {}", filepath);
   }
 
   return shader_source;
@@ -101,11 +102,11 @@ bool Shader::checkCompileShadersErrors(unsigned int id, const shader_type_t& sha
     std::string shader_type_str;
 
     if (shader_type == shader_type_t::FRAGMENT)
-      shader_type_str = "FRAGMENT";
+      shader_type_str = "Fragment";
     else if (shader_type == shader_type_t::VERTEX)
-      shader_type_str = "VERTEX";
+      shader_type_str = "Vertex";
 
-    std::cout << "ERROR::SHADER::" << shader_type_str << "::COMPILATION_FAILED\n" << infoLog << std::endl;
+    LOG_CORE_ERROR("{} shader, compilation failed.\nError message:\n{}", shader_type_str, infoLog);
   }
 
   return success;
@@ -141,7 +142,7 @@ bool Shader::createShaderProgram(const std::string& fragment_source, const std::
   glAttachShader(_shader_id, vertex_id);
   glAttachShader(_shader_id, fragment_id);
   glLinkProgram(_shader_id);
-  glValidateProgram(_shader_id);
+  // glValidateProgram(_shader_id);
 
   glDeleteShader(fragment_id);
   glDeleteShader(vertex_id);
@@ -150,10 +151,9 @@ bool Shader::createShaderProgram(const std::string& fragment_source, const std::
   glGetProgramiv(_shader_id, GL_LINK_STATUS, &success);
 
   if (!success) {
-    char info_log[512];
-    glGetProgramInfoLog(_shader_id, 512, nullptr, info_log);
-    std::cout << "ERROR PROGRAM LINKING FAILED\n" << info_log << std::endl;
-
+    char info_log[GL_INFO_LOG_LENGTH];
+    glGetProgramInfoLog(_shader_id, GL_INFO_LOG_LENGTH, nullptr, info_log);
+    LOG_CORE_ERROR("Shader program linking failed\nError message:\n{}", info_log);
     return false;
   }
 
