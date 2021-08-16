@@ -45,18 +45,14 @@ namespace engine {
     ImGui::ColorEdit3("diffuse", &diffuse.r);
     ImGui::ColorEdit3("specular", &specular.r);
 
-    if(_light_type == LightType::Directional) {
-      ImGui::InputFloat("constant", &constant);
-      ImGui::InputFloat("quadratic", &quadratic);
-      ImGui::InputFloat("linear", &linear);
-    }
+    ImGui::InputFloat("constant", &constant);
+    ImGui::InputFloat("quadratic", &quadratic);
+    ImGui::InputFloat("linear", &linear);
 
-    if(_light_type == LightType::Directional) {
-      ImGui::SliderFloat3("direction", &direction.x, -1.0, 1.0);
-    }
-    else {
-      ImGui::InputFloat("range", &range);
-    }
+
+    ImGui::SliderFloat3("direction", &direction.x, -1.0, 1.0);
+    ImGui::InputFloat("spot radius", &spot_radius);
+    ImGui::InputFloat("range", &range);
 
     ImGui::InputFloat("intensity", &intensity);
 

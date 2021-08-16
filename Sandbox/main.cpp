@@ -41,7 +41,7 @@ int main() {
 	menu.registerScene<Sandbox::Camera3DExample>("3d camera", "");
 	menu.registerScene<Sandbox::Lighting3DExample>("3d lighting", "");
 	menu.registerScene<Sandbox::AdvancedLighting3DExample>("advanced 3d lighting", "");
-	menu.registerScene<Sandbox::SceneGraphExample>("scene graph", "");
+	menu.registerScene<Sandbox::SceneGraphExample>("3d model loading", "");
 
 	menu.startScene(menu.scenesCount()-1);
 

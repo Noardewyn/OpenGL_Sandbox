@@ -22,6 +22,7 @@ public:
 
   void addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color);
   void addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color);
+  void addSpotLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color);
 
 private:
   Renderer::Color _clear_color;

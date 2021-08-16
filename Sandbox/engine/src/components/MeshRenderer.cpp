@@ -15,20 +15,20 @@ namespace engine {
   void MeshRenderer::calculateLighting() {
     const auto& light_sources = _parent->getScene().getEntitiesWithComponent<Light>();
 
-    int point_light_index = 0;
-    int directional_light_index = 0;
-
+    int light_index = 0;
+    
     for(const auto& entity : light_sources) {
       const auto& light  = entity->getComponent<Light>();
 
       if(!light->isActive() || !entity->isActive())
         continue;
 
-      if(light->getType() == Light::LightType::Point) {
-        std::string point_index_str("pointLights[");
-        point_index_str += std::to_string(point_light_index);
-        point_index_str += "].";
+      std::string point_index_str("lights[");
+      point_index_str += std::to_string(light_index);
+      point_index_str += "].";
 
+      if(light->getType() == Light::LightType::Point) {
+        shader->setUniform1i(point_index_str + "type", 0);
         shader->setUniform3f(point_index_str + "position", entity->transform.position.x, entity->transform.position.y, entity->transform.position.z);
         shader->setUniform1f(point_index_str + "intensity", light->intensity);
         shader->setUniformColor(point_index_str + "ambient", light->ambient);
@@ -38,21 +38,33 @@ namespace engine {
         shader->setUniform1f(point_index_str + "constant", light->constant);
         shader->setUniform1f(point_index_str + "linear", light->linear);
         shader->setUniform1f(point_index_str + "quadratic", light->quadratic);
-        point_light_index++;
       }
       else if(light->getType() == Light::LightType::Directional) {
-        shader->setUniform3f("dirLight.direction", light->direction.x, light->direction.y, light->direction.z);
-        shader->setUniform1f("dirLight.intensity", light->intensity);
-        shader->setUniformColor("dirLight.ambient", light->ambient);
-        shader->setUniformColor("dirLight.diffuse", light->diffuse);
-        shader->setUniformColor("dirLight.specular", light->specular);
-        shader->setUniform1f("dirLight.intensity", light->intensity);
-        directional_light_index++;
+        shader->setUniform1i(point_index_str + "type", 2);
+        shader->setUniform3f(point_index_str + "direction", light->direction.x, light->direction.y, light->direction.z);
+        shader->setUniformColor(point_index_str + "ambient", light->ambient);
+        shader->setUniformColor(point_index_str + "diffuse", light->diffuse);
+        shader->setUniformColor(point_index_str + "specular", light->specular);
+        shader->setUniform1f(point_index_str + "intensity", light->intensity);
+      }
+      else if(light->getType() == Light::LightType::Spot) {
+        shader->setUniform1i(point_index_str + "type", 1);
+        shader->setUniform3f(point_index_str + "position", entity->transform.position.x, entity->transform.position.y, entity->transform.position.z);
+        shader->setUniform3f(point_index_str + "direction", light->direction.x, light->direction.y, light->direction.z);
+        shader->setUniform1f(point_index_str + "cutOff", glm::cos(glm::radians(light->spot_radius)));
+        shader->setUniformColor(point_index_str + "ambient", light->ambient);
+        shader->setUniformColor(point_index_str + "diffuse", light->diffuse);
+        shader->setUniformColor(point_index_str + "specular", light->specular);
+        shader->setUniform1f(point_index_str + "constant", light->constant);
+        shader->setUniform1f(point_index_str + "linear", light->linear);
+        shader->setUniform1f(point_index_str + "quadratic", light->quadratic);
+        shader->setUniform1f(point_index_str + "intensity", light->intensity);
       }
 
-      shader->setUniform1i("point_light_count", point_light_index);
-      shader->setUniform1i("directional_light_count", directional_light_index);
+      light_index++;
     }
+
+    shader->setUniform1i("lights_count", light_index);
   }
 
   void MeshRenderer::onRender() {
