@@ -68,6 +68,11 @@ void Shader::setUniform1i(const std::string& name, int value) {
   glUniform1i(uniform, value);
 }
 
+void Shader::setUniform1ui(const std::string& name, uint32_t value) {
+  GLuint uniform = glGetUniformLocation(_shader_id, name.c_str());
+  glUniform1ui(uniform, value);
+}
+
 std::string Shader::loadShaderSource(const std::string &filepath) {
   std::string shader_source;
   std::ifstream shader_file(filepath);
