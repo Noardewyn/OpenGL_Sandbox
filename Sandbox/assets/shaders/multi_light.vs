@@ -3,18 +3,12 @@ layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 texCoord;
 layout (location = 2) in vec3 normal;
 
-struct DirLight {
-  vec3 direction;
-
-  vec4 ambient;
-  vec4 diffuse;
-  vec4 specular;
-
-  float intensity;
-};
-
-struct PointLight {
-  vec3 position;
+struct Light {
+  float type;
+  vec3  position;
+  vec3  direction;
+  float cutOff;
+  float outerCutOff;
 
   float constant;
   float linear;
@@ -27,21 +21,18 @@ struct PointLight {
   float intensity;
 };
 
-uniform DirLight dirLight;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
-#define NR_POINT_LIGHTS 4
-uniform PointLight pointLights[NR_POINT_LIGHTS];
+#define NR_LIGHTS 4
+uniform Light lights[NR_LIGHTS];
+
+out Light iLights[NR_LIGHTS];
 
 out vec3 Normal;
 out vec2 TexCoord;
 out vec3 FragPos;
-
-out DirLight iDirLight;
-out PointLight iPointLights[NR_POINT_LIGHTS];
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 
 void main()
 {
@@ -49,12 +40,10 @@ void main()
     FragPos = vec3(view * model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(view * model))) * normal;
     TexCoord = texCoord;
-    
-    for (int i = 0; i < NR_POINT_LIGHTS; i++) {
-      iPointLights[i] = pointLights[i];
-      iPointLights[i].position = vec3(view * vec4(pointLights[i].position, 1.0));
-    }
 
-    iDirLight = dirLight;
-    iDirLight.direction = mat3(transpose(inverse(view))) * dirLight.direction;
+    for (int i = 0; i < NR_LIGHTS; i++) {
+      iLights[i] = lights[i];
+      iLights[i].position = vec3(view * vec4(lights[i].position, 1.0));
+      iLights[i].direction = mat3(transpose(inverse(view))) * lights[i].direction;
+    }
 }

@@ -8,7 +8,7 @@
 namespace engine {
 
   MeshRenderer::MeshRenderer(Entity* parent)
-    : Component(parent) {
+    : Component(parent), material(nullptr), target(nullptr), shader(nullptr) {
     _name = "MeshRenderer";
   }
 
@@ -27,38 +27,32 @@ namespace engine {
       point_index_str += std::to_string(light_index);
       point_index_str += "].";
 
+
+      shader->setUniform1f(point_index_str + "type", (int)light->getType());
+
+      shader->setUniformColor(point_index_str + "ambient", light->ambient);
+      shader->setUniformColor(point_index_str + "diffuse", light->diffuse);
+      shader->setUniformColor(point_index_str + "specular", light->specular);
+      shader->setUniform1f(point_index_str + "intensity", light->intensity);
+
       if(light->getType() == Light::LightType::Point) {
-        shader->setUniform1i(point_index_str + "type", 0);
         shader->setUniform3f(point_index_str + "position", entity->transform.position.x, entity->transform.position.y, entity->transform.position.z);
-        shader->setUniform1f(point_index_str + "intensity", light->intensity);
-        shader->setUniformColor(point_index_str + "ambient", light->ambient);
-        shader->setUniformColor(point_index_str + "diffuse", light->diffuse);
-        shader->setUniformColor(point_index_str + "specular", light->specular);
+        shader->setUniform1f(point_index_str + "constant", light->constant);
+        shader->setUniform1f(point_index_str + "linear", light->linear);
+        shader->setUniform1f(point_index_str + "quadratic", light->quadratic);
+      }
+      else if(light->getType() == Light::LightType::Spot) {
+        shader->setUniform3f(point_index_str + "position", entity->transform.position.x, entity->transform.position.y, entity->transform.position.z);
+        shader->setUniform3f(point_index_str + "direction", light->direction.x, light->direction.y, light->direction.z);
+        shader->setUniform1f(point_index_str + "cutOff", glm::cos(glm::radians(light->spot_radius)));
+        shader->setUniform1f(point_index_str + "outerCutOff", glm::cos(glm::radians(light->spot_radius - light->spot_smooth)));
 
         shader->setUniform1f(point_index_str + "constant", light->constant);
         shader->setUniform1f(point_index_str + "linear", light->linear);
         shader->setUniform1f(point_index_str + "quadratic", light->quadratic);
       }
-      else if(light->getType() == Light::LightType::Directional) {
-        shader->setUniform1i(point_index_str + "type", 2);
+      else if (light->getType() == Light::LightType::Directional) {
         shader->setUniform3f(point_index_str + "direction", light->direction.x, light->direction.y, light->direction.z);
-        shader->setUniformColor(point_index_str + "ambient", light->ambient);
-        shader->setUniformColor(point_index_str + "diffuse", light->diffuse);
-        shader->setUniformColor(point_index_str + "specular", light->specular);
-        shader->setUniform1f(point_index_str + "intensity", light->intensity);
-      }
-      else if(light->getType() == Light::LightType::Spot) {
-        shader->setUniform1i(point_index_str + "type", 1);
-        shader->setUniform3f(point_index_str + "position", entity->transform.position.x, entity->transform.position.y, entity->transform.position.z);
-        shader->setUniform3f(point_index_str + "direction", light->direction.x, light->direction.y, light->direction.z);
-        shader->setUniform1f(point_index_str + "cutOff", glm::cos(glm::radians(light->spot_radius)));
-        shader->setUniformColor(point_index_str + "ambient", light->ambient);
-        shader->setUniformColor(point_index_str + "diffuse", light->diffuse);
-        shader->setUniformColor(point_index_str + "specular", light->specular);
-        shader->setUniform1f(point_index_str + "constant", light->constant);
-        shader->setUniform1f(point_index_str + "linear", light->linear);
-        shader->setUniform1f(point_index_str + "quadratic", light->quadratic);
-        shader->setUniform1f(point_index_str + "intensity", light->intensity);
       }
 
       light_index++;
@@ -68,7 +62,7 @@ namespace engine {
   }
 
   void MeshRenderer::onRender() {
-    if(!isActive() || !target)
+    if(!isActive() || !target || !shader)
       return;
 
     shader->bind();

@@ -11,7 +11,7 @@ namespace engine {
 
 class Light : public Component {
 public:
-  enum class LightType {Unknown, Point, Spot, Directional, Ambient};
+  enum class LightType {Unknown = 0, Point, Spot, Directional};
 
   Renderer::Color color = {1, 1, 1, 1};
   Renderer::Color ambient;
@@ -22,8 +22,10 @@ public:
   float linear = 0.09f;
   float quadratic = 0.032f;
 
-  float spot_radius = 10;
+  float spot_radius = 30;
+  float spot_smooth = 5;
   float range = 10;
+
   float intensity = 5;
   float specular_percent = 1.0f;
   float diffuse_percent =  0.8f;

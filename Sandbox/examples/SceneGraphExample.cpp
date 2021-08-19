@@ -70,7 +70,6 @@ namespace Sandbox {
     mesh_renderer->material = _box_material.get();
     mesh_renderer->shader = _shader.get();
 
-
     //engine::Entity& cube1_entity = createEntity("Earth");
     //cube1_entity.transform.position = {0.0, 0.0, 0.0};
     //cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
@@ -81,8 +80,8 @@ namespace Sandbox {
     //mesh_renderer->shader = _shader.get();
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
-    addPointLightEntity("Point light 2", { 1.5, 1.0, -1.5 }, Renderer::Color::White);
-    addSpotLightEntity("Spot light 1", { 0.0f, 2.0f, 0.0f } , { -0.2f, -1.0f, -0.3f }, Renderer::Color::Red);
+    addSpotLightEntity("Spot light 1", { 0.0f, 10.0f, 0.0f } , { -0.2f, -1.0f, -0.3f }, Renderer::Color(0.4, 0.2, 0.2));
+    addPointLightEntity("Point light 2", { 7.5, 1.0, 1.5 }, Renderer::Color::White);
 
     //addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
   }

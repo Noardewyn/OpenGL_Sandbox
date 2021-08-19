@@ -52,6 +52,8 @@ namespace engine {
 
     ImGui::SliderFloat3("direction", &direction.x, -1.0, 1.0);
     ImGui::InputFloat("spot radius", &spot_radius);
+    ImGui::InputFloat("spot smooth", &spot_smooth);
+
     ImGui::InputFloat("range", &range);
 
     ImGui::InputFloat("intensity", &intensity);
