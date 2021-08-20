@@ -48,14 +48,14 @@ namespace Sandbox {
     _light_source_material = std::make_unique<engine::Material>("light source");
     _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
 
-    _obj_model = std::make_unique<engine::Model>("assets/models/link/pose.obj");
+    _obj_model = std::make_unique<engine::Model>("assets/models/sponza/sponza.obj"); // "assets/models/link/pose.obj"
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
 
     // Entities
     engine::Entity& model_entity = createEntity("3d Model");
     model_entity.transform.position = { 0.0, 0.0, 0.0 };
-    model_entity.transform.scale = { 0.2, 0.2, 0.2 };
+    model_entity.transform.scale = { 0.05, 0.05, 0.05 };
      
     engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _obj_model.get();
