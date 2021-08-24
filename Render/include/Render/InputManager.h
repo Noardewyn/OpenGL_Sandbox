@@ -12,6 +12,8 @@ public:
 
   bool keyPressed(int key_code) const;
   bool keyDown(int key_code) const;
+  bool mouseKeyPressed(int key_code) const;
+  bool mouseKeyDown(int key_code) const;
   double mousePosX() const;
   double mousePosY() const;
   double wheelX() const;

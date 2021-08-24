@@ -7,6 +7,9 @@
 static bool keys[1024];
 static bool keys_down[1024];
 
+static bool mouse_keys[12];
+static bool mouse_keys_down[12];
+
 static double mouse_pos_x;
 static double mouse_pos_y;
 static double wheel_x;
@@ -17,6 +20,14 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     keys[key] = keys_down[key] = true;
   else if (action == GLFW_RELEASE)
     keys[key] = keys_down[key] = false;
+}
+
+static void mouse_button_callback(GLFWwindow* window, int key, int action, int mods)
+{
+  if (action == GLFW_PRESS)
+    mouse_keys[key] = mouse_keys_down[key] = true;
+  else if (action == GLFW_RELEASE)
+    mouse_keys[key] = mouse_keys_down[key] = false;
 }
 
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -45,8 +56,11 @@ void InputManager::init(const Renderer::Window& window) {
 
 InputManager::InputManager(const Renderer::Window& window) {
   glfwSetKeyCallback(window.getHandle(), key_callback);
+  glfwSetMouseButtonCallback(window.getHandle(), mouse_button_callback);
   glfwSetCursorPosCallback(window.getHandle(), mouse_callback);
   glfwSetScrollCallback(window.getHandle(), scroll_callback);
+
+  glfwSetInputMode(window.getHandle(), GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 }
 
 bool InputManager::keyPressed(int key_code) const {
@@ -56,6 +70,16 @@ bool InputManager::keyPressed(int key_code) const {
 bool InputManager::keyDown(int key_code) const {
   bool temp = keys_down[key_code] == GLFW_PRESS;
   keys_down[key_code] = false;
+  return temp;
+}
+
+bool InputManager::mouseKeyPressed(int key_code) const {
+  return mouse_keys[key_code] == GLFW_PRESS;
+}
+
+bool InputManager::mouseKeyDown(int key_code) const {
+  bool temp = mouse_keys_down[key_code] == GLFW_PRESS;
+  mouse_keys_down[key_code] = false;
   return temp;
 }
 
