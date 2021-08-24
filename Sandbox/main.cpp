@@ -60,9 +60,11 @@ int main() {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F2)) {
-			static bool cursor_enabled = true;
-			window.setCursorEnabled(cursor_enabled = !cursor_enabled);
+		if (tools::InputManager::instance()->mouseKeyPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+			window.setCursorEnabled(false);
+		}
+		else {
+			window.setCursorEnabled(true);
 		}
 
 		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F10)) {
