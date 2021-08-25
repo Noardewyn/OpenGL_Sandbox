@@ -20,6 +20,10 @@ namespace Sandbox {
   SceneGraphExample::SceneGraphExample(Renderer::Window* window)
     : engine::Scene(window) {
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CW);
+
     Renderer::Transform camera_transform;
     camera_transform.position = {1.0f, 2.0f, -4.0f};
     camera_transform.rotation = {110.0f, -30.0f, 0.0f};
