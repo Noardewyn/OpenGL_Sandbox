@@ -175,6 +175,11 @@ namespace Sandbox {
     window->clear(_clear_color);
     _camera->setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
+    _shader->bind();
+    _shader->setUniform1f("fog_distance", _fog_distance);
+    _shader->unbind();
+
+
     Scene::onRender();
   }
 
@@ -191,6 +196,7 @@ namespace Sandbox {
     }
 
     ImGui::ColorEdit4("Clear color", &_clear_color.r);
+    ImGui::InputFloat("Fog distance", &_fog_distance);
 
     ImGui::Text("Scene graph");
     Scene::onImGuiRender();

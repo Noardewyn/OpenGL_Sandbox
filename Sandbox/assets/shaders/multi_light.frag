@@ -41,6 +41,8 @@ uniform Material material;
 uniform bool calculate_light;
 uniform int  lights_count;
 
+uniform float fog_distance = 0;
+
 vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
@@ -118,8 +120,17 @@ vec3 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
   return (diffuse + specular + ambient);
 }
 
+float near = 0.1;
+
+float LinearizeDepth(float depth)
+{
+  float z = depth * 2.0 - 1.0;
+  return (2.0 * near * fog_distance) / (fog_distance + near - z * (fog_distance - near));
+}
+
 void main()
 {
+
     if (calculate_light) 
     {
       vec3 norm = normalize(Normal);
@@ -141,4 +152,7 @@ void main()
     {
       color = texture(material.diffuse, TexCoord) + material.fillColor;
     } 
+
+    if(fog_distance > 0)
+      color += LinearizeDepth(gl_FragCoord.z) / fog_distance;
 }
