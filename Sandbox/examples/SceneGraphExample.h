@@ -26,7 +26,8 @@ public:
 
 private:
   Renderer::Color _clear_color;
-
+  float           _fog_distance = 0;
+      
   std::unique_ptr<Renderer::Camera> _camera;
   std::unique_ptr<Renderer::Shader> _shader;
   std::unique_ptr<Renderer::Shader> _shader_white_color;
