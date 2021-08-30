@@ -11,7 +11,7 @@ public:
   std::string image_path;
 
   Texture();
-  Texture(const std::string &image_path);
+  Texture(const std::string &image_path, GLenum format = GL_RGBA);
 
   void bind(int unit = 0) const;
   void unbind() const;

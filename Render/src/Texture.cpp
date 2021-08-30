@@ -13,12 +13,18 @@ namespace Renderer {
     
   }
 
-  Texture::Texture(const std::string& image_path)
+  Texture::Texture(const std::string& image_path, GLenum format)
     : image_path(image_path), _render_id(0), width(0), height(0), nrChannels(0) {
+    
+    if (format == GL_RED)
+      nrChannels = nrChannels;
+    else if (format == GL_RGB)
+      nrChannels = 3;
+    else if (format == GL_RGBA)
+      nrChannels = 4;
+    
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(image_path.c_str(), &width, &height, &nrChannels, 3);
-
-    nrChannels = 3;
+    unsigned char* data = stbi_load(image_path.c_str(), &width, &height, &nrChannels, nrChannels);
 
     if(stbi_failure_reason())
       LOG_CORE_WARN("Texture load: {}", stbi_failure_reason());
@@ -27,14 +33,6 @@ namespace Renderer {
       LOG_CORE_ERROR("Failed to load texture: '{}'", image_path);
       return;
     }
-
-    GLenum format = GL_RED;
-    if (nrChannels == 1)
-      format = GL_RED;
-    else if (nrChannels == 3)
-      format = GL_RGB;
-    else if (nrChannels == 4)
-      format = GL_RGBA;
 
     glGenTextures(1, &_render_id);
     glBindTexture(GL_TEXTURE_2D, _render_id);

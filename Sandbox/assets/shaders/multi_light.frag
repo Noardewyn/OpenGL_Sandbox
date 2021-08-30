@@ -24,7 +24,7 @@ struct Light {
 #define NR_LIGHTS 4
 in Light iLights[NR_LIGHTS];
 
-out vec4 color;
+out vec4 FragColor;
 
 struct Material {
     sampler2D diffuse;
@@ -43,7 +43,7 @@ uniform int  lights_count;
 
 uniform float fog_distance = 0;
 
-vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
+vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
     // diffuse shading
@@ -52,9 +52,9 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     // combine results
-    vec3 ambient  = vec3(light.ambient)  * vec3(texture(material.diffuse, TexCoord));
-    vec3 diffuse  = vec3(light.diffuse)  * diff * vec3(texture(material.diffuse, TexCoord));
-    vec3 specular = vec3(light.specular) * spec * vec3(texture(material.specular, TexCoord));
+    vec4 ambient  = light.ambient  * texture(material.diffuse, TexCoord);
+    vec4 diffuse  = light.diffuse  * diff * texture(material.diffuse, TexCoord);
+    vec4 specular = light.specular * spec * texture(material.specular, TexCoord);
 
     diffuse = diffuse * light.intensity;
     specular = specular * light.intensity;
@@ -62,7 +62,7 @@ vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
     return (diffuse + specular + ambient);
 }  
 
-vec3 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
@@ -75,9 +75,9 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + 
   			     light.quadratic * (distance * distance));    
     // combine results
-    vec3 ambient  = vec3(light.ambient)  * vec3(texture(material.diffuse, TexCoord));
-    vec3 diffuse  = vec3(light.diffuse)  * diff * vec3(texture(material.diffuse, TexCoord));
-    vec3 specular = vec3(light.specular) * spec * vec3(texture(material.specular, TexCoord));
+    vec4 ambient  = light.ambient  * texture(material.diffuse, TexCoord);
+    vec4 diffuse  = light.diffuse  * diff * texture(material.diffuse, TexCoord);
+    vec4 specular = light.specular * spec * texture(material.specular, TexCoord);
     
     ambient  = ambient * attenuation;
     diffuse  = diffuse * attenuation * light.intensity;
@@ -85,7 +85,7 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular);
 } 
 
-vec3 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec4 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
   vec3 lightDir = normalize(light.position - fragPos);
   float theta = dot(lightDir, normalize(-light.direction));
@@ -103,9 +103,9 @@ vec3 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     light.quadratic * (distance * distance));
 
   // combine results
-  vec3 ambient = vec3(light.ambient) * vec3(texture(material.diffuse, TexCoord));
-  vec3 diffuse = vec3(light.diffuse) * diff * vec3(texture(material.diffuse, TexCoord));
-  vec3 specular = vec3(light.specular) * spec * vec3(texture(material.specular, TexCoord));
+  vec4 ambient = light.ambient * texture(material.diffuse, TexCoord);
+  vec4 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoord);
+  vec4 specular = light.specular * spec * texture(material.specular, TexCoord);
 
   float epsilon = light.cutOff - light.outerCutOff;
   float spot_smooth = smoothstep(1.0, 0.0, (theta - light.outerCutOff) / epsilon);
@@ -130,12 +130,11 @@ float LinearizeDepth(float depth)
 
 void main()
 {
-
     if (calculate_light) 
     {
       vec3 norm = normalize(Normal);
       vec3 viewDir = normalize(-FragPos);
-      vec3 resultLight = vec3(0.0);
+      vec4 resultLight = vec4(0.0);
 
       for (int i = 0; i < lights_count; i++) {
         if (int(iLights[i].type) == 1)
@@ -146,13 +145,17 @@ void main()
           resultLight += CalcDirLight(iLights[i], norm, viewDir);
       }
 
-      color = vec4(resultLight, 1.0) + material.fillColor;
+      FragColor = resultLight + material.fillColor;
     }
     else 
     {
-      color = texture(material.diffuse, TexCoord) + material.fillColor;
+      FragColor = texture(material.diffuse, TexCoord) + material.fillColor;
     } 
 
+    if (FragColor.a < 0.1)
+      discard;
+
+
     if(fog_distance > 0)
-      color += LinearizeDepth(gl_FragCoord.z) / fog_distance;
+      FragColor += LinearizeDepth(gl_FragCoord.z) / fog_distance;
 }

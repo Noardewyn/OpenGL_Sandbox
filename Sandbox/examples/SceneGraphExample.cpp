@@ -65,15 +65,6 @@ namespace Sandbox {
     mesh_renderer->target = _obj_model.get();
     mesh_renderer->shader = _shader.get();
 
-    engine::Entity& cube1_entity = createEntity("Floor");
-    cube1_entity.transform.position = {0.0, 0.0, 0.0};
-    cube1_entity.transform.scale = { 100.0, 0.2, 100.0 };
-    
-    mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->target = _cube_mesh.get();
-    mesh_renderer->material = _box_material.get();
-    mesh_renderer->shader = _shader.get();
-
     //engine::Entity& cube1_entity = createEntity("Earth");
     //cube1_entity.transform.position = {0.0, 0.0, 0.0};
     //cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
@@ -86,11 +77,13 @@ namespace Sandbox {
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
     addSpotLightEntity("Spot light 1", { 0.0f, 10.0f, 0.0f } , { -0.2f, -1.0f, -0.3f }, Renderer::Color(0.4, 0.2, 0.2));
     addPointLightEntity("Point light 2", { 7.5, 1.0, 1.5 }, Renderer::Color::White);
+    engine::Entity& directional = addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
+    auto* dir_light = directional.getComponent<engine::Light>();
+    dir_light->intensity = 0.1;
 
-    //addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
   }
 
-  void SceneGraphExample::addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color) {
+  engine::Entity& SceneGraphExample::addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color) {
     engine::Entity& light_entity = createEntity(name);
     light_entity.transform.position = position;
     light_entity.transform.scale = { 0.2, 0.2, 0.2 };
@@ -102,17 +95,21 @@ namespace Sandbox {
 
     engine::Light* light_component = light_entity.addComponent<engine::Light>(engine::Light::LightType::Point);
     light_component->color = color;
+
+    return light_entity;
   }
 
-  void SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color) {
+  engine::Entity& SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color) {
     engine::Entity& directional_light_entity = createEntity(name);
 
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
     light_component->direction = direction;
     light_component->color = color;
+
+    return directional_light_entity;
   }
 
-  void SceneGraphExample::addSpotLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color) {
+  engine::Entity& SceneGraphExample::addSpotLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color) {
     engine::Entity& spot_light_entity = createEntity(name);
     spot_light_entity.transform.position = position;
     spot_light_entity.transform.scale = { 0.2, 0.2, 0.2 };
@@ -125,6 +122,8 @@ namespace Sandbox {
     engine::Light* light_component = light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Spot);
     light_component->direction = direction;
     light_component->color = color;
+
+    return spot_light_entity;
   }
 
   void SceneGraphExample::onUpdate(float delta_time) {
@@ -178,7 +177,6 @@ namespace Sandbox {
     _shader->bind();
     _shader->setUniform1f("fog_distance", _fog_distance);
     _shader->unbind();
-
 
     Scene::onRender();
   }
