@@ -28,7 +28,7 @@ execute_process(COMMAND conan install ${_conanfile_path}
                 )
 
 if(return_code)
-    message(FATAL_ERROR "\n\n-----> Conan return error status.")
+    message(FATAL_ERROR "\n\n-----> Conan return error status: " ${return_code})
 endif()
 
 include(${_install_dir}/conanbuildinfo.cmake)
