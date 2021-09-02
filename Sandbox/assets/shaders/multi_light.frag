@@ -152,10 +152,6 @@ void main()
       FragColor = texture(material.diffuse, TexCoord) + material.fillColor;
     } 
 
-    if (FragColor.a < 0.1)
-      discard;
-
-
     if(fog_distance > 0)
       FragColor += LinearizeDepth(gl_FragCoord.z) / fog_distance;
 }

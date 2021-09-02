@@ -20,6 +20,12 @@ namespace Sandbox {
   SceneGraphExample::SceneGraphExample(Renderer::Window* window)
     : engine::Scene(window) {
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
     glFrontFace(GL_CW);
@@ -40,11 +46,16 @@ namespace Sandbox {
 
     _texture_earth = std::make_unique<Renderer::Texture>("assets/earth.jpg");
 
+    _texture_window = std::make_unique<Renderer::Texture>("assets/window.png");
+
     _box_material = std::make_unique<engine::Material>("textured box");
     _box_material->texture_diffuse = _texture_diffuse.get();
     _box_material->texture_emission = _texture_emission.get();
     _box_material->texture_specular = _texture_specular.get();
     //_box_material->color = Renderer::Color::White;
+
+    _box_alpha_material = std::make_unique<engine::Material>("alpha textured box");
+    _box_alpha_material->texture_diffuse = _texture_window.get();
 
     _earth_material = std::make_unique<engine::Material>("earth material");
     _earth_material->texture_diffuse = _texture_earth.get();
@@ -64,6 +75,15 @@ namespace Sandbox {
     engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _obj_model.get();
     mesh_renderer->shader = _shader.get();
+
+    engine::Entity& cube1_entity = createEntity("Alpha cube");
+    cube1_entity.transform.position = { 0.0, 0.0, 0.0 };
+    cube1_entity.transform.scale = { 1.0, 1.0, 1.0 };
+
+    mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
+    mesh_renderer->target =   _cube_mesh.get();
+    mesh_renderer->material = _box_alpha_material.get();
+    mesh_renderer->shader =   _shader.get();
 
     //engine::Entity& cube1_entity = createEntity("Earth");
     //cube1_entity.transform.position = {0.0, 0.0, 0.0};
