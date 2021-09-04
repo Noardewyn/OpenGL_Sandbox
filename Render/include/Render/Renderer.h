@@ -19,6 +19,9 @@ namespace Renderer {
 
   void DrawTriangles(const VertexArray& vao, const Shader& shader);
   void DrawTriangles(const VertexArray& vao, const IndexBuffer &ibo, const Shader& shader);
+
+  void setDefaultParams();
+
 } // namespace Renderer
 
 #define CHECK_OPENGL_ERROR() ::Renderer::CheckGLError(__FUNCTION__, __FILE__, __LINE__)

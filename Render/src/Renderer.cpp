@@ -24,4 +24,12 @@ namespace Renderer {
     CHECK_OPENGL_ERROR();
   }
 
+  void setDefaultParams() {
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+  }
+
 } // namespace Renderer

@@ -18,6 +18,7 @@ set(SOURCES
     ${CMAKE_SOURCE_DIR}/bindings/imgui_impl_glfw.cpp
     
     # Engine sources
+    ${PROJECT_SOURCE_DIR}/engine/src/BaseScene.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Scene.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Entity.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Component.cpp

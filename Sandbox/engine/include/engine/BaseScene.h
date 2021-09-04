@@ -7,7 +7,7 @@ namespace engine {
 
 class BaseScene {
 public:
-  BaseScene(Renderer::Window *window) : window(window) {}
+  BaseScene(Renderer::Window *window);
   virtual ~BaseScene() = default;
 
   virtual void onUpdate(float delta_time) {}

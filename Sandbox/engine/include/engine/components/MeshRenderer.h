@@ -23,6 +23,7 @@ public:
   bool& getCalculateLighting() { return _calculate_lighting; }
 private:
   bool _calculate_lighting = true;
+  bool _alpa_blending = true;
   bool _use_textures = true;
   
   void calculateLighting();
