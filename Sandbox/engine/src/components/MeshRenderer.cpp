@@ -65,6 +65,13 @@ namespace engine {
     if(!isActive() || !target || !shader)
       return;
 
+    if (_alpa_blending) {
+      glEnable(GL_BLEND);
+    }
+    else {
+      glDisable(GL_BLEND);
+    }
+
     shader->bind();
     const auto &main_camera = _parent->getScene().mainCamera();
     shader->setUniformMatrix4f("model", _parent->transform.toMatrix());
@@ -87,6 +94,7 @@ namespace engine {
 
   void MeshRenderer::onGuiItemRender() {
     ImGui::Checkbox("Calculate lighting", &_calculate_lighting);
+    ImGui::Checkbox("Alpha blending", &_alpa_blending);
 
     if(material) {
       ImGui::Text("material name: %u", material->name);
