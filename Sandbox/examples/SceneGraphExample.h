@@ -46,7 +46,7 @@ private:
   std::unique_ptr<engine::Mesh> _cube_mesh;
   std::unique_ptr<engine::Mesh> _sphere_mesh;
 
-  std::unique_ptr<engine::Model> _obj_model;
+  std::unique_ptr<engine::Model> _sponza_model;
 };
 
 } // namespace sandbox

@@ -7,6 +7,8 @@
 #include "Render/InputManager.h"
 #include "Render/Logger.h"
 
+#include "engine/AssetManager.h"
+
 #include "examples/ClearColorExample.h"
 #include "examples/ColoredQuadExample.h"
 #include "examples/TextureExample.h"
@@ -17,10 +19,11 @@
 #include "examples/SceneGraphExample.h"
 #include "examples/StencilExample.h"
 #include "examples/FramebufferExample.h"
-
 #include "examples/ExamplesMenu.h"
 
 int main() {
+	engine::AssetManager::setAssetsPath("../../../../Sandbox/assets/");
+
 	tools::Logger::Init(spdlog::level::trace);
 
 	Renderer::Window window(1400, 1000, "OpenGL Sandbox");

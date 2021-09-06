@@ -70,7 +70,7 @@ namespace Sandbox {
     _vao->unbind();
 
     //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices));
-    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/mvp.frag", "./assets/shaders/mvp.vs");
+    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp.frag", assetsPath() + "shaders/mvp.vs");
     _texture = std::make_unique<Renderer::Texture>(_texture_path);
     strcpy(_text_input_buf, _texture_path.c_str());
 

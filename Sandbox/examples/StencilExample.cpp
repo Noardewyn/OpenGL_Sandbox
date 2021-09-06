@@ -31,13 +31,13 @@ namespace Sandbox {
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
     setMainCamera(_camera.get());
 
-    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light1.frag", "./assets/shaders/multi_light.vs");
-    _shader_stencil = std::make_unique<Renderer::Shader>("./assets/shaders/stencil_outline.frag", "./assets/shaders/stencil_outline.vs");
-    _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
+    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/default.frag", assetsPath() + "shaders/default.vs");
+    _shader_stencil = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/stencil_outline.frag", assetsPath() + "shaders/stencil_outline.vs");
+    _shader_light = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_plain.frag", assetsPath() + "shaders/mvp_plain.vs");
 
-    _texture_diffuse = std::make_unique<Renderer::Texture>("assets/container2.png");
-    _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
-    _texture_emission = std::make_unique<Renderer::Texture>("assets/matrix.jpg");
+    _texture_diffuse = std::make_unique<Renderer::Texture>(assetsPath() + "container2.png");
+    _texture_specular = std::make_unique<Renderer::Texture>(assetsPath() + "container2_specular.png");
+    _texture_emission = std::make_unique<Renderer::Texture>(assetsPath() + "matrix.jpg");
 
     _box_material = std::make_unique<engine::Material>("textured box");
     _box_material->texture_diffuse = _texture_diffuse.get();
@@ -46,7 +46,7 @@ namespace Sandbox {
 
     _cube_mesh = engine::generateCubeMesh();
 
-    _obj_model = std::make_unique<engine::Model>("assets/models/sponza/sponza.obj"); // "assets/models/link/pose.obj"
+    _sponza_model = std::make_unique<engine::Model>(assetsPath() + "models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
 
     // Entities
     {
@@ -54,7 +54,7 @@ namespace Sandbox {
       model_entity.transform.position = { 0.0, 0.0, 0.0 };
       model_entity.transform.scale = { 0.05, 0.05, 0.05 };
       engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
-      mesh_renderer->target = _obj_model.get();
+      mesh_renderer->target = _sponza_model.get();
       mesh_renderer->shader = _shader.get();
       mesh_renderer->getCalculateLighting() = false;
     }

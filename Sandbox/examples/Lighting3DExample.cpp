@@ -71,8 +71,8 @@ namespace Sandbox {
     _vao->unbind();
 
     //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices) / sizeof(indices[0]);
-    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_light.frag", "./assets/shaders/mvp_light.vs");
-    _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
+    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_light.frag", assetsPath() + "shaders/mvp_light.vs");
+    _shader_light = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_plain.frag", assetsPath() + "shaders/mvp_plain.vs");
 
     _texture = std::make_unique<Renderer::Texture>(_texture_path);
     strcpy(_text_input_buf, _texture_path.c_str());

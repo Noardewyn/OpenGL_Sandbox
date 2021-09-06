@@ -70,13 +70,14 @@ namespace Sandbox {
     _vao->addBuffer(*_vbo, layout);
     _vao->unbind();
 
-    //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices) / sizeof(indices[0]);
-    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_light2.frag", "./assets/shaders/mvp_light2.vs");
-    _shader_light = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
 
-    _texture_diffuse = std::make_unique<Renderer::Texture>("assets/container2.png");
-    _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
-    _texture_emission = std::make_unique<Renderer::Texture>("assets/matrix.jpg");
+    //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices) / sizeof(indices[0]);
+    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_light2.frag", assetsPath() + "shaders/mvp_light2.vs");
+    _shader_light = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_plain.frag", assetsPath() + "shaders/mvp_plain.vs");
+
+    _texture_diffuse = std::make_unique<Renderer::Texture>(assetsPath() + "container2.png");
+    _texture_specular = std::make_unique<Renderer::Texture>(assetsPath() + "container2_specular.png");
+    _texture_emission = std::make_unique<Renderer::Texture>(assetsPath() + "matrix.jpg");
 
     Renderer::Transform camera_transform;
     camera_transform.position = {1.0f, 2.0f, -4.0f};
