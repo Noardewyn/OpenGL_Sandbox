@@ -47,8 +47,8 @@ namespace Renderer {
   }
 
   Window::~Window() {
-    glfwTerminate();
     LOG_CORE_TRACE("Window closed");
+    glfwTerminate();
   }
 
   void Window::close() {
@@ -125,6 +125,7 @@ namespace Renderer {
       glfwSetWindowMonitor(_glfw_handle, nullptr, _pos_windowed[0], _pos_windowed[1], _size_windowed[0], _size_windowed[1], 0);
     }
   }
+
 
   void Window::setCursorEnabled(bool state) {
   if(state)

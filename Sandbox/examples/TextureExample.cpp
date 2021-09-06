@@ -24,7 +24,6 @@ namespace Sandbox {
     : engine::BaseScene(window) {
     _vao = std::make_unique<Renderer::VertexArray>();
     _vbo = std::make_unique<Renderer::VertexBuffer>(vertices, sizeof(vertices));
-    _layout = std::make_unique<Renderer::VertexBufferLayout>();
     Renderer::VertexBufferLayout layout;
     layout.push<float>(3);
     layout.push<float>(2);

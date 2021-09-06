@@ -16,6 +16,7 @@
 #include "examples/AdvancedLighting3DExample.h"
 #include "examples/SceneGraphExample.h"
 #include "examples/StencilExample.h"
+#include "examples/FramebufferExample.h"
 
 #include "examples/ExamplesMenu.h"
 
@@ -44,6 +45,7 @@ int main() {
 	menu.registerScene<Sandbox::AdvancedLighting3DExample>("advanced 3d lighting", "");
 	menu.registerScene<Sandbox::SceneGraphExample>("3d model loading", "");
   menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
+  menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
 
 	menu.startScene(menu.scenesCount()-1);
 
