@@ -23,7 +23,7 @@ public:
   virtual void onImGuiRender() override;
 
 private:
-  std::string _texture_path = "assets/box.jpg";
+  std::string _texture_path = assetsPath() + "box.jpg";
 
   char _text_input_buf[128];
 

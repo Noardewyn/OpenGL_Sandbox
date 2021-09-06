@@ -26,6 +26,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/Mesh.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Model.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/MeshProvider.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/AssetManager.cpp
 
     # Components
     ${PROJECT_SOURCE_DIR}/engine/src/components/MeshRenderer.cpp
@@ -61,10 +62,3 @@ target_include_directories(${PROJECT_NAME}
   PUBLIC
   ${PROJECT_SOURCE_DIR}/engine/include
 )
-
-# Copy assets to project binary dir
-add_custom_command(
-        TARGET ${PROJECT_NAME} PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${PROJECT_SOURCE_DIR}/assets/
-                ${CMAKE_BINARY_DIR}/bin/assets/)

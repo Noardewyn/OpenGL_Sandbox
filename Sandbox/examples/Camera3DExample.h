@@ -24,7 +24,7 @@ public:
   virtual void onImGuiRender() override;
 
 private:
-  std::string _texture_path = "assets/box.jpg";
+  std::string _texture_path = assetsPath() + "box.jpg";
   Renderer::Transform cube_transform;
 
   char _text_input_buf[128];

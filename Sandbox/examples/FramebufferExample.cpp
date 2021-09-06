@@ -9,8 +9,8 @@
 #include "Render/Transform.h"
 #include "Render/InputManager.h"
 #include "Render/Renderer.h"
-#include "engine/MeshProvider.h"
 
+#include "engine/MeshProvider.h"
 #include "engine/components/MeshRenderer.h"
 
 #include "FramebufferExample.h"
@@ -43,10 +43,10 @@ namespace Sandbox {
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
     setMainCamera(_camera.get());
 
-    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/default.frag", "./assets/shaders/default.vs");
-    _postprocess_shader = std::make_unique<Renderer::Shader>("./assets/shaders/postprocess.frag", "./assets/shaders/postprocess.vs");
+    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/default.frag", assetsPath() + "shaders/default.vs");
+    _postprocess_shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/postprocess.frag", assetsPath() + "shaders/postprocess.vs");
 
-    _sponza_model = std::make_unique<engine::Model>("assets/models/sponza/sponza.obj"); // "assets/models/link/pose.obj"
+    _sponza_model = std::make_unique<engine::Model>(assetsPath() + "models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
 
     _frame_buffer = std::make_unique<Renderer::FrameBuffer>(window->getWidth(), window->getHeight());
     _frame_buffer->bind();

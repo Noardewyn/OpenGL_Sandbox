@@ -37,16 +37,17 @@ namespace Sandbox {
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
     setMainCamera(_camera.get());
 
-    _shader = std::make_unique<Renderer::Shader>("./assets/shaders/multi_light.frag", "./assets/shaders/multi_light.vs");
-    _shader_white_color = std::make_unique<Renderer::Shader>("./assets/shaders/mvp_plain.frag", "./assets/shaders/mvp_plain.vs");
 
-    _texture_diffuse = std::make_unique<Renderer::Texture>("assets/container2.png");
-    _texture_specular = std::make_unique<Renderer::Texture>("assets/container2_specular.png");
-    _texture_emission = std::make_unique<Renderer::Texture>("assets/matrix.jpg");
+    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/multi_light.frag", assetsPath() + "shaders/multi_light.vs");
+    _shader_white_color = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_plain.frag", assetsPath() + "shaders/mvp_plain.vs");
 
-    _texture_earth = std::make_unique<Renderer::Texture>("assets/earth.jpg");
+    _texture_diffuse = std::make_unique<Renderer::Texture>(assetsPath() + "container2.png");
+    _texture_specular = std::make_unique<Renderer::Texture>(assetsPath() + "container2_specular.png");
+    _texture_emission = std::make_unique<Renderer::Texture>(assetsPath() + "matrix.jpg");
 
-    _texture_window = std::make_unique<Renderer::Texture>("assets/window.png");
+    _texture_earth = std::make_unique<Renderer::Texture>(assetsPath() + "earth.jpg");
+
+    _texture_window = std::make_unique<Renderer::Texture>(assetsPath() + "window.png");
 
     _box_material = std::make_unique<engine::Material>("textured box");
     _box_material->texture_diffuse = _texture_diffuse.get();
@@ -63,7 +64,7 @@ namespace Sandbox {
     _light_source_material = std::make_unique<engine::Material>("light source");
     _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
 
-    _obj_model = std::make_unique<engine::Model>("assets/models/sponza/sponza.obj"); // "assets/models/link/pose.obj"
+    _sponza_model = std::make_unique<engine::Model>(assetsPath() + "models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
 
@@ -72,8 +73,9 @@ namespace Sandbox {
     model_entity.transform.position = { 0.0, 0.0, 0.0 };
     model_entity.transform.scale = { 0.05, 0.05, 0.05 };
      
+
     engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->target = _obj_model.get();
+    mesh_renderer->target = _sponza_model.get();
     mesh_renderer->shader = _shader.get();
 
     engine::Entity& cube1_entity = createEntity("Alpha cube");
@@ -84,6 +86,7 @@ namespace Sandbox {
     mesh_renderer->target =   _cube_mesh.get();
     mesh_renderer->material = _box_alpha_material.get();
     mesh_renderer->shader =   _shader.get();
+
 
     //engine::Entity& cube1_entity = createEntity("Earth");
     //cube1_entity.transform.position = {0.0, 0.0, 0.0};
@@ -100,7 +103,6 @@ namespace Sandbox {
     engine::Entity& directional = addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
     auto* dir_light = directional.getComponent<engine::Light>();
     dir_light->intensity = 0.1;
-
   }
 
   engine::Entity& SceneGraphExample::addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color) {

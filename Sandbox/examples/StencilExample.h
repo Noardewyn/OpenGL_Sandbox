@@ -44,7 +44,7 @@ private:
   std::unique_ptr<Renderer::Texture> _texture;
   std::unique_ptr<Renderer::Camera> _camera;
 
-  std::unique_ptr<engine::Model> _obj_model;
+  std::unique_ptr<engine::Model> _sponza_model;
 };
 
 } // namespace sandbox
