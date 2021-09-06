@@ -22,6 +22,8 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/InputManager.cpp
     ${PROJECT_SOURCE_DIR}/src/Logger.cpp
     ${PROJECT_SOURCE_DIR}/src/Renderer.cpp
+    ${PROJECT_SOURCE_DIR}/src/FrameBuffer.cpp
+    ${PROJECT_SOURCE_DIR}/src/RenderBuffer.cpp
 )
 
 set(LIBS
