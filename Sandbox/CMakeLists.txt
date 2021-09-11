@@ -26,7 +26,8 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/Mesh.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Model.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/MeshProvider.cpp
-    ${PROJECT_SOURCE_DIR}/engine/src/AssetManager.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/assets/Asset.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/assets/AssetManager.cpp
 
     # Components
     ${PROJECT_SOURCE_DIR}/engine/src/components/MeshRenderer.cpp
