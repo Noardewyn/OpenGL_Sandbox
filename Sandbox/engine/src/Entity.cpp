@@ -22,9 +22,29 @@ namespace engine {
 
     ImGui::SetNextTreeNodeOpen(true);
     if (ImGui::TreeNode("Transform")) {
-      ImGui::SliderFloat3("position", &transform.position.x, -10, 10);
+      ImGui::SliderFloat3("position", &transform.position.x, -100, 100);
       ImGui::SliderFloat3("scale", &transform.scale.x, -10, 10);
-      ImGui::SliderFloat3("rotation", &transform.rotation.x, 0, 360);
+
+      auto clearButton = [](char* title, float& value, float clear_value = 0) { 
+        if (ImGui::Button(title)) {
+          value = clear_value;
+        }
+      };
+
+      {
+        const int width = ImGui::GetWindowWidth() / 5;
+        const char* format = "%.2f";
+        ImGui::BeginGroup();
+        ImGui::LabelText("", "rotation");
+        clearButton("X##rx", transform.rotation.x); ImGui::SameLine(0.0, 0.0); 
+        ImGui::SetNextItemWidth(width); ImGui::SliderFloat("##r1", &transform.rotation.x, -360, 360, format); ImGui::SameLine(0.0, 5.0);
+        clearButton("Y##ry", transform.rotation.y); ImGui::SameLine(0.0, 0.0);
+        ImGui::SetNextItemWidth(width); ImGui::SliderFloat("##r2", &transform.rotation.y, -360, 360, format); ImGui::SameLine(0.0, 5.0);
+        clearButton("Z##rz", transform.rotation.z); ImGui::SameLine(0.0, 0.0);
+        ImGui::SetNextItemWidth(width); ImGui::SliderFloat("##r3", &transform.rotation.z, -360, 360, format); ImGui::SameLine(0.0, 5.0);
+        ImGui::EndGroup();
+      }
+
       ImGui::TreePop();
     }
 

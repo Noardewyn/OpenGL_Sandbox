@@ -22,7 +22,7 @@ public:
   virtual void onImGuiRender() override;
 
   engine::Entity& addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color);
-  engine::Entity& addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color);
+  engine::Entity& addDirLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color);
   engine::Entity& addSpotLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color);
 
 private:

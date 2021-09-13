@@ -1,4 +1,6 @@
-﻿#include <imgui.h>
+﻿#define _USE_MATH_DEFINES
+#include <cmath>
+#include <imgui.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -72,38 +74,42 @@ namespace Sandbox {
     _sphere_mesh = engine::generateSphereMesh(16);
 
     // Entities
-    engine::Entity& model_entity = createEntity("3d Model");
-    model_entity.transform.position = { 0.0, 0.0, 0.0 };
-    model_entity.transform.scale = { 0.05, 0.05, 0.05 };
-     
+    {
+      engine::Entity& entity = createEntity("3d Model");
+      entity.transform.position = { 0.0, 0.0, 0.0 };
+      entity.transform.scale = { 0.05, 0.05, 0.05 };
 
-    engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->target = _sponza_model.get();
-    mesh_renderer->shader_asset = _shader;
+      engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
+      mesh_renderer->target = _sponza_model.get();
+      mesh_renderer->shader_asset = _shader;
+    }
 
-    /*engine::Entity& cube1_entity = createEntity("Alpha cube");
-    cube1_entity.transform.position = { 0.0, 0.0, 0.0 };
-    cube1_entity.transform.scale = { 1.0, 1.0, 1.0 };
+    {
+      engine::Entity& entity = createEntity("Alpha cube");
+      entity.transform.position = { 0.0, 0.0, 0.0 };
+      entity.transform.scale = { 1.0, 1.0, 1.0 };
 
-    mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->target   = _cube_mesh.get();
-    mesh_renderer->material = _box_alpha_material.get();
-    mesh_renderer->shader_asset = _shader_white_color;*/
+      engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
+      mesh_renderer->target = _cube_mesh.get();
+      mesh_renderer->material = _box_alpha_material.get();
+      mesh_renderer->shader_asset = _shader_white_color;
+    }
 
+    {
+      engine::Entity& entity = createEntity("Earth");
+      entity.transform.position = { 0.0, 5.0, 5.0 };
+      entity.transform.scale = { 1.0, -1.0, 1.0 };
 
-    //engine::Entity& cube1_entity = createEntity("Earth");
-    //cube1_entity.transform.position = {0.0, 0.0, 0.0};
-    //cube1_entity.transform.scale = { 1.0, -1.0, 1.0 };
-
-    //engine::MeshRenderer* mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
-    //mesh_renderer->target = _sphere_mesh.get();
-    //mesh_renderer->material = _earth_material.get();
-    //mesh_renderer->shader = _shader.get();
+      engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
+      mesh_renderer->target = _sphere_mesh.get();
+      mesh_renderer->material = _earth_material.get();
+      mesh_renderer->shader_asset = _shader;
+    }
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
-    addSpotLightEntity("Spot light 1", { 0.0f, 10.0f, 0.0f } , { -0.2f, -1.0f, -0.3f }, Renderer::Color(0.4, 0.2, 0.2));
+    addSpotLightEntity("Spot light 1", { 0.0f, 10.0f, 0.0f } , { 0.0f, 0.0f, -120.0f }, Renderer::Color(0.4, 0.2, 0.2));
     addPointLightEntity("Point light 2", { 7.5, 1.0, 1.5 }, Renderer::Color::White);
-    engine::Entity& directional = addDirLightEntity("Directional light 1", { -0.2f, -1.0f, -0.3f }, Renderer::Color::White);
+    engine::Entity& directional = addDirLightEntity("Directional light 1", { 0.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, -120 }, Renderer::Color::White);
     auto* dir_light = directional.getComponent<engine::Light>();
     dir_light->intensity = 0.1;
   }
@@ -124,10 +130,11 @@ namespace Sandbox {
     return light_entity;
   }
 
-  engine::Entity& SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color) {
+  engine::Entity& SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color) {
     engine::Entity& directional_light_entity = createEntity(name);
     directional_light_entity.transform.rotation = direction;
     directional_light_entity.transform.scale = { 1.0, 0.2, 0.2 };
+    directional_light_entity.transform.rotation = direction;
 
     engine::MeshRenderer* mesh_renderer = mesh_renderer = directional_light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _cube_mesh.get();
