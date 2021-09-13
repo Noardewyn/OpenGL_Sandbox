@@ -7,7 +7,7 @@ namespace engine {
     
   }
 
-  Asset::AssetType Asset::getType() const {
+  AssetType Asset::getType() const {
     return _type;
   }
 
@@ -23,7 +23,7 @@ namespace engine {
     _auto_reload_enabled = enabled;
   }
 
-  bool Asset::set_reloading(bool state) {
+  void Asset::set_reloading(bool state) {
     _is_reloading = state;
   }
 

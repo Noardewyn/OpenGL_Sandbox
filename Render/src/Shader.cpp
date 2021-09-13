@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 #include <GL/glew.h>
@@ -23,6 +24,20 @@ Shader::Shader(const std::string& fragment_path, const std::string& vertex_path)
 Shader::~Shader() {
   LOG_CORE_TRACE("Deleting Shader with id={}", _shader_id);
   glDeleteProgram(_shader_id);
+}
+
+Shader::Shader(Shader&& other) noexcept {
+  _shader_id = other._shader_id;
+  other._shader_id = 0;
+}
+
+Shader& Shader::operator=(Shader&& other) {
+  if (this != &other) {
+    _shader_id = other._shader_id;
+    other._shader_id = 0;
+  }
+
+  return *this;
 }
 
 void Shader::bind() const {

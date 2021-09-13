@@ -2,7 +2,7 @@
 #define __BASE_SCENE_H__
 
 #include "Render/Window.h"
-#include "engine/AssetManager.h"
+#include "engine/assets/AssetManager.h"
 
 namespace engine {
 

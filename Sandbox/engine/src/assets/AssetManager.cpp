@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "engine/assets/ShaderAsset.h"
+
 namespace engine {
   std::string AssetManager::assetsPath() {
     return _assets_path;
@@ -11,24 +13,7 @@ namespace engine {
     _assets_path = path;
   }
 
-  Asset* AssetManager::loadAsset(const std::string& path, const Asset::AssetType& type) {
-    auto asset = _assets.find(path);
-
-    if (asset != _assets.end()) {
-      
-    }
-    else {
-      return asset->second.get();
-    }
-  }
-
-  Asset* AssetManager::reloadAsset(const std::string& path, const Asset::AssetType& type) {
-
-  }
-
-  Asset* AssetManager::getAsset(const std::string& path, const Asset::AssetType& type) {
-
-  }
-
   std::string AssetManager::_assets_path = "";
+  std::unordered_map<std::string, std::unique_ptr<Asset>> AssetManager::_assets;
+
 } // namespace engine

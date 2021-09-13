@@ -13,6 +13,8 @@
 #include "engine/components/MeshRenderer.h"
 #include "engine/components/Light.h"
 
+#include "engine/assets/ShaderAsset.h"
+
 #include "SceneGraphExample.h"
 
 namespace Sandbox {
@@ -37,9 +39,10 @@ namespace Sandbox {
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
     setMainCamera(_camera.get());
 
+    using namespace engine;
 
-    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/multi_light.frag", assetsPath() + "shaders/multi_light.vs");
-    _shader_white_color = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_plain.frag", assetsPath() + "shaders/mvp_plain.vs");
+    _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl");
+    _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl");
 
     _texture_diffuse = std::make_unique<Renderer::Texture>(assetsPath() + "container2.png");
     _texture_specular = std::make_unique<Renderer::Texture>(assetsPath() + "container2_specular.png");
@@ -76,16 +79,16 @@ namespace Sandbox {
 
     engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _sponza_model.get();
-    mesh_renderer->shader = _shader.get();
+    mesh_renderer->shader_asset = _shader;
 
-    engine::Entity& cube1_entity = createEntity("Alpha cube");
+    /*engine::Entity& cube1_entity = createEntity("Alpha cube");
     cube1_entity.transform.position = { 0.0, 0.0, 0.0 };
     cube1_entity.transform.scale = { 1.0, 1.0, 1.0 };
 
     mesh_renderer = cube1_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->target =   _cube_mesh.get();
+    mesh_renderer->target   = _cube_mesh.get();
     mesh_renderer->material = _box_alpha_material.get();
-    mesh_renderer->shader =   _shader.get();
+    mesh_renderer->shader_asset = _shader_white_color;*/
 
 
     //engine::Entity& cube1_entity = createEntity("Earth");
@@ -113,7 +116,7 @@ namespace Sandbox {
     engine::MeshRenderer* mesh_renderer = light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _sphere_mesh.get();
     mesh_renderer->material = _light_source_material.get();
-    mesh_renderer->shader = _shader.get();
+    mesh_renderer->shader_asset = _shader;
 
     engine::Light* light_component = light_entity.addComponent<engine::Light>(engine::Light::LightType::Point);
     light_component->color = color;
@@ -123,10 +126,18 @@ namespace Sandbox {
 
   engine::Entity& SceneGraphExample::addDirLightEntity(const std::string& name, const glm::vec3& direction, const Renderer::Color& color) {
     engine::Entity& directional_light_entity = createEntity(name);
+    directional_light_entity.transform.rotation = direction;
+    directional_light_entity.transform.scale = { 1.0, 0.2, 0.2 };
+
+    engine::MeshRenderer* mesh_renderer = mesh_renderer = directional_light_entity.addComponent<engine::MeshRenderer>();
+    mesh_renderer->target = _cube_mesh.get();
+    mesh_renderer->material = _light_source_material.get();
+    mesh_renderer->shader_asset = _shader;
 
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
     light_component->direction = direction;
     light_component->color = color;
+    light_component->ambient_percent = 0.1;
 
     return directional_light_entity;
   }
@@ -134,12 +145,13 @@ namespace Sandbox {
   engine::Entity& SceneGraphExample::addSpotLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color) {
     engine::Entity& spot_light_entity = createEntity(name);
     spot_light_entity.transform.position = position;
-    spot_light_entity.transform.scale = { 0.2, 0.2, 0.2 };
+    spot_light_entity.transform.rotation = direction;
+    spot_light_entity.transform.scale = { 1.0, 0.2, 0.2 };
 
     engine::MeshRenderer* mesh_renderer = mesh_renderer = spot_light_entity.addComponent<engine::MeshRenderer>();
-    mesh_renderer->target = _sphere_mesh.get();
+    mesh_renderer->target = _cube_mesh.get();
     mesh_renderer->material = _light_source_material.get();
-    mesh_renderer->shader = _shader.get();
+    mesh_renderer->shader_asset = _shader;
 
     engine::Light* light_component = light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Spot);
     light_component->direction = direction;
@@ -196,9 +208,9 @@ namespace Sandbox {
     window->clear(_clear_color);
     _camera->setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
-    _shader->bind();
-    _shader->setUniform1f("fog_distance", _fog_distance);
-    _shader->unbind();
+    _shader->getShader().bind();
+    _shader->getShader().setUniform1f("fog_distance", _fog_distance);
+    _shader->getShader().unbind();
 
     Scene::onRender();
   }

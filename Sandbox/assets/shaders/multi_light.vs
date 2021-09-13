@@ -27,8 +27,7 @@ uniform mat4 projection;
 
 #define NR_LIGHTS 4
 uniform Light lights[NR_LIGHTS];
-
-out Light iLights[NR_LIGHTS];
+uniform int   lights_count;
 
 out vec3 Normal;
 out vec2 TexCoord;
@@ -40,10 +39,4 @@ void main()
     FragPos = vec3(view * model * vec4(position, 1.0));
     Normal = mat3(transpose(inverse(view * model))) * normal;
     TexCoord = texCoord;
-
-    for (int i = 0; i < NR_LIGHTS; i++) {
-      iLights[i] = lights[i];
-      iLights[i].position = vec3(view * vec4(lights[i].position, 1.0));
-      iLights[i].direction = mat3(transpose(inverse(view))) * lights[i].direction;
-    }
 }

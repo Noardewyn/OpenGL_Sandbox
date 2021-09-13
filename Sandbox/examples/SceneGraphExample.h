@@ -9,6 +9,7 @@
 #include "engine/Mesh.h"
 #include "engine/Model.h"
 #include "engine/Scene.h"
+#include "engine/assets/ShaderAsset.h"
 
 namespace Sandbox {
 
@@ -29,8 +30,8 @@ private:
   float           _fog_distance = 0;
       
   std::unique_ptr<Renderer::Camera> _camera;
-  std::unique_ptr<Renderer::Shader> _shader;
-  std::unique_ptr<Renderer::Shader> _shader_white_color;
+  engine::ShaderAsset* _shader;
+  engine::ShaderAsset* _shader_white_color;
 
   std::unique_ptr<engine::Material> _box_material;
   std::unique_ptr<engine::Material> _box_alpha_material;

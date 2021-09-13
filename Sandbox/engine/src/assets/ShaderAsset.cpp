@@ -14,7 +14,7 @@ namespace engine {
     std::filesystem::path full_path(AssetManager::assetsPath() + getPath());
     full_path.replace_extension();
 
-    _shader = Renderer::Shader(full_path.string() + ".frag", full_path.string() + ".vs");
+    _shader = std::move(Renderer::Shader(full_path.string() + ".frag", full_path.string() + ".vs"));
   }
 
   void ShaderAsset::unload() {

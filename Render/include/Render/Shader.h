@@ -14,6 +14,9 @@ public:
   Shader(const std::string& fragment_path, const std::string& vertex_path);
   ~Shader();
   
+  Shader(Shader&& other) noexcept;
+  Shader& operator=(Shader&& other);
+
   void bind() const;
   void unbind() const;
 
