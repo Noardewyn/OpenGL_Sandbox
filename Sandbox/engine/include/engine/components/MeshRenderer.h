@@ -3,7 +3,7 @@
 
 #include "engine/Component.h"
 #include "engine/Mesh.h"
-#include "Render/Shader.h"
+#include "engine/assets/ShaderAsset.h"
 
 namespace engine {
 
@@ -12,7 +12,7 @@ public:
 
   IRenderable*           target;
   Material*              material;
-  Renderer::Shader*      shader;
+  ShaderAsset*           shader_asset;
 
   explicit MeshRenderer(Entity* parent = nullptr);
 
@@ -21,6 +21,7 @@ public:
   virtual void onUpdate(float delta_time) override;
 
   bool& getCalculateLighting() { return _calculate_lighting; }
+
 private:
   bool _calculate_lighting = true;
   bool _alpa_blending = true;

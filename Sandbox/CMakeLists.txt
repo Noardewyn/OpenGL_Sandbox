@@ -27,6 +27,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/Model.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/MeshProvider.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/Asset.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/assets/ShaderAsset.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/AssetManager.cpp
 
     # Components
@@ -43,8 +44,8 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/examples/Lighting3DExample.cpp
     ${PROJECT_SOURCE_DIR}/examples/AdvancedLighting3DExample.cpp
     ${PROJECT_SOURCE_DIR}/examples/SceneGraphExample.cpp
-    ${PROJECT_SOURCE_DIR}/examples/StencilExample.cpp
-    ${PROJECT_SOURCE_DIR}/examples/FramebufferExample.cpp
+#    ${PROJECT_SOURCE_DIR}/examples/StencilExample.cpp
+#    ${PROJECT_SOURCE_DIR}/examples/FramebufferExample.cpp
     
     ${PROJECT_SOURCE_DIR}/main.cpp
 )

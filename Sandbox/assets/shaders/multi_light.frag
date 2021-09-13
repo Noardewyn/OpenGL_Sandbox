@@ -21,9 +21,6 @@ struct Light {
   float intensity;
 };
 
-#define NR_LIGHTS 4
-in Light iLights[NR_LIGHTS];
-
 out vec4 FragColor;
 
 struct Material {
@@ -38,9 +35,10 @@ struct Material {
 
 uniform Material material;
 
+#define NR_LIGHTS 4
+uniform Light lights[NR_LIGHTS];
+uniform int   lights_count;
 uniform bool calculate_light;
-uniform int  lights_count;
-
 uniform float fog_distance = 0;
 
 vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
@@ -91,7 +89,7 @@ vec4 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
   float theta = dot(lightDir, normalize(-light.direction));
 
   if (theta <= light.cutOff)
-    return vec3(light.ambient) * vec3(texture(material.diffuse, TexCoord));
+    return light.ambient * texture(material.diffuse, TexCoord);
 
   // diffuse shading
   float diff = max(dot(normal, lightDir), 0.0);
@@ -137,12 +135,12 @@ void main()
       vec4 resultLight = vec4(0.0);
 
       for (int i = 0; i < lights_count; i++) {
-        if (int(iLights[i].type) == 1)
-          resultLight += CalcPointLight(iLights[i], norm, FragPos, viewDir);
-        else if (int(iLights[i].type) == 2)
-          resultLight += CalcSpotLight(iLights[i], norm, FragPos, viewDir);
-        else if(int(iLights[i].type) == 3)
-          resultLight += CalcDirLight(iLights[i], norm, viewDir);
+        if (int(lights[i].type) == 1)
+          resultLight += CalcPointLight(lights[i], norm, FragPos, viewDir);
+        else if (int(lights[i].type) == 2)
+          resultLight += CalcSpotLight(lights[i], norm, FragPos, viewDir);
+        else if(int(lights[i].type) == 3)
+          resultLight += CalcDirLight(lights[i], norm, viewDir);
       }
 
       FragColor = resultLight + material.fillColor;

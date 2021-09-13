@@ -29,7 +29,7 @@ public:
   float intensity = 5;
   float specular_percent = 1.0f;
   float diffuse_percent =  0.8f;
-  float ambient_percent =  0.1f;
+  float ambient_percent =  0.0f;
 
   glm::vec3 direction;
 
