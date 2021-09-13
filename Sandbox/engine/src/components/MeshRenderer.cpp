@@ -40,11 +40,11 @@ namespace engine {
       glm::vec4 view_pos = view_mat * glm::vec4(entity->transform.position, 1.0f);
 
       glm::mat4 model(1.0);
-      model = glm::rotate(model, entity->transform.rotation.x, glm::vec3(-1.0f, 0.0f, 0.0f));
-      model = glm::rotate(model, entity->transform.rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-      model = glm::rotate(model, entity->transform.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+      model = glm::rotate(model, glm::radians(entity->transform.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+      model = glm::rotate(model, glm::radians(entity->transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+      model = glm::rotate(model, glm::radians(entity->transform.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
       
-      glm::vec4 direction(model * glm::vec4(1.0));
+      glm::vec4 direction(model * glm::vec4(1.0, 0.0, 0.0, 0.0));
       glm::vec4 view_dir = glm::transpose(glm::inverse(view_mat)) * direction;
 
       if(light->getType() == Light::LightType::Point) {
