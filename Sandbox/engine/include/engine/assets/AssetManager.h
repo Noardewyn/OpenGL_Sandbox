@@ -40,6 +40,8 @@ public:
 
   }
 
+  static std::vector<Asset*> getAssets();
+
 private:
   AssetManager() = default;
   static std::string _assets_path;

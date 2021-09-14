@@ -23,6 +23,7 @@ namespace Sandbox {
 
   SceneGraphExample::SceneGraphExample(Renderer::Window* window)
     : engine::Scene(window) {
+    using namespace engine;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -41,7 +42,7 @@ namespace Sandbox {
     _camera = std::make_unique<Renderer::Camera>(camera_transform);
     setMainCamera(_camera.get());
 
-    using namespace engine;
+    _watcher.start_watching();
 
     _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl");
     _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl");

@@ -29,6 +29,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/assets/Asset.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/ShaderAsset.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/AssetManager.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/assets/AssetsWatcher.cpp
 
     # Components
     ${PROJECT_SOURCE_DIR}/engine/src/components/MeshRenderer.cpp
@@ -57,6 +58,12 @@ set(LIBS
 )
 
 add_executable (${PROJECT_NAME} ${HEADERS} ${SOURCES})
+
+set_target_properties(${PROJECT_NAME} 
+    PROPERTIES
+    CXX_STANDARD 17
+    CXX_EXTENSIONS OFF
+)
 
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

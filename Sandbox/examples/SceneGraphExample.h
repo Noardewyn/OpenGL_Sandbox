@@ -10,6 +10,7 @@
 #include "engine/Model.h"
 #include "engine/Scene.h"
 #include "engine/assets/ShaderAsset.h"
+#include "engine/assets/AssetsWatcher.h"
 
 namespace Sandbox {
 
@@ -29,6 +30,8 @@ private:
   Renderer::Color _clear_color;
   float           _fog_distance = 0;
       
+  engine::AssetsWatcher _watcher;
+
   std::unique_ptr<Renderer::Camera> _camera;
   engine::ShaderAsset* _shader;
   engine::ShaderAsset* _shader_white_color;
