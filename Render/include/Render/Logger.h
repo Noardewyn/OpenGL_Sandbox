@@ -20,6 +20,8 @@ private:
   static std::shared_ptr<spdlog::logger> _client_logger;
 };
 
+void CheckGLError(const char* func, const char* file, int line);
+
 } // namespace tools
 
 #define LOG_CORE_TRACE(...) ::tools::Logger::core()->trace(__VA_ARGS__)
@@ -37,5 +39,7 @@ private:
 #define LOG_APP_ERROR(...) ::tools::Logger::client()->error(__VA_ARGS__)
 #define LOG_APP_CRITICAL(...) ::tools::Logger::client()->critical(__VA_ARGS__)
 #define LOG_APP_FATAL(...) ::tools::Logger::client()->fatal(__VA_ARGS__)
+
+#define CHECK_OPENGL_ERROR() ::tools::CheckGLError(__FUNCTION__, __FILE__, __LINE__)
 
 #endif // __LOGGER_H__

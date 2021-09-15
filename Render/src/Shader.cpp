@@ -27,12 +27,16 @@ Shader::~Shader() {
 }
 
 Shader::Shader(Shader&& other) noexcept {
+  _fragment_path = other._fragment_path;
+  _vertex_path = other._vertex_path;
   _shader_id = other._shader_id;
   other._shader_id = 0;
 }
 
 Shader& Shader::operator=(Shader&& other) {
   if (this != &other) {
+    _fragment_path = other._fragment_path;
+    _vertex_path = other._vertex_path;
     _shader_id = other._shader_id;
     other._shader_id = 0;
   }
@@ -103,6 +107,16 @@ std::string Shader::loadShaderSource(const std::string &filepath) {
   return shader_source.str();
 }
 
+void Shader::recompile() {
+  
+  glDeleteProgram(_shader_id);
+  _shader_id = 0;
+
+  const std::string& fragment_source = loadShaderSource(_fragment_path);
+  const std::string& vertex_source = loadShaderSource(_vertex_path);
+  createShaderProgram(fragment_source, vertex_source);
+}
+
 bool Shader::checkCompileShadersErrors(unsigned int id, const shader_type_t& shader_type) const {
   int  success;
   glGetShaderiv(id, GL_COMPILE_STATUS, &success);
@@ -132,10 +146,9 @@ uint32_t Shader::compileShader(const std::string& source, const shader_type_t& s
     id = glCreateShader(GL_FRAGMENT_SHADER);
   else if (shader_type == shader_type_t::VERTEX)
     id = glCreateShader(GL_VERTEX_SHADER);
-
+  
   const GLchar* csource = source.c_str();
-  const GLint size = source.length();
-  glShaderSource(id, 1, &csource, &size);
+  glShaderSource(id, 1, &csource, nullptr);
   glCompileShader(id);
 
   checkCompileShadersErrors(id, shader_type);
