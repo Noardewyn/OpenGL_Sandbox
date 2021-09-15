@@ -1,9 +1,11 @@
-﻿#include <spdlog/spdlog.h>
+﻿#include "Render/Logger.h"
+
+#include <GL/glew.h>
+
+#include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
-
-#include "Render/Logger.h"
 
 namespace tools {
 
@@ -29,6 +31,12 @@ namespace tools {
 
   std::shared_ptr<spdlog::logger>& Logger::client() {
     return _client_logger;
+  }
+
+  void CheckGLError(const char* func, const char* file, int line) {
+    for (GLint error = glGetError(); error; error = glGetError()) {
+      LOG_CORE_ERROR("GL_ERROR errcode={}\n\tfunc={} file={} line={}", error, func, file, line);
+    }
   }
 
 } // namespace tools

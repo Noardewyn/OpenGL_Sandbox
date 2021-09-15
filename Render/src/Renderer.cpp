@@ -3,11 +3,6 @@
 #include "Render/Renderer.h"
 
 namespace Renderer {
-  void CheckGLError(const char* func, const char* file, int line) {
-    for (GLint error = glGetError(); error; error = glGetError()) {
-      LOG_CORE_ERROR("GL_ERROR errcode={}\n\tfunc={} file={} line={}", error, func, file, line);
-    }
-  }
 
   void DrawTriangles(const VertexArray& vao, const Shader &shader) {
     shader.bind();
