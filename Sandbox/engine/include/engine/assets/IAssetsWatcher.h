@@ -8,6 +8,7 @@ namespace engine {
     virtual ~IAssetsWatcher() = default;
     virtual void start_watching() = 0;
     virtual void stop_watching() = 0;
+    virtual void update() = 0;
   };
 
 } // namespace engine

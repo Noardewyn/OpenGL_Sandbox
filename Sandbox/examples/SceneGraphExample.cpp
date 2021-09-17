@@ -44,8 +44,8 @@ namespace Sandbox {
 
     _watcher.start_watching();
 
-    _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl");
-    _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl");
+    _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl", true);
+    _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl", true);
 
     _texture_diffuse = std::make_unique<Renderer::Texture>(assetsPath() + "container2.png");
     _texture_specular = std::make_unique<Renderer::Texture>(assetsPath() + "container2_specular.png");
@@ -209,6 +209,7 @@ namespace Sandbox {
       _camera->move(camera_move_dir, delta_time);
     }
    
+    _watcher.update();
     Scene::onUpdate(delta_time);
   }
 
