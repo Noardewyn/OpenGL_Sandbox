@@ -23,13 +23,11 @@ namespace engine {
     bool is_auto_reload_enabled() const;
     void set_auto_reload_enabled(bool enabled);
     bool is_reloading() const;
+    void set_reloading(bool state);
 
     virtual void load() = 0;
     virtual void unload() = 0;
     virtual void reload() = 0;
-
-  protected:
-    void set_reloading(bool state);
 
   private:
     std::string _asset_path;

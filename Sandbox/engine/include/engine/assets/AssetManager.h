@@ -17,7 +17,8 @@ public:
   
   template<typename T>
   static T* loadAsset(const std::string& path, bool auto_reloading = false) {
-    auto asset = _assets.find(path);
+    const std::string& full_path = assetsPath() + path;
+    auto asset = _assets.find(full_path);
 
     if (asset != _assets.end()) {
       return dynamic_cast<T*>(asset->second.get());
@@ -37,7 +38,13 @@ public:
 
   template<typename T>
   static T* getAsset(const std::string& path) {
+    auto asset_ptr = _assets.find(path);
+    
+    if (asset_ptr != _assets.end()) {
+      return dynamic_cast<T*>(asset_ptr->second.get());
+    }
 
+    return nullptr;
   }
 
   static std::vector<Asset*> getAssets();

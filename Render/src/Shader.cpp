@@ -22,8 +22,10 @@ Shader::Shader(const std::string& fragment_path, const std::string& vertex_path)
 }
 
 Shader::~Shader() {
-  LOG_CORE_TRACE("Deleting Shader with id={}", _shader_id);
-  glDeleteProgram(_shader_id);
+  if (_shader_id) {
+    LOG_CORE_TRACE("Deleting Shader with id={}", _shader_id);
+    glDeleteProgram(_shader_id);
+  }
 }
 
 Shader::Shader(Shader&& other) noexcept {

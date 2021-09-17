@@ -42,6 +42,7 @@ namespace Renderer {
       return;
     }
 
+    glfwMakeContextCurrent(_glfw_handle);
     const std::string versionString = std::string((const char*)glGetString(GL_VERSION));
     LOG_CORE_INFO("OpenGL version: {}", versionString);
   }
