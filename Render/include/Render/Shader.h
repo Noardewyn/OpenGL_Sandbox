@@ -12,10 +12,11 @@ class Shader {
 public:
   Shader() {};
   Shader(const std::string& fragment_path, const std::string& vertex_path);
+  Shader(const std::string& shader_path);
   ~Shader();
   
   Shader(Shader&& other) noexcept;
-  Shader& operator=(Shader&& other);
+  Shader& operator=(Shader&& other) noexcept;
 
   void bind() const;
   void unbind() const;
@@ -32,13 +33,15 @@ public:
   void recompile();
 
 private:
-  enum class shader_type_t { VERTEX, FRAGMENT };
+  enum class shader_type_t { UNDEFINED = -1, VERTEX = 0, FRAGMENT = 1 };
 
   std::string _fragment_path;
   std::string _vertex_path;
+  std::string _shader_path;
 
   uint32_t _shader_id = -1;
 
+  std::pair<std::string, std::string> getShadersSource(const std::string& shader_path);
   uint32_t compileShader(const std::string& source, const shader_type_t& shader_type);
   bool createShaderProgram(const std::string& fragment_source, const std::string& vertex_source);
   std::string loadShaderSource(const std::string& filepath);
