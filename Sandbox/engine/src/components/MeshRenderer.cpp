@@ -16,7 +16,7 @@ namespace engine {
   void MeshRenderer::calculateLighting() {
     const auto& light_sources = _parent->getScene().getEntitiesWithComponent<Light>();
 
-    Renderer::Shader& shader = shader_asset->getShader();
+    Renderer::Shader& shader = shader_asset->get();
     int light_index = 0;
     
     for(const auto& entity : light_sources) {
@@ -84,7 +84,7 @@ namespace engine {
       glDisable(GL_BLEND);
     }
 
-    Renderer::Shader& shader = shader_asset->getShader();
+    Renderer::Shader& shader = shader_asset->get();
 
     shader.bind();
     const auto &main_camera = _parent->getScene().mainCamera();
@@ -98,7 +98,7 @@ namespace engine {
     shader.setUniform1i("calculate_light", _calculate_lighting);
 
     if(material) {
-      target->draw(shader, *material);
+      target->draw(shader, material->get());
     }
     else {
       const Material mat("Incorrect material");
@@ -111,13 +111,13 @@ namespace engine {
     ImGui::Checkbox("Alpha blending", &_alpa_blending);
 
     if(material) {
-      ImGui::Text("material name: %u", material->name);
+      ImGui::Text("material name: %u", material->get().name);
 
       if (ImGui::TreeNode("Mesh settings")) {
-        ImGui::ColorEdit3("fill color", &material->color.r);
-        ImGui::Text("diffuse map: %u", material->texture_diffuse);
-        ImGui::Text("specular map: %u", material->texture_specular);
-        ImGui::Text("emission map: %u", material->texture_emission);
+        ImGui::ColorEdit3("fill color", &material->get().color.r);
+        ImGui::Text("diffuse map: %u", material->get().texture_diffuse);
+        ImGui::Text("specular map: %u", material->get().texture_specular);
+        ImGui::Text("emission map: %u", material->get().texture_emission);
         ImGui::TreePop();
       }
     }

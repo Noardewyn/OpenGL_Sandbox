@@ -17,7 +17,7 @@ namespace engine {
     virtual void unload() override;
     virtual void reload() override;
 
-    Renderer::Shader& getShader();
+    Renderer::Shader& get();
   private:
     Renderer::Shader _shader;
   };

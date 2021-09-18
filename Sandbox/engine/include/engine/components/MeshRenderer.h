@@ -4,6 +4,7 @@
 #include "engine/Component.h"
 #include "engine/Mesh.h"
 #include "engine/assets/ShaderAsset.h"
+#include "engine/assets/MaterialAsset.h"
 
 namespace engine {
 
@@ -11,7 +12,7 @@ class MeshRenderer : public Component {
 public:
 
   IRenderable*           target;
-  Material*              material;
+  MaterialAsset*         material;
   ShaderAsset*           shader_asset;
 
   explicit MeshRenderer(Entity* parent = nullptr);

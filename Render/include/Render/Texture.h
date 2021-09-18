@@ -2,6 +2,7 @@
 #define __TEXTURE_H__
 
 #include <iostream>
+#include <GL/glew.h>
 
 namespace Renderer {
 

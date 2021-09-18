@@ -9,6 +9,8 @@ namespace engine {
     Unknown = 0,
     Texture,
     Shader,
+    Material,
+    Mesh,
     Model
   };
 

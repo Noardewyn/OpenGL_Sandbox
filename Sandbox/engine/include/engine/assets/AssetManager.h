@@ -4,7 +4,9 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+#include <initializer_list>
 
+#include "Render/Logger.h"
 #include "engine/assets/Asset.h"
 #include "engine/assets/ShaderAsset.h"
 
@@ -17,14 +19,14 @@ public:
   
   template<typename T>
   static T* loadAsset(const std::string& path, bool auto_reloading = false) {
-    const std::string& full_path = assetsPath() + path;
-    auto asset = _assets.find(full_path);
+    auto asset = _assets.find(path);
 
     if (asset != _assets.end()) {
       return dynamic_cast<T*>(asset->second.get());
     }
     else {
       _assets[path] = std::unique_ptr<T>(new T(path, auto_reloading));
+      LOG_CORE_INFO("[AssetsManager] New asset loaded: {}", path);
       _assets[path]->load();
 
       return dynamic_cast<T*>(_assets[path].get());
@@ -43,11 +45,18 @@ public:
     if (asset_ptr != _assets.end()) {
       return dynamic_cast<T*>(asset_ptr->second.get());
     }
+    else {
+      if (path.find(AssetManager::assetsPath()) != std::string::npos) {
+        return getAsset<T>(truncateBasePath(path));
+      }
+    }
 
     return nullptr;
   }
 
   static std::vector<Asset*> getAssets();
+
+  static std::string truncateBasePath(const std::string& path);
 
 private:
   AssetManager() = default;
