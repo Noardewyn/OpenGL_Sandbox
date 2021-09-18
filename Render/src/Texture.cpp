@@ -26,8 +26,8 @@ namespace Renderer {
     stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(image_path.c_str(), &width, &height, &nrChannels, nrChannels);
 
-    if(stbi_failure_reason())
-      LOG_CORE_WARN("Texture load: {}", stbi_failure_reason());
+    //if(stbi_failure_reason())
+    //  LOG_CORE_WARN("Texture load: {}", stbi_failure_reason());
 
     if(!data){
       LOG_CORE_ERROR("Failed to load texture: '{}'", image_path);

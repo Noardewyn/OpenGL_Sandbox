@@ -6,13 +6,13 @@
 namespace engine {
 
   TextureAsset::TextureAsset(const std::string& asset_path, bool auto_reload_enabled)
-    : _asset_path(asset_path), _type(AssetType::Texture), _auto_reload_enabled(auto_reload_enabled) {
+    : Asset::Asset(asset_path, AssetType::Texture, auto_reload_enabled) {
     
   }
 
   void TextureAsset::load() {
     std::filesystem::path full_path(AssetManager::assetsPath() + getPath());
-    _texture = Render::Texture(full_path.c_str());
+    _texture = Renderer::Texture(full_path.string());
   }
 
   void TextureAsset::unload() {
@@ -23,6 +23,10 @@ namespace engine {
     set_reloading(true);
     load();
     set_reloading(false);
+  }
+
+  Renderer::Texture& TextureAsset::get() {
+    return _texture;
   }
 
 } // namespace engine

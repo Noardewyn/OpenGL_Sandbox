@@ -15,8 +15,6 @@
 #include "engine/components/MeshRenderer.h"
 #include "engine/components/Light.h"
 
-#include "engine/assets/ShaderAsset.h"
-
 #include "SceneGraphExample.h"
 
 namespace Sandbox {
@@ -47,30 +45,20 @@ namespace Sandbox {
     _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl", true);
     _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl", true);
 
-    _texture_diffuse = std::make_unique<Renderer::Texture>(assetsPath() + "container2.png");
-    _texture_specular = std::make_unique<Renderer::Texture>(assetsPath() + "container2_specular.png");
-    _texture_emission = std::make_unique<Renderer::Texture>(assetsPath() + "matrix.jpg");
+    _texture_earth  = AssetManager::loadAsset<engine::TextureAsset>("earth.jpg");
+    _texture_window = AssetManager::loadAsset<engine::TextureAsset>("window.png");
 
-    _texture_earth = std::make_unique<Renderer::Texture>(assetsPath() + "earth.jpg");
+    _box_alpha_material = AssetManager::loadAsset<engine::MaterialAsset>("alpha textured box");
+    _box_alpha_material->get().texture_diffuse = _texture_window;
 
-    _texture_window = std::make_unique<Renderer::Texture>(assetsPath() + "window.png");
+    _earth_material = AssetManager::loadAsset<engine::MaterialAsset>("earth material");
+    _earth_material->get().texture_diffuse = _texture_earth;
 
-    _box_material = std::make_unique<engine::Material>("textured box");
-    _box_material->texture_diffuse = _texture_diffuse.get();
-    _box_material->texture_emission = _texture_emission.get();
-    _box_material->texture_specular = _texture_specular.get();
-    //_box_material->color = Renderer::Color::White;
+    _light_source_material = AssetManager::loadAsset<engine::MaterialAsset>("light source");
+    _light_source_material->get().color = { 1.0, 1.0, 1.0, 1.0 };
 
-    _box_alpha_material = std::make_unique<engine::Material>("alpha textured box");
-    _box_alpha_material->texture_diffuse = _texture_window.get();
-
-    _earth_material = std::make_unique<engine::Material>("earth material");
-    _earth_material->texture_diffuse = _texture_earth.get();
-
-    _light_source_material = std::make_unique<engine::Material>("light source");
-    _light_source_material->color = {1.0, 1.0, 1.0, 1.0};
-
-    _sponza_model = std::make_unique<engine::Model>(assetsPath() + "models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
+    _sponza_model = AssetManager::loadAsset<engine::ModelAsset>("models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
+    
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
 
@@ -81,7 +69,7 @@ namespace Sandbox {
       entity.transform.scale = { 0.05, 0.05, 0.05 };
 
       engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
-      mesh_renderer->target = _sponza_model.get();
+      mesh_renderer->target = _sponza_model;
       mesh_renderer->shader_asset = _shader;
     }
 
@@ -92,7 +80,7 @@ namespace Sandbox {
 
       engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
       mesh_renderer->target = _cube_mesh.get();
-      mesh_renderer->material = _box_alpha_material.get();
+      mesh_renderer->material = _box_alpha_material;
       mesh_renderer->shader_asset = _shader_white_color;
     }
 
@@ -103,7 +91,7 @@ namespace Sandbox {
 
       engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
       mesh_renderer->target = _sphere_mesh.get();
-      mesh_renderer->material = _earth_material.get();
+      mesh_renderer->material = _earth_material;
       mesh_renderer->shader_asset = _shader;
     }
 
@@ -122,7 +110,7 @@ namespace Sandbox {
 
     engine::MeshRenderer* mesh_renderer = light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _sphere_mesh.get();
-    mesh_renderer->material = _light_source_material.get();
+    mesh_renderer->material = _light_source_material;
     mesh_renderer->shader_asset = _shader;
 
     engine::Light* light_component = light_entity.addComponent<engine::Light>(engine::Light::LightType::Point);
@@ -139,7 +127,7 @@ namespace Sandbox {
 
     engine::MeshRenderer* mesh_renderer = mesh_renderer = directional_light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _cube_mesh.get();
-    mesh_renderer->material = _light_source_material.get();
+    mesh_renderer->material = _light_source_material;
     mesh_renderer->shader_asset = _shader;
 
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
@@ -158,7 +146,7 @@ namespace Sandbox {
 
     engine::MeshRenderer* mesh_renderer = mesh_renderer = spot_light_entity.addComponent<engine::MeshRenderer>();
     mesh_renderer->target = _cube_mesh.get();
-    mesh_renderer->material = _light_source_material.get();
+    mesh_renderer->material = _light_source_material;
     mesh_renderer->shader_asset = _shader;
 
     engine::Light* light_component = light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Spot);
@@ -217,9 +205,9 @@ namespace Sandbox {
     window->clear(_clear_color);
     _camera->setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
-    _shader->getShader().bind();
-    _shader->getShader().setUniform1f("fog_distance", _fog_distance);
-    _shader->getShader().unbind();
+    _shader->get().bind();
+    _shader->get().setUniform1f("fog_distance", _fog_distance);
+    _shader->get().unbind();
 
     Scene::onRender();
   }

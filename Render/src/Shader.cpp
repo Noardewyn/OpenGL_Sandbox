@@ -37,6 +37,7 @@ Shader::~Shader() {
 Shader::Shader(Shader&& other) noexcept {
   _fragment_path = other._fragment_path;
   _vertex_path = other._vertex_path;
+  _shader_path = other._shader_path;
   _shader_id = other._shader_id;
   other._shader_id = 0;
 }
@@ -45,6 +46,7 @@ Shader& Shader::operator=(Shader&& other) noexcept {
   if (this != &other) {
     _fragment_path = other._fragment_path;
     _vertex_path = other._vertex_path;
+    _shader_path = other._shader_path;
     _shader_id = other._shader_id;
     other._shader_id = 0;
   }
@@ -105,8 +107,7 @@ void Shader::recompile() {
   glDeleteProgram(_shader_id);
   _shader_id = 0;
 
-  const std::string& fragment_source = loadShaderSource(_fragment_path);
-  const std::string& vertex_source = loadShaderSource(_vertex_path);
+  auto [vertex_source, fragment_source] = getShadersSource(_shader_path);
   createShaderProgram(fragment_source, vertex_source);
 }
 

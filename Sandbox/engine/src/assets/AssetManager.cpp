@@ -23,6 +23,13 @@ namespace engine {
     return assets;
   }
 
+  std::string AssetManager::truncateBasePath(const std::string& path) {
+    std::string truncated_path = path;
+    truncated_path.erase(truncated_path.find(AssetManager::assetsPath()), AssetManager::assetsPath().size());
+    
+    return truncated_path;
+  }
+
   std::string AssetManager::_assets_path = "";
   std::unordered_map<std::string, std::unique_ptr<Asset>> AssetManager::_assets;
 

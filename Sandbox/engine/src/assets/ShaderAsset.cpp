@@ -12,8 +12,6 @@ namespace engine {
 
   void ShaderAsset::load() {
     std::filesystem::path full_path(AssetManager::assetsPath() + getPath());
-    //full_path.replace_extension();
-
     _shader = Renderer::Shader(full_path.string());
   }
 
@@ -27,7 +25,7 @@ namespace engine {
     set_reloading(false);
   }
 
-  Renderer::Shader& ShaderAsset::getShader() {
+  Renderer::Shader& ShaderAsset::get() {
     return _shader;
   }
 

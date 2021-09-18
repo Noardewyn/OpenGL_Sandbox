@@ -28,6 +28,9 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/MeshProvider.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/Asset.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/ShaderAsset.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/assets/TextureAsset.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/assets/MaterialAsset.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/assets/ModelAsset.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/AssetManager.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/AssetsWatcher.cpp
 

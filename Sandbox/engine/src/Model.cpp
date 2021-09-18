@@ -1,9 +1,16 @@
 ﻿#include <assimp/postprocess.h>
 
+#include "engine/assets/MaterialAsset.h"
+#include "engine/assets/TextureAsset.h"
+#include "engine/assets/AssetManager.h"
 #include "Render/Logger.h"
 #include "engine/Model.h"
 
 namespace engine {
+  Model::Model()
+    : obj_path("") {
+  }
+
   Model::Model(const std::string& path)
     : obj_path(path) {
     loadModel(path);
@@ -44,6 +51,7 @@ namespace engine {
     for(unsigned i = 0; i < scene->mNumMaterials; i++) {
       aiMaterial* material = scene->mMaterials[i];
 
+      //auto mesh_mat = AssetManager::loadAsset<engine::MaterialAsset>(obj_path + ":" + material->GetName().C_Str());
       Material mat(material->GetName().C_Str());
 
       auto tempDiffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE);
@@ -162,8 +170,8 @@ namespace engine {
     return Renderer::Texture(filepath);
   }
 
-  Renderer::Texture* Model::loadMaterialTexture(aiMaterial* mat, aiTextureType type) {
-    Renderer::Texture* out_texture = nullptr;
+  engine::TextureAsset* Model::loadMaterialTexture(aiMaterial* mat, aiTextureType type) {
+    engine::TextureAsset* out_texture = nullptr;
 
     for(unsigned i = 0; i < mat->GetTextureCount(type); i++) {
       aiString str;
@@ -171,17 +179,19 @@ namespace engine {
 
       mat->GetTexture(type, i, &str);
 
-      auto exists_texture = loaded_textures.find(str.C_Str());
-      if(exists_texture != loaded_textures.end() ) {
-        out_texture = &exists_texture->second;
+      const std::string& asset_path = AssetManager::truncateBasePath(directory + '/' + str.C_Str());
+
+      auto texture_asset = AssetManager::getAsset<engine::TextureAsset>(asset_path);
+
+      if (texture_asset) {
+        out_texture = texture_asset;
         skip = true;
         break;
       }
 
       if (!skip) {
-        Renderer::Texture texture = TextureFromFile(str.C_Str(), directory);
-        loaded_textures.insert(std::pair(str.C_Str(), texture));
-        out_texture = &loaded_textures.at(str.C_Str());
+        auto texture_asset = AssetManager::loadAsset<engine::TextureAsset>(asset_path);
+        out_texture = texture_asset;
       }
     }
 
