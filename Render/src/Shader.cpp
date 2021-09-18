@@ -21,6 +21,12 @@ Shader::Shader(const std::string& fragment_path, const std::string& vertex_path)
   createShaderProgram(fragment_source, vertex_source);
 }
 
+Shader::Shader(const std::string& shader_path) 
+  : _shader_path(shader_path) {
+  auto [vertex_source, fragment_source] = getShadersSource(shader_path);
+  createShaderProgram(fragment_source, vertex_source);
+}
+
 Shader::~Shader() {
   if (_shader_id) {
     LOG_CORE_TRACE("Deleting Shader with id={}", _shader_id);
@@ -35,7 +41,7 @@ Shader::Shader(Shader&& other) noexcept {
   other._shader_id = 0;
 }
 
-Shader& Shader::operator=(Shader&& other) {
+Shader& Shader::operator=(Shader&& other) noexcept {
   if (this != &other) {
     _fragment_path = other._fragment_path;
     _vertex_path = other._vertex_path;
@@ -94,6 +100,16 @@ void Shader::setUniform1ui(const std::string& name, uint32_t value) {
   glUniform1ui(uniform, value);
 }
 
+void Shader::recompile() {
+
+  glDeleteProgram(_shader_id);
+  _shader_id = 0;
+
+  const std::string& fragment_source = loadShaderSource(_fragment_path);
+  const std::string& vertex_source = loadShaderSource(_vertex_path);
+  createShaderProgram(fragment_source, vertex_source);
+}
+
 std::string Shader::loadShaderSource(const std::string &filepath) {
   std::stringstream shader_source;
   std::ifstream shader_file(filepath);
@@ -107,16 +123,6 @@ std::string Shader::loadShaderSource(const std::string &filepath) {
   }
 
   return shader_source.str();
-}
-
-void Shader::recompile() {
-  
-  glDeleteProgram(_shader_id);
-  _shader_id = 0;
-
-  const std::string& fragment_source = loadShaderSource(_fragment_path);
-  const std::string& vertex_source = loadShaderSource(_vertex_path);
-  createShaderProgram(fragment_source, vertex_source);
 }
 
 bool Shader::checkCompileShadersErrors(unsigned int id, const shader_type_t& shader_type) const {
@@ -156,6 +162,35 @@ uint32_t Shader::compileShader(const std::string& source, const shader_type_t& s
   checkCompileShadersErrors(id, shader_type);
 
   return id;
+}
+
+std::pair<std::string, std::string> Shader::getShadersSource(const std::string& shader_path) {
+  shader_type_t shader_type = shader_type_t::UNDEFINED;
+  std::stringstream shader_source[2];
+  std::ifstream shader_file(shader_path);
+
+  if (shader_file.is_open()) {
+    std::string line;
+    while (getline(shader_file, line)) {
+      if (line.find("#SHADER") != std::string::npos) {
+        if (line.find("VERTEX") != std::string::npos)
+          shader_type = shader_type_t::VERTEX;
+        else if (line.find("FRAGMENT") != std::string::npos)
+          shader_type = shader_type_t::FRAGMENT;
+      }
+      else {
+        assert(shader_type != shader_type_t::UNDEFINED);
+        shader_source[(int)shader_type] << line << '\n';
+      }
+    }
+  }
+  else {
+    LOG_CORE_ERROR("Unable to open shader file: {}", shader_path);
+  }
+
+  shader_file.close();
+
+  return { shader_source[0].str(), shader_source[1].str() };
 }
 
 bool Shader::createShaderProgram(const std::string& fragment_source, const std::string& vertex_source) {

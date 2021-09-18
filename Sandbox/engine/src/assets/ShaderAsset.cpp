@@ -12,9 +12,9 @@ namespace engine {
 
   void ShaderAsset::load() {
     std::filesystem::path full_path(AssetManager::assetsPath() + getPath());
-    full_path.replace_extension();
+    //full_path.replace_extension();
 
-    _shader = Renderer::Shader(full_path.string() + ".frag", full_path.string() + ".vs");
+    _shader = Renderer::Shader(full_path.string());
   }
 
   void ShaderAsset::unload() {
