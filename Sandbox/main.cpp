@@ -9,6 +9,8 @@
 
 #include "engine/assets/AssetManager.h"
 
+#include "examples/ExamplesMenu.h"
+
 #include "examples/ClearColorExample.h"
 #include "examples/ColoredQuadExample.h"
 #include "examples/TextureExample.h"
@@ -17,9 +19,9 @@
 #include "examples/Lighting3DExample.h"
 #include "examples/AdvancedLighting3DExample.h"
 #include "examples/SceneGraphExample.h"
-//#include "examples/StencilExample.h"
-//#include "examples/FramebufferExample.h"
-#include "examples/ExamplesMenu.h"
+#include "examples/StencilExample.h"
+#include "examples/FramebufferExample.h"
+#include "examples/StressTestExample.h"
 
 int main() {
 	engine::AssetManager::setAssetsPath("../../../../Sandbox/assets/");
@@ -47,8 +49,9 @@ int main() {
 	menu.registerScene<Sandbox::Lighting3DExample>("3d lighting", "");
 	menu.registerScene<Sandbox::AdvancedLighting3DExample>("advanced 3d lighting", "");
 	menu.registerScene<Sandbox::SceneGraphExample>("3d model loading", "");
-  //menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
-  //menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
+  menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
+  menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
+  menu.registerScene<Sandbox::StressTestExample>("Stress test", "");
 
 	menu.startScene(menu.scenesCount()-1);
 
