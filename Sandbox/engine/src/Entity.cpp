@@ -4,7 +4,7 @@
 
 namespace engine {
   Entity::Entity(Scene* scene, const std::string& name)
-    :_name(name), _scene(scene), _active(true) {
+    :_parent(nullptr), _name(name), _scene(scene), _active(true) {
     
   }
 

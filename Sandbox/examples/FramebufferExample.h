@@ -15,6 +15,10 @@
 #include "engine/Mesh.h"
 #include "engine/Model.h"
 #include "engine/Scene.h"
+#include "engine/assets/ShaderAsset.h"
+#include "engine/assets/TextureAsset.h"
+#include "engine/assets/MaterialAsset.h"
+#include "engine/assets/ModelAsset.h"
 
 namespace Sandbox {
 
@@ -28,14 +32,10 @@ public:
   virtual void onImGuiRender() override;
 
 private:
-  Renderer::Color _clear_color;
+  engine::ShaderAsset* _shader;
+  engine::ShaderAsset* _postprocess_shader;
 
-  std::unique_ptr<Renderer::Shader> _shader;
-  std::unique_ptr<Renderer::Shader> _postprocess_shader;
-
-  std::unique_ptr<Renderer::Camera>  _camera;
-
-  std::unique_ptr<engine::Model> _sponza_model;
+  engine::ModelAsset* _sponza_model;
 
   std::unique_ptr<Renderer::FrameBuffer>  _frame_buffer;
   std::unique_ptr<Renderer::RenderBuffer> _render_buffer;

@@ -7,6 +7,7 @@ namespace Renderer {
 Transform::Transform() {
 
 }
+
 Transform::Transform(float x, float y, float z)
   : position(glm::vec3(x, y, z)) {
   

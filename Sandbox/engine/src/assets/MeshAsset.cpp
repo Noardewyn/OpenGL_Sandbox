@@ -12,7 +12,7 @@ namespace engine {
 
   void MeshAsset::load() {
     std::filesystem::path full_path(AssetManager::assetsPath() + getPath());
-    _texture = engine::Mesh(full_path.c_str());
+    _mesh = engine::Mesh(full_path.c_str());
   }
 
   void MeshAsset::unload() {

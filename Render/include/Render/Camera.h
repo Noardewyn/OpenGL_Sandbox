@@ -20,6 +20,7 @@ public:
   float near_plane = 0.1f;
   float far_plane = 200.0f;
 
+  Camera();
   Camera(const Transform &transform, const glm::mat4 &projection = glm::mat4(1));
 
   void setPerspective(float aspect);
