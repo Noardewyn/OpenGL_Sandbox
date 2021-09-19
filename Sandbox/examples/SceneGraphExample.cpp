@@ -33,14 +33,8 @@ namespace Sandbox {
     glCullFace(GL_FRONT);
     glFrontFace(GL_CW);
 
-    Renderer::Transform camera_transform;
-    camera_transform.position = {1.0f, 2.0f, -4.0f};
-    camera_transform.rotation = {110.0f, -30.0f, 0.0f};
-
-    _camera = std::make_unique<Renderer::Camera>(camera_transform);
-    setMainCamera(_camera.get());
-
-    _watcher.start_watching();
+    mainCamera().transform.position = { 1.0f, 2.0f, -4.0f };
+    mainCamera().transform.rotation = { 110.0f, -30.0f, 0.0f };
 
     _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl", true);
     _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl", true);
@@ -64,7 +58,7 @@ namespace Sandbox {
 
     // Entities
     {
-      engine::Entity& entity = createEntity("3d Model");
+      engine::Entity& entity = createEntity("Sponza");
       entity.transform.position = { 0.0, 0.0, 0.0 };
       entity.transform.scale = { 0.05, 0.05, 0.05 };
 
@@ -157,53 +151,12 @@ namespace Sandbox {
   }
 
   void SceneGraphExample::onUpdate(float delta_time) {
-
-    if (tools::InputManager::instance()->keyPressed(GLFW_KEY_LEFT_SHIFT))
-      _camera->moveSpeed = 15.0f;
-    else
-      _camera->moveSpeed = 5.0f;
-
-    static double mouse_last_x = window->getCursorPosX();
-    static double mouse_last_y = window->getCursorPosY();
-
-    double mouse_pos_x = tools::InputManager::instance()->mousePosX();
-    double mouse_pos_y = tools::InputManager::instance()->mousePosY();
-
-    GLfloat xoffset = mouse_pos_x - mouse_last_x;
-    GLfloat yoffset = mouse_last_y - mouse_pos_y;
-
-    mouse_last_x = mouse_pos_x;
-    mouse_last_y = mouse_pos_y;
-
-    // Don't process camera if cursor is visible, in order to 
-    // have possibility to click UI without camera movement
-    if (!window->isCursorEnabled()) {
-      _camera->rotate(xoffset, yoffset, 0, delta_time);
-
-      double wheel = tools::InputManager::instance()->wheelY();
-      _camera->zoom(wheel, delta_time);
-
-      glm::vec2 camera_move_dir(0.0f);
-
-      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_W))
-        camera_move_dir.y += 1.0f;
-      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_S))
-        camera_move_dir.y -= 1.0f;
-      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_A))
-        camera_move_dir.x -= 1.0f;
-      if (tools::InputManager::instance()->keyPressed(GLFW_KEY_D))
-        camera_move_dir.x += 1.0f;
-
-      _camera->move(camera_move_dir, delta_time);
-    }
-   
-    _watcher.update();
     Scene::onUpdate(delta_time);
   }
 
   void SceneGraphExample::onRender() {
     window->clear(_clear_color);
-    _camera->setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
+    mainCamera().setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
     _shader->get().bind();
     _shader->get().setUniform1f("fog_distance", _fog_distance);
@@ -224,10 +177,6 @@ namespace Sandbox {
       ImGui::Text("Wheel - zoom camera");
     }
 
-    ImGui::ColorEdit4("Clear color", &_clear_color.r);
-    ImGui::InputFloat("Fog distance", &_fog_distance);
-
-    ImGui::Text("Scene graph");
     Scene::onImGuiRender();
 
     ImGui::End();

@@ -13,7 +13,7 @@
 #include "engine/assets/TextureAsset.h"
 #include "engine/assets/MaterialAsset.h"
 #include "engine/assets/ModelAsset.h"
-#include "engine/assets/AssetsWatcher.h"
+
 
 namespace Sandbox {
 
@@ -29,13 +29,10 @@ public:
   engine::Entity& addDirLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color);
   engine::Entity& addSpotLightEntity(const std::string& name, const glm::vec3& position, const glm::vec3& direction, const Renderer::Color& color);
 
-private:
-  Renderer::Color _clear_color;
-  float           _fog_distance = 0;
-      
-  engine::AssetsWatcher _watcher;
+private:  
+  std::unique_ptr<engine::Mesh> _cube_mesh;
+  std::unique_ptr<engine::Mesh> _sphere_mesh;
 
-  std::unique_ptr<Renderer::Camera> _camera;
   engine::ShaderAsset* _shader;
   engine::ShaderAsset* _shader_white_color;
 
@@ -46,9 +43,6 @@ private:
   engine::MaterialAsset* _box_alpha_material;
   engine::MaterialAsset* _earth_material;
   engine::MaterialAsset* _light_source_material;
-
-  std::unique_ptr<engine::Mesh> _cube_mesh;
-  std::unique_ptr<engine::Mesh> _sphere_mesh;
 
   engine::ModelAsset* _sponza_model;
 };

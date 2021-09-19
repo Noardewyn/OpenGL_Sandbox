@@ -4,6 +4,11 @@
 
 namespace Renderer {
 
+Camera::Camera() 
+  : Camera(Transform()) {
+
+}
+
 Camera::Camera(const Transform& transform, const glm::mat4& projection)
   : _projection(projection), transform(transform),
     world_up(0.0f, 1.0f, 0.0f) {

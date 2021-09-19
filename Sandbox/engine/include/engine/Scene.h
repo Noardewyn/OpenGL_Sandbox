@@ -5,6 +5,7 @@
 #include "Render/Camera.h"
 #include "engine/BaseScene.h"
 #include "engine/Entity.h"
+#include "engine/assets/AssetsWatcher.h"
 
 namespace engine {
 
@@ -40,6 +41,10 @@ public:
 protected:
   std::list<std::unique_ptr<Entity>> _entities;
   Renderer::Camera *_main_camera;
+  Renderer::Camera _default_camera;
+  engine::AssetsWatcher _watcher;
+  Renderer::Color _clear_color;
+  float _fog_distance = 0;
 };
 
 } // namespace engine

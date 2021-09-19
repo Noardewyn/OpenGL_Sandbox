@@ -72,8 +72,8 @@ namespace Sandbox {
 
 
     //_ibo = std::make_unique<Renderer::IndexBuffer>(indices, sizeof(indices) / sizeof(indices[0]);
-    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_light2.frag", assetsPath() + "shaders/mvp_light2.vs");
-    _shader_light = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_plain.frag", assetsPath() + "shaders/mvp_plain.vs");
+    _shader = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_light2.glsl");
+    _shader_light = std::make_unique<Renderer::Shader>(assetsPath() + "shaders/mvp_plain.glsl");
 
     _texture_diffuse = std::make_unique<Renderer::Texture>(assetsPath() + "container2.png");
     _texture_specular = std::make_unique<Renderer::Texture>(assetsPath() + "container2_specular.png");

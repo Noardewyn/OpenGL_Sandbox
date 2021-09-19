@@ -8,7 +8,6 @@
 #include <filesystem>
 
 #include "engine/assets/IAssetsWatcher.h"
-#include "engine/assets/AssetManager.h"
 
 namespace engine {
 

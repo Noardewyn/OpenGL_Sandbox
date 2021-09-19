@@ -8,11 +8,13 @@
 #include "Render/VertexArray.h"
 #include "Render/VertexBufferLayout.h"
 #include "Render/Texture.h"
-#include "Render/Camera.h"
 
-#include "engine/Mesh.h"
-#include "engine/Model.h"
 #include "engine/Scene.h"
+#include "engine/Mesh.h"
+#include "engine/assets/ShaderAsset.h"
+#include "engine/assets/TextureAsset.h"
+#include "engine/assets/MaterialAsset.h"
+#include "engine/assets/ModelAsset.h"
 
 namespace Sandbox {
 
@@ -32,19 +34,16 @@ private:
 
   std::unique_ptr<engine::Mesh> _cube_mesh;
 
-  std::unique_ptr<Renderer::Texture> _texture_diffuse;
-  std::unique_ptr<Renderer::Texture> _texture_specular;
-  std::unique_ptr<Renderer::Texture> _texture_emission;
-  std::unique_ptr<engine::Material> _box_material;
+  engine::ShaderAsset* _shader;
+  engine::ShaderAsset* _shader_stencil;
 
-  std::unique_ptr<Renderer::Shader> _shader;
-  std::unique_ptr<Renderer::Shader> _shader_stencil;
+  engine::TextureAsset* _texture_diffuse;
+  engine::TextureAsset* _texture_specular;
+  engine::TextureAsset* _texture_emission;
 
-  std::unique_ptr<Renderer::Shader> _shader_light;
-  std::unique_ptr<Renderer::Texture> _texture;
-  std::unique_ptr<Renderer::Camera> _camera;
+  engine::MaterialAsset* _box_material;
 
-  std::unique_ptr<engine::Model> _sponza_model;
+  engine::ModelAsset* _sponza_model;
 };
 
 } // namespace sandbox

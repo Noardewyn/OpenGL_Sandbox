@@ -4,6 +4,8 @@
 
 #include "Render/Logger.h"
 
+#include "engine/assets/AssetManager.h"
+
 namespace engine {
 
   AssetsWatcher::AssetsWatcher() {
@@ -15,15 +17,20 @@ namespace engine {
   }
 
   void AssetsWatcher::start_watching() {
+    if(_is_started)
+      stop_watching();
+
     _stop_requested = false;
     _watcher_thread = std::thread([this](){ return watch_loop(); });
     _is_started = true;
   }
 
   void AssetsWatcher::stop_watching() {
-    _stop_requested = true;
-    _watcher_thread.join();
-    _is_started = false;
+    if (_is_started) {
+      _stop_requested = true;
+      _watcher_thread.join();
+      _is_started = false;
+    }
   }
 
   void AssetsWatcher::update() {
