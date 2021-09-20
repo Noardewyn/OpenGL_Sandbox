@@ -80,4 +80,17 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
     material.texture_emission->get().unbind();
 }
 
+void Mesh::draw(Renderer::Shader& shader, const Renderer::Texture& cubemap) {
+  shader.bind();
+  shader.setUniform1i("cubemap", 0);
+  cubemap.bind();
+
+  if (_ibo.count())
+    DrawTriangles(_vao, _ibo, shader);
+  else
+    DrawTriangles(_vao, shader);
+
+  shader.unbind();
+}
+
 } // namespace engine

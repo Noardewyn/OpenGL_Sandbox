@@ -8,6 +8,8 @@ namespace engine {
   class IRenderable {
   public:
     virtual void draw(Renderer::Shader& shader, const Material& material) = 0;
+    virtual void draw(Renderer::Shader& shader, const Renderer::Texture& cubemap) {};
+
   };
 } // namespace engine
 

@@ -34,8 +34,40 @@ public:
   }
 
   template<typename T>
+  static T* addAsset(T* asset) {
+    assert(asset != nullptr);
+
+    auto path = asset->getPath();
+    auto asset_ptr = _assets.find(path);
+
+    if (asset_ptr != _assets.end()) {
+      return dynamic_cast<T*>(asset_ptr->second.get());
+    }
+    else {
+      _assets[path] = std::unique_ptr<T>(asset);
+      LOG_CORE_INFO("[AssetsManager] Asset added: {}", path);
+      return dynamic_cast<T*>(_assets[path].get());
+    }
+  }
+
+  template<typename T>
   static T* reloadAsset(const std::string& path) {
 
+  }
+
+  static bool hasAsset(const std::string& path) {
+    auto asset_ptr = _assets.find(path);
+
+    if (asset_ptr != _assets.end()) {
+      return true;
+    }
+    else {
+      if (path.find(AssetManager::assetsPath()) != std::string::npos) {
+        return hasAsset(truncateBasePath(path));
+      }
+    }
+
+    return false;
   }
 
   template<typename T>

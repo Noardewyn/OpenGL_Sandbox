@@ -32,12 +32,15 @@ public:
 private:  
   std::unique_ptr<engine::Mesh> _cube_mesh;
   std::unique_ptr<engine::Mesh> _sphere_mesh;
+  std::unique_ptr<engine::Mesh> _skybox_mesh;
 
   engine::ShaderAsset* _shader;
+  engine::ShaderAsset* _skybox_shader;
   engine::ShaderAsset* _shader_white_color;
 
   engine::TextureAsset* _texture_earth;
   engine::TextureAsset* _texture_window;
+  engine::TextureAsset* _skybox_cubemap;
 
   engine::MaterialAsset* _box_material;
   engine::MaterialAsset* _box_alpha_material;
