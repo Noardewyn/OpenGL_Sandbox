@@ -58,6 +58,50 @@ static GLuint plane_indices[] = {
     1, 2, 3
 };
 
+static float skybox_vertices[] = {
+  -1.0f,  1.0f, -1.0f,
+  -1.0f, -1.0f, -1.0f,
+   1.0f, -1.0f, -1.0f,
+   1.0f, -1.0f, -1.0f,
+   1.0f,  1.0f, -1.0f,
+  -1.0f,  1.0f, -1.0f,
+
+  -1.0f, -1.0f,  1.0f,
+  -1.0f, -1.0f, -1.0f,
+  -1.0f,  1.0f, -1.0f,
+  -1.0f,  1.0f, -1.0f,
+  -1.0f,  1.0f,  1.0f,
+  -1.0f, -1.0f,  1.0f,
+
+   1.0f, -1.0f, -1.0f,
+   1.0f, -1.0f,  1.0f,
+   1.0f,  1.0f,  1.0f,
+   1.0f,  1.0f,  1.0f,
+   1.0f,  1.0f, -1.0f,
+   1.0f, -1.0f, -1.0f,
+
+  -1.0f, -1.0f,  1.0f,
+  -1.0f,  1.0f,  1.0f,
+   1.0f,  1.0f,  1.0f,
+   1.0f,  1.0f,  1.0f,
+   1.0f, -1.0f,  1.0f,
+  -1.0f, -1.0f,  1.0f,
+
+  -1.0f,  1.0f, -1.0f,
+   1.0f,  1.0f, -1.0f,
+   1.0f,  1.0f,  1.0f,
+   1.0f,  1.0f,  1.0f,
+  -1.0f,  1.0f,  1.0f,
+  -1.0f,  1.0f, -1.0f,
+
+  -1.0f, -1.0f, -1.0f,
+  -1.0f, -1.0f,  1.0f,
+   1.0f, -1.0f, -1.0f,
+   1.0f, -1.0f, -1.0f,
+  -1.0f, -1.0f,  1.0f,
+   1.0f, -1.0f,  1.0f
+};
+
 namespace engine {
 
   std::unique_ptr<Mesh> generateCubeMesh() {
@@ -153,6 +197,16 @@ namespace engine {
     layout.push<float>(3);
 
     auto mesh = std::make_unique<Mesh>(std::move(vbo), std::move(ibo), layout);
+
+    return std::move(mesh);
+  }
+
+  std::unique_ptr<Mesh> generateSkyBox() {
+    Renderer::VertexBuffer vbo(skybox_vertices, sizeof(skybox_vertices));
+    Renderer::VertexBufferLayout layout;
+    layout.push<float>(3);
+
+    auto mesh = std::make_unique<Mesh>(std::move(vbo), layout);
 
     return std::move(mesh);
   }

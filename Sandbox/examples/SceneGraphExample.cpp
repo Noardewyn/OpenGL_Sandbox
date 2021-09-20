@@ -37,10 +37,27 @@ namespace Sandbox {
     mainCamera().transform.rotation = { 110.0f, -30.0f, 0.0f };
 
     _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl", true);
+    _skybox_shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/skybox.glsl", true);
     _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl", true);
 
     _texture_earth  = AssetManager::loadAsset<engine::TextureAsset>("earth.jpg");
     _texture_window = AssetManager::loadAsset<engine::TextureAsset>("window.png");
+
+    _skybox_cubemap = AssetManager::getAsset<engine::TextureAsset>("skybox");
+
+    if (!_skybox_cubemap) {
+      const std::vector<std::string> cubemap_pathes = {
+        "skybox/right.jpg",
+        "skybox/left.jpg",
+        "skybox/top.jpg",
+        "skybox/bottom.jpg",
+        "skybox/front.jpg",
+        "skybox/back.jpg"
+      };
+
+      TextureAsset* skybox_cubemap = new TextureAsset("skybox", cubemap_pathes, false);
+      _skybox_cubemap = AssetManager::addAsset<TextureAsset>(skybox_cubemap);
+    }
 
     _box_alpha_material = AssetManager::loadAsset<engine::MaterialAsset>("alpha textured box");
     _box_alpha_material->get().texture_diffuse = _texture_window;
@@ -55,6 +72,7 @@ namespace Sandbox {
     
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
+    _skybox_mesh = engine::generateSkyBox();
 
     // Entities
     {
@@ -157,6 +175,15 @@ namespace Sandbox {
   void SceneGraphExample::onRender() {
     window->clear(_clear_color);
     mainCamera().setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
+
+    glDepthMask(GL_FALSE);
+    
+    _skybox_shader->get().bind();
+    _skybox_shader->get().setUniformMatrix4f("view", glm::mat4(glm::mat3(mainCamera().getViewMatrix())));
+    _skybox_shader->get().setUniformMatrix4f("projection", mainCamera().getProjectionMatrix());
+    _skybox_mesh.get()->draw(_skybox_shader->get(), _skybox_cubemap->get());
+
+    glDepthMask(GL_TRUE);
 
     _shader->get().bind();
     _shader->get().setUniform1f("fog_distance", _fog_distance);
