@@ -48,10 +48,10 @@ int main() {
 	menu.registerScene<Sandbox::Camera3DExample>("3d camera", "");
 	menu.registerScene<Sandbox::Lighting3DExample>("3d lighting", "");
 	menu.registerScene<Sandbox::AdvancedLighting3DExample>("advanced 3d lighting", "");
-	menu.registerScene<Sandbox::SceneGraphExample>("3d model loading", "");
   menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
   menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
   menu.registerScene<Sandbox::StressTestExample>("Stress test", "");
+  menu.registerScene<Sandbox::SceneGraphExample>("Sandbox", "");
 
 	menu.startScene(menu.scenesCount()-1);
 
