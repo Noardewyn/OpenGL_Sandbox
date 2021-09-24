@@ -6,11 +6,8 @@
 
 namespace Renderer {
 
-  RenderBuffer::RenderBuffer(uint32_t width, uint32_t height) {
-    glGenRenderbuffers(1, &_buffer_id);
-    bind();
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _buffer_id);
+  RenderBuffer::RenderBuffer(uint32_t width, uint32_t height, uint32_t samples) { 
+    generateBuffer(width, height, samples);
   }
 
   RenderBuffer::~RenderBuffer() {
@@ -43,6 +40,39 @@ namespace Renderer {
 
   void RenderBuffer::unbind() const {
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
+  }
+
+  void RenderBuffer::resize(uint32_t width, uint32_t height)
+  {
+    generateBuffer(width, height, _samples);
+  }
+
+  void RenderBuffer::resample(uint32_t samples)
+  {
+    generateBuffer(_width, _height, samples);
+  }
+
+  void RenderBuffer::generateBuffer(uint32_t width, uint32_t height, uint32_t samples /*= 0*/)
+  {
+    if (width == _width && _height == height && _samples == samples)
+      return;
+
+    _width = width;
+    _height = height;
+    _samples = samples;
+
+    glGenRenderbuffers(1, &_buffer_id);
+    bind();
+
+    if (samples) {
+      glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH24_STENCIL8, width, height);
+    }
+    else {
+      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+    }
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _buffer_id);
+    unbind();
   }
 
 } // namespace Renderer

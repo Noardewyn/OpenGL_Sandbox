@@ -9,7 +9,7 @@ namespace Renderer {
 
 class RenderBuffer {
 public:
-  RenderBuffer(uint32_t width, uint32_t height);
+  RenderBuffer(uint32_t width, uint32_t height, uint32_t samples = 0);
   ~RenderBuffer();
 
   RenderBuffer(RenderBuffer&& other) noexcept;
@@ -19,8 +19,16 @@ public:
   void bind() const;
   void unbind() const;
 
+  void resize(uint32_t width, uint32_t height);
+  void resample(uint32_t samples = 0);
 private:
-  uint32_t _buffer_id;
+
+  void generateBuffer(uint32_t width, uint32_t height, uint32_t samples = 0);
+
+  uint32_t _buffer_id = 0;
+  uint32_t _width = 0;
+  uint32_t _height = 0;
+  uint32_t _samples = 0;
 };
 
 } // namespace Renderer
