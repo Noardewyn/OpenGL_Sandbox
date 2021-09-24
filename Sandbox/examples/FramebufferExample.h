@@ -32,12 +32,17 @@ public:
   virtual void onImGuiRender() override;
 
 private:
+  int  _samples = 4;
+  bool _postprocessing = true;
+
   engine::ShaderAsset* _shader;
   engine::ShaderAsset* _postprocess_shader;
+  engine::ShaderAsset* _plain_shader;
 
   engine::ModelAsset* _sponza_model;
 
   std::unique_ptr<Renderer::FrameBuffer>  _frame_buffer;
+  std::unique_ptr<Renderer::FrameBuffer>  _intermediate_frame_buffer;
   std::unique_ptr<Renderer::RenderBuffer> _render_buffer;
 
   std::unique_ptr<Renderer::VertexArray> _vao;
