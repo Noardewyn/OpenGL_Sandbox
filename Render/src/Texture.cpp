@@ -50,7 +50,7 @@ namespace Renderer {
 
   Texture::Texture(const std::vector<std::string>& cubemap, GLenum format)
     : image_path(""), _render_id(0), width(0), height(0), nrChannels(0) {
-    assert(cubemap.size == 6);
+    assert(cubemap.size() == 6);
 
     is_cubemap = true;
 

@@ -58,7 +58,7 @@ namespace engine {
       material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
       mat.diffuse_base = { color.r, color.g, color.b };
 
-      material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+      //material->Get(AI_MATKEY_COLOR_SPECULAR, color);
       mat.specular_base = { color.r, color.g, color.b };
 
       material->Get(AI_MATKEY_COLOR_EMISSIVE, color);
@@ -81,7 +81,7 @@ namespace engine {
 
       auto tempHeightMap = loadMaterialTexture(material, aiTextureType_AMBIENT);
       if (tempHeightMap) {
-        mat.texture_displacement = tempHeightMap;
+        mat.texture_normal = tempHeightMap;
       }
 
       _materials.push_back(mat);

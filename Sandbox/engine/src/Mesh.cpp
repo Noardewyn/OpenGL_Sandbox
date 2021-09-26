@@ -27,10 +27,10 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
   shader.setUniform1f("material.shininess", material.shininess);
 
   shader.setUniform1i("material.is_diffuse", material.texture_diffuse != nullptr);
-  shader.setUniform1i("material.is_specular", material.texture_diffuse != nullptr);
-  shader.setUniform1i("material.is_emission", material.texture_diffuse != nullptr);
-  shader.setUniform1i("material.is_normal", material.texture_diffuse != nullptr);
-  shader.setUniform1i("material.is_displacement", material.texture_diffuse != nullptr);
+  shader.setUniform1i("material.is_specular", material.texture_specular != nullptr);
+  shader.setUniform1i("material.is_emission", material.texture_emission != nullptr);
+  shader.setUniform1i("material.is_normal", material.texture_normal != nullptr);
+  shader.setUniform1i("material.is_displacement", material.texture_displacement != nullptr);
 
   if(material.texture_diffuse) {
     shader.setUniform1i("material.diffuse", 0);
