@@ -11,11 +11,13 @@ struct Material {
   engine::TextureAsset *texture_diffuse  = nullptr;
   engine::TextureAsset *texture_specular = nullptr;
   engine::TextureAsset *texture_emission = nullptr;
-  engine::TextureAsset *texture_height   = nullptr;
   engine::TextureAsset *texture_normal   = nullptr;
+  engine::TextureAsset *texture_displacement = nullptr;
 
-  Renderer::Color color;
-  Renderer::Color emission_strength;
+  Renderer::Color diffuse_base;
+  Renderer::Color specular_base;
+  Renderer::Color emission_base;
+
   float shininess = 32;
 
   Material();

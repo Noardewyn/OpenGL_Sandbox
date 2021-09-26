@@ -20,17 +20,24 @@ Mesh::Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Rend
 void Mesh::draw(Renderer::Shader& shader, const Material& material) {
   shader.bind();
 
-  shader.setUniform3f("material.emissionStrength", material.emission_strength.r, material.emission_strength.g, material.emission_strength.b);
+  shader.setUniformColor("color", material.diffuse_base);
+  shader.setUniformColor("material.diffuse_base", material.diffuse_base);
+  shader.setUniformColor("material.specular_base", material.specular_base);
+  shader.setUniformColor("material.emission_base", material.emission_base);
   shader.setUniform1f("material.shininess", material.shininess);
-  shader.setUniformColor("material.fillColor", material.color);
-  shader.setUniformColor("color", material.color);
+
+  shader.setUniform1i("material.is_diffuse", material.texture_diffuse != nullptr);
+  shader.setUniform1i("material.is_specular", material.texture_diffuse != nullptr);
+  shader.setUniform1i("material.is_emission", material.texture_diffuse != nullptr);
+  shader.setUniform1i("material.is_normal", material.texture_diffuse != nullptr);
+  shader.setUniform1i("material.is_displacement", material.texture_diffuse != nullptr);
 
   if(material.texture_diffuse) {
     shader.setUniform1i("material.diffuse", 0);
     material.texture_diffuse->get().bind(0);
   }
   else {
-    shader.setUniform1i("material.diffuse", 10);
+    shader.setUniform1i("material.diffuse", -1);
   }
 
   if (material.texture_specular) {
@@ -38,7 +45,7 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
     material.texture_specular->get().bind(1);
   }
   else {
-    shader.setUniform1i("material.specular", 10);
+    shader.setUniform1i("material.specular", -1);
   }
 
   if (material.texture_emission) {
@@ -46,7 +53,7 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
     material.texture_emission->get().bind(2);
   }
   else {
-    shader.setUniform1i("material.emission", 10);
+    shader.setUniform1i("material.emission", -1);
   }
 
   if (material.texture_normal) {
@@ -54,15 +61,15 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
     material.texture_normal->get().bind(3);
   }
   else {
-    shader.setUniform1i("material.normal", 10);
+    shader.setUniform1i("material.normal", -1);
   }
 
-  if (material.texture_height) {
-    shader.setUniform1i("material.height", 4);
-    material.texture_height->get().bind(4);
+  if (material.texture_displacement) {
+    shader.setUniform1i("material.displacement", 4);
+    material.texture_displacement->get().bind(4);
   }
   else {
-    shader.setUniform1i("material.height", 10);
+    shader.setUniform1i("material.displacement", -1);
   }
 
   if(_ibo.count())
@@ -78,6 +85,12 @@ void Mesh::draw(Renderer::Shader& shader, const Material& material) {
 
   if (material.texture_emission)
     material.texture_emission->get().unbind();
+
+  if (material.texture_normal)
+    material.texture_normal->get().unbind();
+
+  if (material.texture_displacement)
+    material.texture_displacement->get().unbind();
 }
 
 void Mesh::draw(Renderer::Shader& shader, const Renderer::Texture& cubemap) {

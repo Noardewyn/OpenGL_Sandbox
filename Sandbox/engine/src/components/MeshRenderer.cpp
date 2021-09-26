@@ -114,10 +114,17 @@ namespace engine {
       ImGui::Text("material name: %u", material->get().name);
 
       if (ImGui::TreeNode("Mesh settings")) {
-        ImGui::ColorEdit3("fill color", &material->get().color.r);
+        ImGui::InputFloat("shininess", &material->get().shininess);
+        ImGui::ColorEdit3("diffuse base", &material->get().diffuse_base.r);
+        ImGui::ColorEdit3("specular base", &material->get().specular_base.r);
+        ImGui::ColorEdit3("emission base", &material->get().emission_base.r);
+
         ImGui::Text("diffuse map: %u", material->get().texture_diffuse);
         ImGui::Text("specular map: %u", material->get().texture_specular);
         ImGui::Text("emission map: %u", material->get().texture_emission);
+        ImGui::Text("normal map: %u", material->get().texture_normal);
+        ImGui::Text("displacement map: %u", material->get().texture_displacement);
+
         ImGui::TreePop();
       }
     }

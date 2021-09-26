@@ -54,6 +54,16 @@ namespace engine {
       //auto mesh_mat = AssetManager::loadAsset<engine::MaterialAsset>(obj_path + ":" + material->GetName().C_Str());
       Material mat(material->GetName().C_Str());
 
+      aiColor3D color(0.f, 0.f, 0.f);
+      material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+      mat.diffuse_base = { color.r, color.g, color.b };
+
+      material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+      mat.specular_base = { color.r, color.g, color.b };
+
+      material->Get(AI_MATKEY_COLOR_EMISSIVE, color);
+      mat.emission_base = { color.r, color.g, color.b };
+
       auto tempDiffuseMap = loadMaterialTexture(material, aiTextureType_DIFFUSE);
       if(tempDiffuseMap) {
         mat.texture_diffuse = tempDiffuseMap;
@@ -71,7 +81,7 @@ namespace engine {
 
       auto tempHeightMap = loadMaterialTexture(material, aiTextureType_AMBIENT);
       if (tempHeightMap) {
-        mat.texture_height = tempHeightMap;
+        mat.texture_displacement = tempHeightMap;
       }
 
       _materials.push_back(mat);

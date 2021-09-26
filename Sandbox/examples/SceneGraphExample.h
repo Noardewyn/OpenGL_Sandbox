@@ -41,9 +41,12 @@ private:
   engine::TextureAsset* _texture_earth;
   engine::TextureAsset* _texture_window;
   engine::TextureAsset* _skybox_cubemap;
+  engine::TextureAsset* _texture_brick;
+  engine::TextureAsset* _texture_brick_normal;
 
   engine::MaterialAsset* _box_material;
   engine::MaterialAsset* _box_alpha_material;
+  engine::MaterialAsset* _brick_material;
   engine::MaterialAsset* _earth_material;
   engine::MaterialAsset* _light_source_material;
 
