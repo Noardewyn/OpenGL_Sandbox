@@ -72,10 +72,20 @@ struct Material {
     sampler2D diffuse;
     sampler2D specular;
     sampler2D emission;
+    sampler2D normal;
+    sampler2D displacement;
 
-    vec4      fillColor;
-    vec3      emissionStrength;
-    float     shininess;
+    bool is_diffuse;
+    bool is_specular;
+    bool is_emission;
+    bool is_normal;
+    bool is_displacement;
+
+    vec4  diffuse_base;
+    vec4  specular_base;
+    vec4  emmision_base;
+
+    float shininess;
 }; 
 
 uniform Material material;
@@ -94,10 +104,11 @@ vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
     // combine results
-    vec4 ambient  = light.ambient  * texture(material.diffuse, TexCoord);
-    vec4 diffuse  = light.diffuse  * diff * texture(material.diffuse, TexCoord);
-    vec4 specular = light.specular * spec * texture(material.specular, TexCoord);
+    vec4 ambient = light.ambient * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
+    vec4 diffuse = light.diffuse * diff * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
+    vec4 specular = light.specular * spec * (material.is_specular ? texture(material.specular, TexCoord) : material.specular_base);
 
     diffuse = diffuse * light.intensity;
     specular = specular * light.intensity;
@@ -107,7 +118,6 @@ vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 
 vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
-
     vec3 lightDir = normalize(light.position - fragPos);
     vec3 halfwayDir = normalize(lightDir + viewDir);
 
@@ -120,10 +130,11 @@ vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float distance    = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + 
   			     light.quadratic * (distance * distance));    
+
     // combine results
-    vec4 ambient  = light.ambient  * texture(material.diffuse, TexCoord);
-    vec4 diffuse  = light.diffuse  * diff * texture(material.diffuse, TexCoord);
-    vec4 specular = light.specular * spec * texture(material.specular, TexCoord);
+    vec4 ambient  = light.ambient  * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
+    vec4 diffuse  = light.diffuse  * diff * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
+    vec4 specular = light.specular * spec * (material.is_specular ? texture(material.specular, TexCoord) : material.specular_base);
     
     ambient  = ambient * attenuation;
     diffuse  = diffuse * attenuation * light.intensity;
@@ -151,9 +162,9 @@ vec4 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     light.quadratic * (distance * distance));
 
   // combine results
-  vec4 ambient = light.ambient * texture(material.diffuse, TexCoord);
-  vec4 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoord);
-  vec4 specular = light.specular * spec * texture(material.specular, TexCoord);
+  vec4 ambient = light.ambient * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
+  vec4 diffuse = light.diffuse * diff * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
+  vec4 specular = light.specular * spec * (material.is_specular ? texture(material.specular, TexCoord) : material.specular_base);
 
   float epsilon = light.cutOff - light.outerCutOff;
   float spot_smooth = smoothstep(1.0, 0.0, (theta - light.outerCutOff) / epsilon);
@@ -193,11 +204,11 @@ void main()
           resultLight += CalcDirLight(lights[i], norm, viewDir);
       }
 
-      FragColor = resultLight + material.fillColor;
+      FragColor = resultLight;
     }
     else 
     {
-      FragColor = texture(material.diffuse, TexCoord) + material.fillColor;
+      FragColor = texture(material.diffuse, TexCoord) + material.diffuse_base;
     } 
 
     if(fog_distance > 0)

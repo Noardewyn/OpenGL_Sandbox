@@ -42,6 +42,8 @@ namespace Sandbox {
 
     _texture_earth  = AssetManager::loadAsset<engine::TextureAsset>("earth.jpg");
     _texture_window = AssetManager::loadAsset<engine::TextureAsset>("window.png");
+    _texture_brick = AssetManager::loadAsset<engine::TextureAsset>("textures/brickwall.jpg");
+    _texture_brick_normal = AssetManager::loadAsset<engine::TextureAsset>("textures/brickwall_normal.jpg");
 
     _skybox_cubemap = AssetManager::getAsset<engine::TextureAsset>("skybox");
 
@@ -62,11 +64,15 @@ namespace Sandbox {
     _box_alpha_material = AssetManager::loadAsset<engine::MaterialAsset>("alpha textured box");
     _box_alpha_material->get().texture_diffuse = _texture_window;
 
+    _brick_material = AssetManager::loadAsset<engine::MaterialAsset>("normal map box");
+    _brick_material->get().texture_diffuse = _texture_brick;
+    _brick_material->get().texture_normal = _texture_brick;
+
     _earth_material = AssetManager::loadAsset<engine::MaterialAsset>("earth material");
     _earth_material->get().texture_diffuse = _texture_earth;
 
     _light_source_material = AssetManager::loadAsset<engine::MaterialAsset>("light source");
-    _light_source_material->get().color = { 1.0, 1.0, 1.0, 1.0 };
+    _light_source_material->get().diffuse_base = { 1.0, 1.0, 1.0, 1.0 };
 
     _sponza_model = AssetManager::loadAsset<engine::ModelAsset>("models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
     
@@ -87,13 +93,24 @@ namespace Sandbox {
 
     {
       engine::Entity& entity = createEntity("Alpha cube");
-      entity.transform.position = { 0.0, 0.0, 0.0 };
-      entity.transform.scale = { 1.0, 1.0, 1.0 };
+      entity.transform.position = { 35.0, 5.0, 0.0 };
+      entity.transform.scale = { 5.0, 5.0, 5.0 };
 
       engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
       mesh_renderer->target = _cube_mesh.get();
       mesh_renderer->material = _box_alpha_material;
-      mesh_renderer->shader_asset = _shader_white_color;
+      mesh_renderer->shader_asset = _shader;
+    }
+
+    {
+      engine::Entity& entity = createEntity("Brick wall");
+      entity.transform.position = { -5.0, 5.0, 0.0 };
+      entity.transform.scale = { 5.0, 5.0, 5.0 };
+
+      engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
+      mesh_renderer->target = _cube_mesh.get();
+      mesh_renderer->material = _brick_material;
+      mesh_renderer->shader_asset = _shader;
     }
 
     {
