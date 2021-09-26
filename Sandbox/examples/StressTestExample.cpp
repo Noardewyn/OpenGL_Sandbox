@@ -45,7 +45,7 @@ namespace Sandbox {
     _earth_material->get().texture_diffuse = _texture_earth;
 
     _light_source_material = AssetManager::loadAsset<engine::MaterialAsset>("light source");
-    _light_source_material->get().color = { 1.0, 1.0, 1.0, 1.0 };
+    _light_source_material->get().diffuse_base = { 1.0, 1.0, 1.0, 1.0 };
 
     //_sponza_model = AssetManager::loadAsset<engine::ModelAsset>("models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
     

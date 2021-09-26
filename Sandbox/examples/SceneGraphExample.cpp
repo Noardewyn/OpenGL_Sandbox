@@ -67,6 +67,7 @@ namespace Sandbox {
     _brick_material = AssetManager::loadAsset<engine::MaterialAsset>("normal map box");
     _brick_material->get().texture_diffuse = _texture_brick;
     _brick_material->get().texture_normal = _texture_brick;
+    _brick_material->get().specular_base = Renderer::Color(0.5, 0.5, 0.5);
 
     _earth_material = AssetManager::loadAsset<engine::MaterialAsset>("earth material");
     _earth_material->get().texture_diffuse = _texture_earth;
@@ -76,6 +77,7 @@ namespace Sandbox {
 
     _sponza_model = AssetManager::loadAsset<engine::ModelAsset>("models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
     
+    _plane_mesh = engine::generatePlaneMesh(true);
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
     _skybox_mesh = engine::generateSkyBox();
@@ -104,11 +106,12 @@ namespace Sandbox {
 
     {
       engine::Entity& entity = createEntity("Brick wall");
-      entity.transform.position = { -5.0, 5.0, 0.0 };
+      entity.transform.position = { 0, 2.0, 0.0 };
       entity.transform.scale = { 5.0, 5.0, 5.0 };
+      //entity.transform.rotation = { 0.0, -90.0, 0.0 };
 
       engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
-      mesh_renderer->target = _cube_mesh.get();
+      mesh_renderer->target = _plane_mesh.get();
       mesh_renderer->material = _brick_material;
       mesh_renderer->shader_asset = _shader;
     }
@@ -126,7 +129,7 @@ namespace Sandbox {
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
     addSpotLightEntity("Spot light 1", { 0.0f, 10.0f, 0.0f } , { 0.0f, 0.0f, -120.0f }, Renderer::Color(0.4, 0.2, 0.2));
-    addPointLightEntity("Point light 2", { 7.5, 1.0, 1.5 }, Renderer::Color::White);
+    addPointLightEntity("Point light 2", { 7.5, 6.0, 1.5 }, Renderer::Color::White);
     engine::Entity& directional = addDirLightEntity("Directional light 1", { 0.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, -120 }, Renderer::Color::White);
     auto* dir_light = directional.getComponent<engine::Light>();
     dir_light->intensity = 0.1;

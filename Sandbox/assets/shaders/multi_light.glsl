@@ -3,6 +3,8 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 texCoord;
 layout (location = 2) in vec3 normal;
+layout (location = 3) in vec3 tangent;
+layout (location = 4) in vec3 bitangent;
 
 struct Light {
   float type;
@@ -30,6 +32,12 @@ uniform mat4 projection;
 uniform Light lights[NR_LIGHTS];
 uniform int   lights_count;
 
+out VS_OUT{
+    vec3 FragPos;
+    vec2 TexCoord;
+    mat3 TBN;
+} vs_out;
+
 out vec3 Normal;
 out vec2 TexCoord;
 out vec3 FragPos;
@@ -38,8 +46,13 @@ void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0f);
     FragPos = vec3(view * model * vec4(position, 1.0));
-    Normal = mat3(transpose(inverse(view * model))) * normal;
     TexCoord = texCoord;
+    Normal = mat3(transpose(inverse(view * model))) * normal;
+
+    vec3 T = normalize(vec3(view * model * vec4(tangent, 0.0)));
+    vec3 B = normalize(vec3(view * model * vec4(bitangent, 0.0)));
+    vec3 N = Normal; //vec3(view * model * normalize(vec4(normal, 0.0)));
+    vs_out.TBN = mat3(T, B, N);
 }
 
 #SHADER FRAGMENT
@@ -47,6 +60,12 @@ void main()
 in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
+
+in VS_OUT{
+    vec3 FragPos;
+    vec2 TexCoord;
+    mat3 TBN;
+} fs_in;
 
 struct Light {
   float type;
@@ -195,6 +214,11 @@ void main()
       vec3 viewDir = normalize(-FragPos);
       vec4 resultLight = vec4(0.0);
 
+      // normal map processing
+      if (material.is_normal) {
+        norm = normalize(fs_in.TBN * texture(material.normal, TexCoord).rgb * 2.0 - 1.0);
+      }
+      
       for (int i = 0; i < lights_count; i++) {
         if (int(lights[i].type) == 1)
           resultLight += CalcPointLight(lights[i], norm, FragPos, viewDir);

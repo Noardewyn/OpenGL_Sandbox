@@ -53,6 +53,13 @@ static GLfloat plane_vertices[] = {
     -0.5f,  0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f,  0.0f,
 };
 
+static GLfloat plane_vertices_tangent[] = {
+     0.5f,  0.0f,  0.5f,   1.0f, 1.0f,   0.0f, -1.0f,  0.0f,    1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+     0.5f,  0.0f, -0.5f,   1.0f, 0.0f,   0.0f, -1.0f,  0.0f,    1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f,  0.0f, -0.5f,   0.0f, 0.0f,   0.0f, -1.0f,  0.0f,    1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f,  0.0f,  0.5f,   0.0f, 1.0f,   0.0f, -1.0f,  0.0f,    1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+};
+
 static GLuint plane_indices[] = {
     0, 1, 3,
     1, 2, 3
@@ -117,17 +124,58 @@ namespace engine {
     return std::move(mesh);
   }
 
-  std::unique_ptr<Mesh> generatePlaneMesh() {
+  std::unique_ptr<Mesh> generatePlaneMesh(bool tangent_space) {
+
     Renderer::IndexBuffer ibo(plane_indices, sizeof(plane_indices) / sizeof(plane_indices[0]));
-    Renderer::VertexBuffer vbo(plane_vertices, sizeof(plane_vertices));
     Renderer::VertexBufferLayout layout;
     layout.push<float>(3);
     layout.push<float>(2);
     layout.push<float>(3);
 
-    auto mesh = std::make_unique<Mesh>(std::move(vbo), std::move(ibo), layout);
+    if (tangent_space) {
+      //glm::vec3 pos1(-1.0, 1.0, 0.0);
+      //glm::vec3 pos2(-1.0, -1.0, 0.0);
+      //glm::vec3 pos3(1.0, -1.0, 0.0);
+      //glm::vec3 pos4(1.0, 1.0, 0.0);
+      //// texture coordinates
+      //glm::vec2 uv1(0.0, 1.0);
+      //glm::vec2 uv2(0.0, 0.0);
+      //glm::vec2 uv3(1.0, 0.0);
+      //glm::vec2 uv4(1.0, 1.0);
+      //// normal vector
+      ////glm::vec3 nm(0.0, -1.0, 0.0);
 
-    return std::move(mesh);
+      //glm::vec3 edge1 = pos2 - pos1;
+      //glm::vec3 edge2 = pos3 - pos1;
+      //glm::vec2 deltaUV1 = uv2 - uv1;
+      //glm::vec2 deltaUV2 = uv3 - uv1;
+
+      //float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+      //glm::vec3 tangent, bitangent;
+
+      //tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+      //tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+      //tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+
+      //bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+      //bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+      //bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+
+      Renderer::VertexBuffer vbo(plane_vertices_tangent, sizeof(plane_vertices_tangent));
+      Renderer::VertexBufferLayout layout;
+      layout.push<float>(3);
+      layout.push<float>(2);
+      layout.push<float>(3);
+      layout.push<float>(3);
+      layout.push<float>(3);
+
+      return std::make_unique<Mesh>(std::move(vbo), std::move(ibo), layout);
+    }
+    else {
+      Renderer::VertexBuffer vbo(plane_vertices, sizeof(plane_vertices));
+      return std::make_unique<Mesh>(std::move(vbo), std::move(ibo), layout);
+    }
   }
 
   std::unique_ptr<Mesh> generateSphereMesh(int detalization) {

@@ -31,6 +31,7 @@ public:
 
 private:  
   std::unique_ptr<engine::Mesh> _cube_mesh;
+  std::unique_ptr<engine::Mesh> _plane_mesh;
   std::unique_ptr<engine::Mesh> _sphere_mesh;
   std::unique_ptr<engine::Mesh> _skybox_mesh;
 
