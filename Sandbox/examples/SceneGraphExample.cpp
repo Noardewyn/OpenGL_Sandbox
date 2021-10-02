@@ -77,7 +77,7 @@ namespace Sandbox {
 
     _sponza_model = AssetManager::loadAsset<engine::ModelAsset>("models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
     
-    _plane_mesh = engine::generatePlaneMesh(true);
+    _plane_mesh = engine::generateMatrixMesh(10, 10, 20, 20);
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
     _skybox_mesh = engine::generateSkyBox();
