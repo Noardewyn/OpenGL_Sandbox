@@ -124,6 +124,84 @@ namespace engine {
     return std::move(mesh);
   }
 
+  std::unique_ptr<Mesh> generateMatrixMesh(float width, float height, uint32_t segments_x, uint32_t segments_y) {
+    
+    uint32_t segments_count_width = segments_x;
+    uint32_t segments_count_height = segments_y;
+
+    float half_width = width / 2.0f;
+    float half_height = height / 2.0f;
+
+    uint32_t lines_width = segments_count_width + 1;
+    uint32_t lines_height = segments_count_height + 1;
+    uint32_t vertices_count = lines_width * lines_height;
+    uint32_t triangles_count = segments_count_width * segments_count_height * 2;
+
+    glm::vec3 normal = {0.0f, 0.0f, 1.0f};
+
+    std::vector<Vertex> vertices;
+    //vertices.reserve(vertices_count);
+    std::vector<uint32_t> indexes;
+    //vertices.reserve(triangles_count * 3);
+
+    float z = 0.0f;
+
+    float width_step = width / segments_count_width;
+    float height_step = -height / segments_count_height;
+
+    float current_height = half_height;
+    float current_width = -half_width;
+
+    float width_uv_step = 2.0f / segments_count_width;
+    float height_uv_step = 2.0f / segments_count_height;
+
+    float current_height_uv = 1.0f;
+    float current_width_uv = -1.0f;
+
+    uint32_t index = 0;
+
+    for (int h = 0; h < lines_height; h++) {
+      for (int w = 0; w < lines_width; w++) {
+        Vertex new_vertex;
+        new_vertex.position   = {current_width, current_height, z};
+        new_vertex.texCoords  = {current_width_uv, current_height_uv};
+        new_vertex.normal     = normal;
+        new_vertex.tangent = {1.0f, 0.0f, 0.0f};
+        new_vertex.bitangent = { 0.0f, 1.0f, 0.0f };
+
+        vertices.push_back(new_vertex);
+
+        current_width += width_step;
+        current_width_uv += width_uv_step;
+
+        if (h < lines_height - 1 && w < lines_width - 1) {
+            indexes.push_back(lines_width * h + w);
+            indexes.push_back(lines_width * (h + 1) + w);
+            indexes.push_back(lines_width * h + w + 1);
+
+            indexes.push_back(lines_width * h + w + 1);
+            indexes.push_back(lines_width * (h + 1) + w);
+            indexes.push_back(lines_width * (h + 1) + w + 1);
+        }
+      }
+      current_height += height_step;
+      current_height_uv += height_uv_step;
+      current_width = -half_width;
+      current_width_uv = -1.0f;
+    }
+
+    Renderer::IndexBuffer ibo(indexes.data(), indexes.size());
+    Renderer::VertexBuffer vbo(vertices.data(), vertices.size() * sizeof(Vertex));
+    Renderer::VertexBufferLayout layout;
+    layout.push<float>(3); // position
+    layout.push<float>(2); // uv
+    layout.push<float>(3); // normal
+    layout.push<float>(3); // tangent
+    layout.push<float>(3); // bitangent
+
+    return std::make_unique<Mesh>(std::move(vbo), std::move(ibo), layout);
+  }
+
   std::unique_ptr<Mesh> generatePlaneMesh(bool tangent_space) {
 
     Renderer::IndexBuffer ibo(plane_indices, sizeof(plane_indices) / sizeof(plane_indices[0]));
@@ -133,35 +211,6 @@ namespace engine {
     layout.push<float>(3);
 
     if (tangent_space) {
-      //glm::vec3 pos1(-1.0, 1.0, 0.0);
-      //glm::vec3 pos2(-1.0, -1.0, 0.0);
-      //glm::vec3 pos3(1.0, -1.0, 0.0);
-      //glm::vec3 pos4(1.0, 1.0, 0.0);
-      //// texture coordinates
-      //glm::vec2 uv1(0.0, 1.0);
-      //glm::vec2 uv2(0.0, 0.0);
-      //glm::vec2 uv3(1.0, 0.0);
-      //glm::vec2 uv4(1.0, 1.0);
-      //// normal vector
-      ////glm::vec3 nm(0.0, -1.0, 0.0);
-
-      //glm::vec3 edge1 = pos2 - pos1;
-      //glm::vec3 edge2 = pos3 - pos1;
-      //glm::vec2 deltaUV1 = uv2 - uv1;
-      //glm::vec2 deltaUV2 = uv3 - uv1;
-
-      //float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
-
-      //glm::vec3 tangent, bitangent;
-
-      //tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-      //tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-      //tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
-
-      //bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-      //bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-      //bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-
       Renderer::VertexBuffer vbo(plane_vertices_tangent, sizeof(plane_vertices_tangent));
       Renderer::VertexBufferLayout layout;
       layout.push<float>(3);

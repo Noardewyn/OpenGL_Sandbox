@@ -59,7 +59,7 @@ namespace engine {
       mat.diffuse_base = { color.r, color.g, color.b };
 
       //material->Get(AI_MATKEY_COLOR_SPECULAR, color);
-      mat.specular_base = { color.r, color.g, color.b };
+      mat.specular_base = { color.r, color.g, color.b, 0.0f };
 
       material->Get(AI_MATKEY_COLOR_EMISSIVE, color);
       mat.emission_base = { color.r, color.g, color.b };
@@ -187,8 +187,9 @@ namespace engine {
       aiString str;
       bool skip = false;
 
+      ai_real blend_mode;
+      
       mat->GetTexture(type, i, &str);
-
       const std::string& asset_path = AssetManager::truncateBasePath(directory + '/' + str.C_Str());
 
       auto texture_asset = AssetManager::getAsset<engine::TextureAsset>(asset_path);
@@ -200,6 +201,7 @@ namespace engine {
       }
 
       if (!skip) {
+
         auto texture_asset = AssetManager::loadAsset<engine::TextureAsset>(asset_path);
         out_texture = texture_asset;
       }
