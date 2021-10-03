@@ -10,6 +10,7 @@ namespace Renderer {
 class Texture {
 public:
   int width, height, nrChannels;
+  bool has_alpha = false;
   bool is_cubemap = false;
   std::string image_path;
 

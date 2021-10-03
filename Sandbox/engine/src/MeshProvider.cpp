@@ -138,6 +138,8 @@ namespace engine {
     uint32_t triangles_count = segments_count_width * segments_count_height * 2;
 
     glm::vec3 normal = {0.0f, 0.0f, 1.0f};
+    glm::vec3 tangent = { 1.0f, 0.0f, 0.0f };
+    glm::vec3 bitangent = { 0.0f, 1.0f, 0.0f };
 
     std::vector<Vertex> vertices;
     //vertices.reserve(vertices_count);
@@ -166,8 +168,8 @@ namespace engine {
         new_vertex.position   = {current_width, current_height, z};
         new_vertex.texCoords  = {current_width_uv, current_height_uv};
         new_vertex.normal     = normal;
-        new_vertex.tangent = {1.0f, 0.0f, 0.0f};
-        new_vertex.bitangent = { 0.0f, 1.0f, 0.0f };
+        new_vertex.tangent    = tangent;
+        new_vertex.bitangent  = bitangent;
 
         vertices.push_back(new_vertex);
 
@@ -184,6 +186,7 @@ namespace engine {
             indexes.push_back(lines_width * (h + 1) + w + 1);
         }
       }
+
       current_height += height_step;
       current_height_uv += height_uv_step;
       current_width = -half_width;
