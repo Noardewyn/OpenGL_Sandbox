@@ -66,7 +66,7 @@ namespace Sandbox {
 
     _brick_material = AssetManager::loadAsset<engine::MaterialAsset>("normal map box");
     _brick_material->get().texture_diffuse = _texture_brick;
-    _brick_material->get().texture_normal = _texture_brick;
+    _brick_material->get().texture_normal = _texture_brick_normal;
     _brick_material->get().specular_base = Renderer::Color(0.5, 0.5, 0.5);
 
     _earth_material = AssetManager::loadAsset<engine::MaterialAsset>("earth material");
@@ -77,7 +77,7 @@ namespace Sandbox {
 
     _sponza_model = AssetManager::loadAsset<engine::ModelAsset>("models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
     
-    _plane_mesh = engine::generateMatrixMesh(10, 10, 20, 20);
+    _plane_mesh = engine::generateMatrixMesh(10, 10, 2, 2);
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
     _skybox_mesh = engine::generateSkyBox();

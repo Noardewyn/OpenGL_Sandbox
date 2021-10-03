@@ -190,7 +190,8 @@ namespace engine {
       ai_real blend_mode;
       
       mat->GetTexture(type, i, &str);
-      const std::string& asset_path = AssetManager::truncateBasePath(directory + '/' + str.C_Str());
+      const std::string& texture_path = directory + '/' + str.C_Str();
+      const std::string& asset_path = AssetManager::truncateBasePath(texture_path);
 
       auto texture_asset = AssetManager::getAsset<engine::TextureAsset>(asset_path);
 
@@ -201,8 +202,10 @@ namespace engine {
       }
 
       if (!skip) {
-
-        auto texture_asset = AssetManager::loadAsset<engine::TextureAsset>(asset_path);
+        engine::TextureAsset* texture_asset = new engine::TextureAsset(asset_path, false);
+        uint32_t format = type == aiTextureType_DIFFUSE ? GL_SRGB_ALPHA : GL_RGB;
+        texture_asset->get() = Renderer::Texture(texture_path, format);
+        auto texture_asset = AssetManager::addAsset<engine::TextureAsset>(texture_asset);
         out_texture = texture_asset;
       }
     }

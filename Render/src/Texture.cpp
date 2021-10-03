@@ -18,9 +18,9 @@ namespace Renderer {
     
     if (format == GL_RED)
       nrChannels = nrChannels;
-    else if (format == GL_RGB)
+    else if (format == GL_RGB || format == GL_SRGB)
       nrChannels = 3;
-    else if (format == GL_RGBA)
+    else if (format == GL_RGBA || format == GL_SRGB_ALPHA)
       nrChannels = 4;
     
     stbi_set_flip_vertically_on_load(true);

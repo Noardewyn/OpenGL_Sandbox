@@ -148,7 +148,7 @@ vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     // attenuation
     float distance    = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + 
-  			     light.quadratic * (distance * distance));    
+  			     light.quadratic * distance);    
 
     // combine results
     vec4 ambient  = light.ambient  * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
@@ -229,11 +229,15 @@ void main()
       }
 
       FragColor = resultLight;
+      //FragColor = vec4(norm, 1.0);
     }
     else 
     {
-      FragColor = texture(material.diffuse, TexCoord) + material.diffuse_base;
+      FragColor = texture(material.diffuse, TexCoord);// + material.diffuse_base;
     } 
+
+    float gamma = 2.2;
+    FragColor.rgb = pow(FragColor.rgb, vec3(1.0 / gamma));
 
     if(fog_distance > 0)
       FragColor += LinearizeDepth(gl_FragCoord.z) / fog_distance;
