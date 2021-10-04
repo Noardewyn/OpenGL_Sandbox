@@ -128,8 +128,8 @@ namespace Sandbox {
     }
 
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
-    addSpotLightEntity("Spot light 1", { 0.0f, 10.0f, 0.0f } , { 0.0f, 0.0f, -120.0f }, Renderer::Color(0.4, 0.2, 0.2));
-    addPointLightEntity("Point light 2", { 7.5, 6.0, 1.5 }, Renderer::Color::White);
+    addSpotLightEntity("Spot light 1", { -56.0f, 26.0f, -1.0f } , { 0.0f, 0.0f, -120.0f }, Renderer::Color(0.8, 0.6, 0.6));
+    addPointLightEntity("Point light 2", { 7.5, 10.0, 1.5 }, Renderer::Color::White);
     engine::Entity& directional = addDirLightEntity("Directional light 1", { 0.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, -120 }, Renderer::Color::White);
     auto* dir_light = directional.getComponent<engine::Light>();
     dir_light->intensity = 0.1;

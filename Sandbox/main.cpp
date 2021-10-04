@@ -48,19 +48,19 @@ int main() {
 	menu.registerScene<Sandbox::Camera3DExample>("3d camera", "");
 	menu.registerScene<Sandbox::Lighting3DExample>("3d lighting", "");
 	menu.registerScene<Sandbox::AdvancedLighting3DExample>("advanced 3d lighting", "");
-  menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
-  menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
-  menu.registerScene<Sandbox::StressTestExample>("Stress test", "");
-  menu.registerScene<Sandbox::SceneGraphExample>("Sandbox", "");
+    menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
+    menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
+    menu.registerScene<Sandbox::StressTestExample>("Stress test", "");
+    menu.registerScene<Sandbox::SceneGraphExample>("Sandbox", "");
 
 	menu.startScene(menu.scenesCount()-1);
 
 	while (window.isOpen()) {
 		window.pollEvents();
 		
-		if (tools::InputManager::instance()->keyDown(GLFW_KEY_ESCAPE)) {
-			window.close();
-		}
+        if (tools::InputManager::instance()->keyDown(GLFW_KEY_ESCAPE)) {
+            window.close();
+        }
 
 		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F3)) {
 			static bool wireframe_enabled = false;

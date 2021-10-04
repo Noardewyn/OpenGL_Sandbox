@@ -26,7 +26,7 @@ public:
   float spot_smooth = 5;
   float range = 10;
 
-  float intensity = 5;
+  float intensity = 2;
   float specular_percent = 1.0f;
   float diffuse_percent =  0.8f;
   float ambient_percent =  0.0f;
