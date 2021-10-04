@@ -236,9 +236,10 @@ void main()
       FragColor = texture(material.diffuse, TexCoord);// + material.diffuse_base;
     } 
 
+    
+    if (fog_distance > 0)
+        FragColor += LinearizeDepth(gl_FragCoord.z) / fog_distance;
+
     float gamma = 2.2;
     FragColor.rgb = pow(FragColor.rgb, vec3(1.0 / gamma));
-
-    if(fog_distance > 0)
-      FragColor += LinearizeDepth(gl_FragCoord.z) / fog_distance;
 }

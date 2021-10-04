@@ -205,8 +205,7 @@ namespace engine {
         engine::TextureAsset* texture_asset = new engine::TextureAsset(asset_path, false);
         uint32_t format = type == aiTextureType_DIFFUSE ? GL_SRGB_ALPHA : GL_RGB;
         texture_asset->get() = Renderer::Texture(texture_path, format);
-        auto texture_asset = AssetManager::addAsset<engine::TextureAsset>(texture_asset);
-        out_texture = texture_asset;
+        out_texture = AssetManager::addAsset<engine::TextureAsset>(texture_asset);
       }
     }
 
