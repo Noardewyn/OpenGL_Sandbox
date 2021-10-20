@@ -97,6 +97,13 @@ namespace engine {
 
     shader.setUniform1i("calculate_light", _calculate_lighting);
 
+    //Debug modes
+    bool normal_maps_mode = _parent->getScene().getDebugMode(DebugMode::ShowNormalMaps);
+    shader.setUniform1i("debug_show_normal_maps", normal_maps_mode);
+
+    uint32_t debug_display_mode = (uint32_t)_parent->getScene().getDebugDisplayMode();
+    shader.setUniform1i("displayMode", debug_display_mode);
+
     if(material) {
       target->draw(shader, material->get());
     }

@@ -70,6 +70,22 @@ int main() {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
+        if (tools::InputManager::instance()->keyDown(GLFW_KEY_F4)) {
+            static bool normal_map_enabled = false;
+			menu.getCurrentScene()->setDebugMode(engine::DebugMode::ShowNormalMaps, normal_map_enabled = !normal_map_enabled);
+        }
+
+        if (tools::InputManager::instance()->keyDown(GLFW_KEY_F5)) {
+            static int display_mode = 0;
+
+			if(display_mode >= (uint32_t)engine::DebugDisplayMode::Count)
+				display_mode = 0;
+			else
+				display_mode++;
+
+            menu.getCurrentScene()->setDebugDisplayMode((engine::DebugDisplayMode)display_mode);
+        }
+
 		if (tools::InputManager::instance()->mouseKeyPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 			window.setCursorEnabled(false);
 		}
