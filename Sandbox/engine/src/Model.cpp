@@ -58,8 +58,8 @@ namespace engine {
       material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
       mat.diffuse_base = { color.r, color.g, color.b };
 
-      //material->Get(AI_MATKEY_COLOR_SPECULAR, color);
-      mat.specular_base = { color.r, color.g, color.b, 0.0f };
+      material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+      mat.specular_base = { color.r, color.g, color.b };
 
       material->Get(AI_MATKEY_COLOR_EMISSIVE, color);
       mat.emission_base = { color.r, color.g, color.b };

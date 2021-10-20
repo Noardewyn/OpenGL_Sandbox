@@ -33,8 +33,8 @@ uniform Light lights[NR_LIGHTS];
 uniform int   lights_count;
 
 out VS_OUT{
-    vec3 FragPos;
-    vec2 TexCoord;
+    vec3 Tangent;
+    vec3 Bitangent;
     mat3 TBN;
 } vs_out;
 
@@ -49,10 +49,16 @@ void main()
     TexCoord = texCoord;
     Normal = mat3(transpose(inverse(view * model))) * normal;
 
-    vec3 T = normalize(vec3(view * model * vec4(tangent, 0.0)));
-    vec3 B = normalize(vec3(view * model * vec4(bitangent, 0.0)));
-    vec3 N = Normal; //vec3(view * model * normalize(vec4(normal, 0.0)));
-    vs_out.TBN = mat3(T, B, N);
+    vec3 T = normalize(mat3(transpose(inverse(view * model))) * tangent);
+    vec3 B = normalize(mat3(transpose(inverse(view * model))) * bitangent);
+    vec3 N = normalize(Normal);
+
+    if (dot(cross(N, T), B) < 0.0)
+        T = T * -1.0;
+
+    vs_out.TBN = transpose(mat3(T, B, N));
+    vs_out.Tangent = T;
+    vs_out.Bitangent = B;
 }
 
 #SHADER FRAGMENT
@@ -62,8 +68,8 @@ in vec3 Normal;
 in vec3 FragPos;
 
 in VS_OUT{
-    vec3 FragPos;
-    vec2 TexCoord;
+    vec3 Tangent;
+    vec3 Bitangent;
     mat3 TBN;
 } fs_in;
 
@@ -112,17 +118,22 @@ uniform Material material;
 #define NR_LIGHTS 4
 uniform Light lights[NR_LIGHTS];
 uniform int   lights_count;
-uniform bool calculate_light;
 uniform float fog_distance = 0;
+uniform int  displayMode;
+uniform bool calculate_light;
+uniform bool debug_show_normal_maps;
 
 vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 {
-    vec3 lightDir = normalize(-light.direction);
+    vec3 lightDir = fs_in.TBN * normalize(-light.direction);
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
+    if (diff == 0.0)
+        spec = 0.0;
 
     // combine results
     vec4 ambient = light.ambient * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
@@ -132,12 +143,12 @@ vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
     diffuse = diffuse * light.intensity;
     specular = specular * light.intensity;
 
-    return (diffuse + specular + ambient);
+    return vec4(vec3(diffuse + specular + ambient), 1.0);
 }  
 
 vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
-    vec3 lightDir = normalize(light.position - fragPos);
+    vec3 lightDir = fs_in.TBN * normalize(light.position - fragPos);
     vec3 halfwayDir = normalize(lightDir + viewDir);
 
     // diffuse shading
@@ -150,6 +161,9 @@ vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + 
   			     light.quadratic * distance);    
 
+    if (diff == 0.0)
+        spec = 0.0;
+
     // combine results
     vec4 ambient  = light.ambient  * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
     vec4 diffuse  = light.diffuse  * diff * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
@@ -158,12 +172,12 @@ vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     ambient  = ambient * attenuation;
     diffuse  = diffuse * attenuation * light.intensity;
     specular = specular * attenuation * light.intensity;
-    return (ambient + diffuse + specular);
+    return vec4(vec3(diffuse + specular + ambient), 1.0);
 } 
 
 vec4 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
-  vec3 lightDir = normalize(light.position - fragPos);
+  vec3 lightDir = fs_in.TBN * normalize(light.position - fragPos);
   vec3 halfwayDir = normalize(lightDir + viewDir);
   
   float theta = dot(lightDir, normalize(-light.direction));
@@ -175,10 +189,14 @@ vec4 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
   float diff = max(dot(normal, lightDir), 0.0);
   // specular shading
   vec3 reflectDir = reflect(-lightDir, normal);
+
   float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
   float distance = length(light.position - fragPos);
   float attenuation = 1.0 / (light.constant + light.linear * distance +
     light.quadratic * (distance * distance));
+
+  if (diff == 0.0)
+      spec = 0.0;
 
   // combine results
   vec4 ambient = light.ambient * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
@@ -195,7 +213,7 @@ vec4 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
   specular = specular * light.intensity * attenuation;
   // ambient = ambient * attenuation;
 
-  return (diffuse + specular + ambient);
+  return vec4(vec3(diffuse + specular), 1.0);
 }
 
 float near = 0.1;
@@ -211,25 +229,34 @@ void main()
     if (calculate_light) 
     {
       vec3 norm = normalize(Normal);
-      vec3 viewDir = normalize(-FragPos);
-      vec4 resultLight = vec4(0.0);
+      vec3 viewDir = fs_in.TBN * normalize(-FragPos);
+      vec4 result = vec4(0.0);
 
       // normal map processing
       if (material.is_normal) {
-        norm = normalize(fs_in.TBN * texture(material.normal, TexCoord).rgb * 2.0 - 1.0);
+        norm = normalize(texture(material.normal, TexCoord).rgb * 2.0 - 1.0);
       }
       
       for (int i = 0; i < lights_count; i++) {
         if (int(lights[i].type) == 1)
-          resultLight += CalcPointLight(lights[i], norm, FragPos, viewDir);
+            result += CalcPointLight(lights[i], norm, FragPos, viewDir);
         else if (int(lights[i].type) == 2)
-          resultLight += CalcSpotLight(lights[i], norm, FragPos, viewDir);
+            result += CalcSpotLight(lights[i], norm, FragPos, viewDir);
         else if(int(lights[i].type) == 3)
-          resultLight += CalcDirLight(lights[i], norm, viewDir);
+            result += CalcDirLight(lights[i], norm, viewDir);
       }
 
-      FragColor = resultLight;
-      //FragColor = vec4(norm, 1.0);
+      result.w = texture(material.diffuse, TexCoord).w;
+
+      switch (displayMode)
+      {
+          case 0: FragColor = result; break; // Scene View
+          case 1: FragColor = vec4(norm * 0.5 + 0.5, 1.0); break; // Normals_TS
+          case 2: FragColor = vec4(Normal, 1.0); break; // Normals_WS
+          case 3: FragColor = vec4(texture(material.normal, TexCoord).rgb, 1.0); break; // Normal Texture
+          case 4: FragColor = vec4(fs_in.Tangent * 0.5 + 0.5, 1.0); break; // Tangents
+          case 5: FragColor = vec4(fs_in.Bitangent * 0.5 + 0.5, 1.0); break; // Bitangents
+      }
     }
     else 
     {
