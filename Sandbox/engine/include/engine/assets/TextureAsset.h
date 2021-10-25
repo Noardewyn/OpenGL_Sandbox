@@ -18,6 +18,7 @@ namespace engine {
     virtual void reload() override;
 
     Renderer::Texture& get();
+    const Renderer::Texture& TextureAsset::get() const;
 
   private:
     Renderer::Texture _texture;

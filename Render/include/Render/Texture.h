@@ -21,6 +21,8 @@ public:
   void bind(int unit = 0) const;
   void unbind() const;
 
+  uint32_t getRenderId() const { return _render_id; };
+
 private:
   uint32_t _render_id;
 };

@@ -107,7 +107,7 @@ namespace Sandbox {
     {
       engine::Entity& entity = createEntity("Brick wall");
       entity.transform.position = { 0, 2.0, 0.0 };
-      entity.transform.scale = { 5.0, 5.0, 5.0 };
+      entity.transform.scale = { 1.0, 1.0, 1.0 };
       //entity.transform.rotation = { 0.0, -90.0, 0.0 };
 
       engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
@@ -144,6 +144,7 @@ namespace Sandbox {
     mesh_renderer->target = _sphere_mesh.get();
     mesh_renderer->material = _light_source_material;
     mesh_renderer->shader_asset = _shader;
+    mesh_renderer->setCalculateLighting(false);
 
     engine::Light* light_component = light_entity.addComponent<engine::Light>(engine::Light::LightType::Point);
     light_component->color = color;
@@ -161,6 +162,7 @@ namespace Sandbox {
     mesh_renderer->target = _cube_mesh.get();
     mesh_renderer->material = _light_source_material;
     mesh_renderer->shader_asset = _shader;
+    mesh_renderer->setCalculateLighting(false);
 
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
     light_component->direction = direction;
@@ -180,6 +182,7 @@ namespace Sandbox {
     mesh_renderer->target = _cube_mesh.get();
     mesh_renderer->material = _light_source_material;
     mesh_renderer->shader_asset = _shader;
+    mesh_renderer->setCalculateLighting(false);
 
     engine::Light* light_component = light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Spot);
     light_component->direction = direction;
