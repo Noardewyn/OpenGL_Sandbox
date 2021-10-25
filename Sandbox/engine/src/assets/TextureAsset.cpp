@@ -43,4 +43,7 @@ namespace engine {
     return _texture;
   }
 
+  const Renderer::Texture& TextureAsset::get() const {
+      return _texture;
+  }
 } // namespace engine

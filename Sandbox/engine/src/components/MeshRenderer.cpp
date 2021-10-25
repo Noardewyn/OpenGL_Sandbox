@@ -126,11 +126,25 @@ namespace engine {
         ImGui::ColorEdit3("specular base", &material->get().specular_base.r);
         ImGui::ColorEdit3("emission base", &material->get().emission_base.r);
 
-        ImGui::Text("diffuse map: %u", material->get().texture_diffuse);
-        ImGui::Text("specular map: %u", material->get().texture_specular);
-        ImGui::Text("emission map: %u", material->get().texture_emission);
-        ImGui::Text("normal map: %u", material->get().texture_normal);
-        ImGui::Text("displacement map: %u", material->get().texture_displacement);
+        auto texture_block = [](const std::string& name, const TextureAsset* texture_asset) {
+            std::string header_name = name.c_str();
+            if(!texture_asset || !texture_asset->get().getRenderId()) {
+                header_name += " EMPTY";
+            }
+
+            if (ImGui::CollapsingHeader(header_name.c_str())) {
+                if(texture_asset && texture_asset->get().getRenderId()) {
+                    ImGui::Text(texture_asset->get().image_path.c_str());
+                    ImGui::Image((void*)(intptr_t)texture_asset->get().getRenderId(), ImVec2(200, 200));
+                }
+            }
+        };
+
+        texture_block("Deffuse map", material->get().texture_diffuse);
+        texture_block("Specular map", material->get().texture_specular);
+        texture_block("Emission map", material->get().texture_emission);
+        texture_block("Normal map", material->get().texture_normal);
+        texture_block("Displacement map", material->get().texture_displacement);
 
         ImGui::TreePop();
       }

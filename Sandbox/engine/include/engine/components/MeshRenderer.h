@@ -21,7 +21,8 @@ public:
   virtual void onGuiItemRender() override;
   virtual void onUpdate(float delta_time) override;
 
-  bool& getCalculateLighting() { return _calculate_lighting; }
+  void setCalculateLighting(bool state) { _calculate_lighting = state; }
+  bool getCalculateLighting() { return _calculate_lighting; }
 
 private:
   bool    _calculate_lighting = true;

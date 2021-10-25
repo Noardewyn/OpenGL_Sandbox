@@ -69,7 +69,7 @@ namespace Sandbox {
       engine::MeshRenderer* mesh_renderer = model_entity.addComponent<engine::MeshRenderer>();
       mesh_renderer->target = _sponza_model;
       mesh_renderer->shader_asset = _shader;
-      mesh_renderer->getCalculateLighting() = false;
+      mesh_renderer->setCalculateLighting(false);
     }
   }
 

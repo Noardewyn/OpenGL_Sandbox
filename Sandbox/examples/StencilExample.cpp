@@ -53,7 +53,6 @@ namespace Sandbox {
       MeshRenderer* mesh_renderer = model_entity.addComponent<MeshRenderer>();
       mesh_renderer->target = _sponza_model;
       mesh_renderer->shader_asset = _shader;
-      mesh_renderer->getCalculateLighting() = false;
     }
 
     {

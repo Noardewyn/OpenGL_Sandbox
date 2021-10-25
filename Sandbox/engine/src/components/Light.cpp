@@ -17,7 +17,7 @@ namespace engine {
     auto meshRenderer = _parent->getComponent<MeshRenderer>();
 
     if(meshRenderer) {
-      meshRenderer->getCalculateLighting() = false;
+      meshRenderer->setCalculateLighting(false);
     }
   }
 
