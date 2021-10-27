@@ -19,14 +19,14 @@ public:
   Renderer::Color specular = {1, 1, 1, 1};
 
   float constant = 1.0f;
-  float linear = 0.09f;
+  float linear = 0.09;
   float quadratic = 0.032f;
 
   float spot_radius = 30;
   float spot_smooth = 5;
-  float range = 10;
+  float range = 70;
 
-  float intensity = 2;
+  float intensity = 5;
   float specular_percent = 1.0f;
   float diffuse_percent =  0.8f;
   float ambient_percent =  0.0f;

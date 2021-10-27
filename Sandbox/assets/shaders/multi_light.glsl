@@ -83,6 +83,7 @@ struct Light {
   float constant;
   float linear;
   float quadratic;
+  float range;
 
   vec4 ambient;
   vec4 diffuse;
@@ -126,11 +127,13 @@ uniform bool debug_show_normal_maps;
 vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = fs_in.TBN * normalize(-light.direction);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
 
     if (diff == 0.0)
         spec = 0.0;
@@ -158,8 +161,9 @@ vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
     // attenuation
     float distance    = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + 
-  			     light.quadratic * distance);    
+
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * pow(distance,2.0));    
+
 
     if (diff == 0.0)
         spec = 0.0;
@@ -169,6 +173,10 @@ vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
     vec4 diffuse  = light.diffuse  * diff * (material.is_diffuse ? texture(material.diffuse, TexCoord) : material.diffuse_base);
     vec4 specular = light.specular * spec * (material.is_specular ? texture(material.specular, TexCoord) : material.specular_base);
     
+    float spot_smooth = smoothstep(0.0, 1.0, (light.range - distance) / 10);
+    diffuse *= spot_smooth;
+    specular *= spot_smooth;
+
     ambient  = ambient * attenuation;
     diffuse  = diffuse * attenuation * light.intensity;
     specular = specular * attenuation * light.intensity;
@@ -180,7 +188,7 @@ vec4 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
   vec3 lightDir = fs_in.TBN * normalize(light.position - fragPos);
   vec3 halfwayDir = normalize(lightDir + viewDir);
   
-  float theta = dot(lightDir, normalize(-light.direction));
+  float theta = dot(lightDir, fs_in.TBN * normalize(-light.direction));
 
   if (theta <= light.cutOff)
     return light.ambient * texture(material.diffuse, TexCoord);
@@ -260,7 +268,10 @@ void main()
     }
     else 
     {
-      FragColor = texture(material.diffuse, TexCoord);// + material.diffuse_base;
+      if(material.is_diffuse)
+        FragColor = texture(material.diffuse, TexCoord);// + material.diffuse_base;
+      else
+        FragColor = material.diffuse_base;
     } 
 
     

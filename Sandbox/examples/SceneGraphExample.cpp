@@ -106,7 +106,7 @@ namespace Sandbox {
 
     {
       engine::Entity& entity = createEntity("Brick wall");
-      entity.transform.position = { 0, 2.0, 0.0 };
+      entity.transform.position = { 0, 2.0, -5.0 };
       entity.transform.scale = { 1.0, 1.0, 1.0 };
       //entity.transform.rotation = { 0.0, -90.0, 0.0 };
 
@@ -131,8 +131,6 @@ namespace Sandbox {
     addSpotLightEntity("Spot light 1", { -56.0f, 26.0f, -1.0f } , { 0.0f, 0.0f, -120.0f }, Renderer::Color(0.8, 0.6, 0.6));
     addPointLightEntity("Point light 2", { 7.5, 10.0, 1.5 }, Renderer::Color::White);
     engine::Entity& directional = addDirLightEntity("Directional light 1", { 0.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, -120 }, Renderer::Color::White);
-    auto* dir_light = directional.getComponent<engine::Light>();
-    dir_light->intensity = 0.1;
   }
 
   engine::Entity& SceneGraphExample::addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color) {
@@ -167,7 +165,8 @@ namespace Sandbox {
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
     light_component->direction = direction;
     light_component->color = color;
-    light_component->ambient_percent = 0.1;
+    light_component->intensity = 0.05;
+    light_component->ambient_percent = 0.01;
 
     return directional_light_entity;
   }
@@ -187,6 +186,7 @@ namespace Sandbox {
     engine::Light* light_component = light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Spot);
     light_component->direction = direction;
     light_component->color = color;
+    light_component->intensity = 5.0f;
 
     return spot_light_entity;
   }
