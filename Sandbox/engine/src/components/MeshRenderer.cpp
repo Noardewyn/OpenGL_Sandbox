@@ -52,6 +52,7 @@ namespace engine {
         shader.setUniform1f(point_index_str + "constant", light->constant);
         shader.setUniform1f(point_index_str + "linear", light->linear);
         shader.setUniform1f(point_index_str + "quadratic", light->quadratic);
+        shader.setUniform1f(point_index_str + "range", light->range);
       }
       else if(light->getType() == Light::LightType::Spot) {
         shader.setUniform3f(point_index_str + "position", view_pos.x, view_pos.y, view_pos.z);
