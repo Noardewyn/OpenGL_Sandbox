@@ -16,6 +16,12 @@ namespace engine {
     loadModel(path);
   }
 
+  void Model::draw(Renderer::Shader& shader) {
+      for (auto& mesh : meshes) {
+        mesh->draw(shader);
+      }
+  }
+
   void Model::draw(Renderer::Shader& shader, const Material& material) {
     for(auto& mesh : meshes) {
       if(mesh->material) {

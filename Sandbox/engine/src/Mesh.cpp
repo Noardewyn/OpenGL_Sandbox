@@ -10,11 +10,20 @@ Mesh::Mesh(Renderer::VertexBuffer&& vbo, const Renderer::VertexBufferLayout& lay
 }
 
 Mesh::Mesh(Renderer::VertexBuffer&& vbo, Renderer::IndexBuffer&& ibo, const Renderer::VertexBufferLayout& layout)
-  : _vbo(std::move(vbo)), _ibo(std::move(ibo)), _layout(layout) {
-  _vao.bind();
-  _ibo.bind();
-  _vao.addBuffer(_vbo, _layout);
-  _vao.unbind();
+    : _vbo(std::move(vbo)), _ibo(std::move(ibo)), _layout(layout) {
+    _vao.bind();
+    _ibo.bind();
+    _vao.addBuffer(_vbo, _layout);
+    _vao.unbind();
+}
+
+void Mesh::draw(Renderer::Shader& shader) {
+    shader.bind();
+
+    if (_ibo.count())
+        DrawTriangles(_vao, _ibo, shader);
+    else
+        DrawTriangles(_vao, shader);
 }
 
 void Mesh::draw(Renderer::Shader& shader, const Material& material) {

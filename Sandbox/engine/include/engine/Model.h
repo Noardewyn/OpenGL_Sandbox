@@ -21,6 +21,8 @@ namespace engine {
 
     Model();
     Model(const std::string& path);
+
+    void draw(Renderer::Shader& shader) override;
     void draw(Renderer::Shader& shader, const Material& material) override;
 
   private:

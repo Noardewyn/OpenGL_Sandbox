@@ -16,6 +16,7 @@ namespace engine {
     virtual void unload() override;
     virtual void reload() override;
 
+    virtual void draw(Renderer::Shader& shader) override;
     virtual void draw(Renderer::Shader& shader, const Material& material) override;
     
     engine::Model& get();

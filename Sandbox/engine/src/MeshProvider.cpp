@@ -65,6 +65,18 @@ static GLuint plane_indices[] = {
     1, 2, 3
 };
 
+static GLfloat quad_vertices[] = {
+   1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+   1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+  -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+  -1.0f,  1.0f, 0.0f, 0.0f, 1.0f
+};
+
+static GLuint quad_indices[] = {
+    0, 3, 1,
+    1, 3, 2
+};
+
 static float skybox_vertices[] = {
   -1.0f,  1.0f, -1.0f,
   -1.0f, -1.0f, -1.0f,
@@ -124,6 +136,19 @@ namespace engine {
     return std::move(mesh);
   }
 
+  std::unique_ptr<Mesh> generateQuadMesh(float width, float height)
+  {
+      Renderer::IndexBuffer ibo(quad_indices, sizeof(quad_indices) / sizeof(quad_indices[0]));
+      Renderer::VertexBuffer vbo(quad_vertices, sizeof(quad_vertices));
+      Renderer::VertexBufferLayout layout;
+      layout.push<float>(3);
+      layout.push<float>(2);
+
+      auto mesh = std::make_unique<Mesh>(std::move(vbo), std::move(ibo), layout);
+
+      return std::move(mesh);
+  }
+
   std::unique_ptr<Mesh> generateMatrixMesh(float width, float height, uint32_t segments_x, uint32_t segments_y) {
     
     uint32_t segments_count_width = segments_x;
@@ -138,8 +163,8 @@ namespace engine {
     uint32_t triangles_count = segments_count_width * segments_count_height * 2;
 
     glm::vec3 normal = {0.0f, 0.0f, 1.0f};
-    glm::vec3 tangent = { 1.0f, 0.0f, 0.0f };
-    glm::vec3 bitangent = { 0.0f, 1.0f, 0.0f };
+    glm::vec3 tangent = {1.0f, 0.0f, 0.0f};
+    glm::vec3 bitangent = {0.0f, 1.0f, 0.0f};
 
     std::vector<Vertex> vertices;
     //vertices.reserve(vertices_count);
