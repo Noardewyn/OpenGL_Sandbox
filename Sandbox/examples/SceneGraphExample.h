@@ -14,6 +14,8 @@
 #include "engine/assets/MaterialAsset.h"
 #include "engine/assets/ModelAsset.h"
 
+#include "Render/FrameBuffer.h"
+#include "Render/RenderBuffer.h"
 
 namespace Sandbox {
 
@@ -32,12 +34,15 @@ public:
 private:  
   std::unique_ptr<engine::Mesh> _cube_mesh;
   std::unique_ptr<engine::Mesh> _plane_mesh;
+  std::unique_ptr<engine::Mesh> _frame_buffer_quad;
   std::unique_ptr<engine::Mesh> _sphere_mesh;
   std::unique_ptr<engine::Mesh> _skybox_mesh;
 
   engine::ShaderAsset* _shader;
   engine::ShaderAsset* _skybox_shader;
   engine::ShaderAsset* _shader_white_color;
+  engine::ShaderAsset* _plain_shader;
+  engine::ShaderAsset* _postprocess_shader;
 
   engine::TextureAsset* _texture_earth;
   engine::TextureAsset* _texture_window;
@@ -52,6 +57,13 @@ private:
   engine::MaterialAsset* _light_source_material;
 
   engine::ModelAsset* _sponza_model;
+
+  int  _samples = 4;
+  bool _postprocessing = false;
+
+  std::unique_ptr<Renderer::FrameBuffer>  _frame_buffer;
+  std::unique_ptr<Renderer::FrameBuffer>  _intermediate_frame_buffer;
+  std::unique_ptr<Renderer::RenderBuffer> _render_buffer;
 };
 
 } // namespace sandbox

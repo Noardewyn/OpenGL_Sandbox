@@ -39,6 +39,13 @@ namespace Sandbox {
     _shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/multi_light.glsl", true);
     _skybox_shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/skybox.glsl", true);
     _shader_white_color = AssetManager::loadAsset<engine::ShaderAsset>("shaders/mvp_plain.glsl", true);
+    _postprocess_shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/postprocess.glsl", true);
+    _plain_shader = AssetManager::loadAsset<engine::ShaderAsset>("shaders/textured.glsl", true);
+
+    _frame_buffer = std::make_unique<Renderer::FrameBuffer>(window->getWidth(), window->getHeight(), _samples);
+    _intermediate_frame_buffer = std::make_unique<Renderer::FrameBuffer>(window->getWidth(), window->getHeight(), 0);
+    _frame_buffer->bind();
+    _render_buffer = std::make_unique<Renderer::RenderBuffer>(window->getWidth(), window->getHeight(), _samples);
 
     _texture_earth  = AssetManager::loadAsset<engine::TextureAsset>("earth.jpg");
     _texture_window = AssetManager::loadAsset<engine::TextureAsset>("window.png");
@@ -77,6 +84,7 @@ namespace Sandbox {
 
     _sponza_model = AssetManager::loadAsset<engine::ModelAsset>("models/sponza/sponza.obj"); // assetsPath() + "models/link/pose.obj"
     
+    _frame_buffer_quad = engine::generateQuadMesh();
     _plane_mesh = engine::generateMatrixMesh(10, 10, 2, 2);
     _cube_mesh = engine::generateCubeMesh();
     _sphere_mesh = engine::generateSphereMesh(16);
@@ -196,6 +204,22 @@ namespace Sandbox {
   }
 
   void SceneGraphExample::onRender() {
+    _frame_buffer->resize(window->getWidth(), window->getHeight());
+    _frame_buffer->resample(_samples);
+    _frame_buffer->bind();
+
+    _render_buffer->resize(window->getWidth(), window->getHeight());
+    _render_buffer->resample(_samples);
+    _render_buffer->bind();
+
+    _intermediate_frame_buffer->resize(window->getWidth(), window->getHeight());
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glShadeModel(GL_SMOOTH);
+
     window->clear(_clear_color);
     mainCamera().setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
 
@@ -213,6 +237,36 @@ namespace Sandbox {
     _shader->get().unbind();
 
     Scene::onRender();
+
+    if (_samples) {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, _frame_buffer->getId());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _intermediate_frame_buffer->getId());
+        glBlitFramebuffer(0, 0, (float)window->getWidth(), (float)window->getHeight(), 0, 0, (float)window->getWidth(), (float)window->getHeight(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    }
+
+    _frame_buffer->unbind();
+    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_DEPTH_TEST);
+
+    if (_postprocessing)
+        _postprocess_shader->get().bind();
+    else
+        _plain_shader->get().bind();
+
+    if (_samples) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _intermediate_frame_buffer->getTexture());
+    }
+    else {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _frame_buffer->getTexture());
+    }
+
+    if (_postprocessing)
+        _frame_buffer_quad->draw(_postprocess_shader->get());
+    else
+        _frame_buffer_quad->draw(_plain_shader->get());
   }
 
   void SceneGraphExample::onImGuiRender() {
@@ -226,6 +280,9 @@ namespace Sandbox {
       ImGui::Text("Mouse - rotate camera");
       ImGui::Text("Wheel - zoom camera");
     }
+
+    ImGui::Checkbox("Postprocessing", &_postprocessing);
+    ImGui::InputInt("MSAA", &_samples);
 
     Scene::onImGuiRender();
 

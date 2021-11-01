@@ -25,6 +25,10 @@ namespace engine {
     set_reloading(false);
   }
 
+  void ModelAsset::draw(Renderer::Shader& shader) {
+      _model.draw(shader);
+  }
+
   void ModelAsset::draw(Renderer::Shader& shader, const Material& material) {
     _model.draw(shader, material);
   }
