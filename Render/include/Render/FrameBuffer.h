@@ -7,7 +7,7 @@ namespace Renderer {
 
 class FrameBuffer {
 public:
-  FrameBuffer(uint32_t width, uint32_t height, uint32_t samples = 0);
+  FrameBuffer(uint32_t width, uint32_t height, uint32_t samples = 0, bool only_depth = false);
   ~FrameBuffer();
 
   FrameBuffer(FrameBuffer&& other) noexcept;
@@ -31,6 +31,8 @@ private:
   uint32_t _width = 0;
   uint32_t _height = 0;
   uint32_t _samples = 0;
+
+  bool _only_depth = false;
 };
 
 } // namespace Renderer

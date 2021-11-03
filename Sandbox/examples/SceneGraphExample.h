@@ -64,6 +64,8 @@ private:
   std::unique_ptr<Renderer::FrameBuffer>  _frame_buffer;
   std::unique_ptr<Renderer::FrameBuffer>  _intermediate_frame_buffer;
   std::unique_ptr<Renderer::RenderBuffer> _render_buffer;
+
+  uint32_t _shadow_map;
 };
 
 } // namespace sandbox

@@ -10,6 +10,7 @@ namespace engine {
 
 class MeshRenderer : public Component {
 public:
+  const char* shadow_shader_path = "shaders/shadow.glsl";
 
   IRenderable*           target;
   MaterialAsset*         material;
@@ -29,6 +30,8 @@ private:
   bool    _alpa_blending = true;
   bool    _use_textures = true;
   
+  engine::ShaderAsset* _shadow_shader;
+
   void calculateLighting();
 };
 

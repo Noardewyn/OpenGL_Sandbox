@@ -3,6 +3,7 @@
 
 #include "engine/Scene.h"
 #include "engine/components/Light.h"
+#include "engine/RenderState.h"
 
 #include "engine/components/MeshRenderer.h"
 
@@ -11,6 +12,7 @@ namespace engine {
   MeshRenderer::MeshRenderer(Entity* parent)
     : Component(parent), material(nullptr), target(nullptr), shader_asset(nullptr) {
     _name = "MeshRenderer";
+    _shadow_shader = AssetManager::loadAsset<engine::ShaderAsset>(shadow_shader_path, true);
   }
 
   void MeshRenderer::calculateLighting() {
@@ -83,6 +85,14 @@ namespace engine {
     }
     else {
       glDisable(GL_BLEND);
+    }
+
+    if (RenderState::current_render_stage() == RenderState::RenderingStage::SHADOW) {
+        _shadow_shader->get().bind();
+        _shadow_shader->get().setUniformMatrix4f("model", _parent->transform.toMatrix());
+        target->draw(_shadow_shader->get());
+        _shadow_shader->get().unbind();
+        return;
     }
 
     Renderer::Shader& shader = shader_asset->get();

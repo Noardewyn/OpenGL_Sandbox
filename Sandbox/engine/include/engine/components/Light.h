@@ -6,6 +6,7 @@
 #include "Render/Color.h"
 
 #include "engine/Component.h"
+#include "engine/DirectionalShadow.h"
 
 namespace engine {
 
@@ -31,7 +32,9 @@ public:
   float diffuse_percent =  0.8f;
   float ambient_percent =  0.0f;
 
-  glm::vec3 direction;
+  glm::vec3 direction = glm::vec3(0.0, 1.0, -0.3);
+
+  bool has_shadow = false;
 
   explicit Light(Entity* parent = nullptr, const LightType &type = LightType::Point);
 
@@ -41,8 +44,11 @@ public:
 
   LightType getType() const { return _light_type; }
 
+  DirectionalShadow& getDirectionalShadow();
+
 private:
   LightType _light_type;
+  std::unique_ptr<DirectionalShadow> _directional_shadow;
 };
 
 } // namespace engine

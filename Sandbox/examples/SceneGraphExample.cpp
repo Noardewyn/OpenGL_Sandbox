@@ -14,6 +14,7 @@
 #include "engine/MeshProvider.h"
 #include "engine/components/MeshRenderer.h"
 #include "engine/components/Light.h"
+#include "engine/RenderState.h"
 
 #include "SceneGraphExample.h"
 
@@ -103,7 +104,7 @@ namespace Sandbox {
 
     {
       engine::Entity& entity = createEntity("Alpha cube");
-      entity.transform.position = { 35.0, 5.0, 0.0 };
+      entity.transform.position = { 0.0, 0.0, 0.0 };
       entity.transform.scale = { 5.0, 5.0, 5.0 };
 
       engine::MeshRenderer* mesh_renderer = entity.addComponent<engine::MeshRenderer>();
@@ -171,10 +172,10 @@ namespace Sandbox {
     mesh_renderer->setCalculateLighting(false);
 
     engine::Light* light_component = light_component = directional_light_entity.addComponent<engine::Light>(engine::Light::LightType::Directional);
-    light_component->direction = direction;
     light_component->color = color;
     light_component->intensity = 0.05;
     light_component->ambient_percent = 0.01;
+    light_component->has_shadow = true;
 
     return directional_light_entity;
   }
@@ -192,7 +193,6 @@ namespace Sandbox {
     mesh_renderer->setCalculateLighting(false);
 
     engine::Light* light_component = light_component = spot_light_entity.addComponent<engine::Light>(engine::Light::LightType::Spot);
-    light_component->direction = direction;
     light_component->color = color;
     light_component->intensity = 5.0f;
 
@@ -204,6 +204,48 @@ namespace Sandbox {
   }
 
   void SceneGraphExample::onRender() {
+    using namespace engine;
+    RenderState::set_render_stage(RenderState::RenderingStage::SHADOW);
+   
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    const auto& light_sources = getEntitiesWithComponent<Light>();
+
+    for (const auto& entity : light_sources) {
+      const auto& light = entity->getComponent<Light>();
+
+      if (!light->isActive() || !entity->isActive())
+        continue;
+
+      if(light->getType() == Light::LightType::Directional && light->has_shadow) {
+        engine::DirectionalShadow& shadow = light->getDirectionalShadow();
+        auto shadow_shader_asset = AssetManager::loadAsset<engine::ShaderAsset>("shaders/shadow.glsl", true);
+        shadow_shader_asset->get().bind();
+
+        const auto& view_mat = mainCamera().getViewMatrix();
+        glm::vec4 view_pos = view_mat * glm::vec4(entity->transform.position, 1.0f);
+
+        glm::mat4 model(1.0);
+        model = glm::rotate(model, glm::radians(entity->transform.rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(entity->transform.rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(entity->transform.rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        glm::vec4 direction(model * glm::vec4(1.0, 0.0, 0.0, 0.0));
+
+        shadow_shader_asset->get().setUniformMatrix4f("lightSpaceMatrix", shadow.getLigthMatrix(direction));
+        
+        shadow.prepare();
+        Scene::onRender();
+        shadow.complete();
+        _shadow_map = shadow.getShadowMapId();
+      }
+    }
+
+    RenderState::set_render_stage(RenderState::RenderingStage::NORMAL);
+    const int aspect_width = int(((float)window->getWidth() / window->getHeight()) * window->getHeight());
+    const int aspect_height = int(((float)window->getHeight() / window->getWidth()) * window->getWidth());
+    glViewport(0, 0, aspect_width, aspect_height);
+
     _frame_buffer->resize(window->getWidth(), window->getHeight());
     _frame_buffer->resample(_samples);
     _frame_buffer->bind();
@@ -218,7 +260,11 @@ namespace Sandbox {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glShadeModel(GL_SMOOTH);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+    glFrontFace(GL_CW);
+    glDepthMask(GL_TRUE);
 
     window->clear(_clear_color);
     mainCamera().setPerspective((float)window->getWidth() / std::max((float)window->getHeight(), 1.0f));
@@ -245,9 +291,6 @@ namespace Sandbox {
     }
 
     _frame_buffer->unbind();
-    glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_DEPTH_TEST);
 
     if (_postprocessing)
         _postprocess_shader->get().bind();
@@ -270,6 +313,16 @@ namespace Sandbox {
   }
 
   void SceneGraphExample::onImGuiRender() {
+    ImGui::Begin("Shadow map");
+
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+
+    ImGui::GetWindowDrawList()->AddImage(
+        (void*)_shadow_map, ImVec2(ImGui::GetCursorScreenPos()),
+        ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetWindowWidth(), ImGui::GetCursorScreenPos().y + ImGui::GetWindowHeight()), ImVec2(0, 1), ImVec2(1, 0));
+
+    ImGui::End();
+
     ImGui::Begin("Scene graph example");
 
     if (ImGui::CollapsingHeader("Controls legend")) {
