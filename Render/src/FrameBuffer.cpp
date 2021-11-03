@@ -6,7 +6,8 @@
 
 namespace Renderer {
 
-  FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, uint32_t samples) {
+  FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, uint32_t samples, bool only_depth)
+  : _only_depth(only_depth) {
     generateBuffer(width, height, samples);
   }
 
@@ -81,11 +82,25 @@ namespace Renderer {
     }
     else {
       glBindTexture(GL_TEXTURE_2D, _texture_id);
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture_id, 0);
+      if(_only_depth) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+          width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _texture_id, 0);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+      }
+      else {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture_id, 0);
+      }
+
       glBindTexture(GL_TEXTURE_2D, 0);
     }
 

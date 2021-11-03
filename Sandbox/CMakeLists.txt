@@ -25,7 +25,9 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/engine/src/Material.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Mesh.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/Model.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/DirectionalShadow.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/MeshProvider.cpp
+    ${PROJECT_SOURCE_DIR}/engine/src/RenderState.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/Asset.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/ShaderAsset.cpp
     ${PROJECT_SOURCE_DIR}/engine/src/assets/TextureAsset.cpp
