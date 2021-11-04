@@ -70,6 +70,14 @@ namespace engine {
         shader.setUniform3f(point_index_str + "direction", view_dir.x, view_dir.y, view_dir.z);
       }
 
+      if(light->has_shadow) {
+          shader.setUniformMatrix4f("lightSpaceMatrix", light->getDirectionalShadow().getLigthMatrix(direction));
+          shader.setUniform1i(point_index_str + "shadowMap", 11);
+          glActiveTexture(GL_TEXTURE0 + 11);
+          glBindTexture(GL_TEXTURE_2D, light->getDirectionalShadow().getShadowMapId());
+          shader.setUniform1i(point_index_str + "hasShadowMap", true);
+      }
+
       light_index++;
     }
 

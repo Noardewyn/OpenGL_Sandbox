@@ -9,12 +9,12 @@ namespace engine {
     options.width = width;
     options.height = height;
 
-    _frame_buffer = std::make_unique<Renderer::FrameBuffer>(width, height);
+    _frame_buffer = std::make_unique<Renderer::FrameBuffer>(width, height, 0, true);
   }
 
   glm::mat4 DirectionalShadow::getLigthMatrix(const glm::vec3& direction)
   {
-    float near_plane = 0.001f, far_plane = 200.0f;
+    float near_plane = 0.001f, far_plane = 300.0f;
     glm::mat4 light_projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane);
     //glm::mat4 light_projection = glm::perspective(45.0f, 1.0f, near_plane, far_plane);
 
@@ -33,15 +33,15 @@ namespace engine {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);
-    glDisable(GL_CULL_FACE);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-    glFrontFace(GL_CW);
   }
 
   void DirectionalShadow::complete()
   {
+    glCullFace(GL_BACK);
     _frame_buffer->unbind();
   }
 
