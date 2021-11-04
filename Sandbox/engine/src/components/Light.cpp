@@ -14,7 +14,7 @@ namespace engine {
     _name = "Light";
 
     if(type == LightType::Directional) {
-      _directional_shadow = std::make_unique<DirectionalShadow>();
+      _directional_shadow = std::make_unique<DirectionalShadow>(10000, 10000);
     }
   }
 

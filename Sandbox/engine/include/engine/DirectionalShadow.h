@@ -11,8 +11,8 @@ namespace engine {
 class DirectionalShadow {
 public:
   struct Options {
-      int width = 1024;
-      int height = 1024;
+      int width = 10000;
+      int height = 10000;
   };
 
   DirectionalShadow(int width = 1024, int height = 1024);

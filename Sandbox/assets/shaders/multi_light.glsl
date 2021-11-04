@@ -27,6 +27,7 @@ struct Light {
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
 
 #define NR_LIGHTS 4
 uniform Light lights[NR_LIGHTS];
@@ -36,6 +37,7 @@ out VS_OUT{
     vec3 Tangent;
     vec3 Bitangent;
     mat3 TBN;
+    vec4 FragPosLightSpace;
 } vs_out;
 
 out vec3 Normal;
@@ -59,6 +61,8 @@ void main()
     vs_out.TBN = transpose(mat3(T, B, N));
     vs_out.Tangent = T;
     vs_out.Bitangent = B;
+
+    vs_out.FragPosLightSpace = lightSpaceMatrix * model * vec4(position, 1.0f);
 }
 
 #SHADER FRAGMENT
@@ -71,6 +75,7 @@ in VS_OUT{
     vec3 Tangent;
     vec3 Bitangent;
     mat3 TBN;
+    vec4 FragPosLightSpace;
 } fs_in;
 
 struct Light {
@@ -88,6 +93,9 @@ struct Light {
   vec4 ambient;
   vec4 diffuse;
   vec4 specular;
+
+  bool hasShadowMap;
+  sampler2D shadowMap;
 
   float intensity;
 };
@@ -124,6 +132,34 @@ uniform int  displayMode;
 uniform bool calculate_light;
 uniform bool debug_show_normal_maps;
 
+float ShadowCalculation(Light light, vec4 fragPosLightSpace, float bias)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(light.shadowMap, projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+
+    vec2 texelSize = 1.0 / textureSize(light.shadowMap, 0);
+    const int halfkernelWidth = 4;
+    for(int x = -halfkernelWidth; x <= halfkernelWidth; ++x)
+    {
+	    for(int y = -halfkernelWidth; y <= halfkernelWidth; ++y)
+	    {
+		    float pcfDepth = texture(light.shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+		    shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+	    }
+    }
+    shadow /= ((halfkernelWidth*2+1)*(halfkernelWidth*2+1));
+
+    return shadow;
+}  
+
 vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = fs_in.TBN * normalize(-light.direction);
@@ -146,7 +182,14 @@ vec4 CalcDirLight(Light light, vec3 normal, vec3 viewDir)
     diffuse = diffuse * light.intensity;
     specular = specular * light.intensity;
 
-    return vec4(vec3(diffuse + specular + ambient), 1.0);
+    float shadow = 0.0;
+
+    if(light.hasShadowMap) {
+        float bias = max(0.09 * (1.0 - dot(normal, lightDir)), 0.005);      
+        shadow = ShadowCalculation(light, fs_in.FragPosLightSpace, bias);  
+    }
+
+    return vec4(vec3(ambient + (1.0 - shadow) * (specular + diffuse)), 1.0);
 }  
 
 vec4 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
