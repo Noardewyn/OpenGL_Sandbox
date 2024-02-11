@@ -30,13 +30,13 @@ public:
 
   Renderer::Window *window;
 
+protected:
+  DebugDisplayMode _debug_display_mode = DebugDisplayMode::Default;
+
 private:  
   void init_debug_modes();
   
   std::string _assets_path;
-
-  DebugDisplayMode _debug_display_mode;
-
   std::unordered_map<DebugMode, bool> _debug_modes;
 };
 

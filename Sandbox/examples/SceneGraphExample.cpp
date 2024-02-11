@@ -139,7 +139,7 @@ namespace Sandbox {
     //addPointLightEntity("Point light 1", { 1.0, 1.0, 0.0 }, Renderer::Color::White);
     addSpotLightEntity("Spot light 1", { -56.0f, 26.0f, -1.0f } , { 0.0f, 0.0f, -120.0f }, Renderer::Color(0.8, 0.6, 0.6));
     addPointLightEntity("Point light 2", { 7.5, 10.0, 1.5 }, Renderer::Color::White);
-    engine::Entity& directional = addDirLightEntity("Directional light 1", { 0.0f, 10.0f, 0.0f }, { 20.0f, 74.0f, -105 }, Renderer::Color::White);
+    addDirLightEntity("Directional light 1", { 0.0f, 10.0f, 0.0f }, { 20.0f, 74.0f, -105 }, Renderer::Color::White);
   }
 
   engine::Entity& SceneGraphExample::addPointLightEntity(const std::string& name, const glm::vec3& position, const Renderer::Color& color) {
