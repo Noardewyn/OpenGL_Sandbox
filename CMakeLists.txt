@@ -2,28 +2,20 @@
 project(OpenGL_Render)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-set(CONAN_COMPILER_VERSION 16)
 
 if (MSVC)
     add_compile_options(/EHsc)
 endif()
 
-# Automatic get dependencies with conan package manager
-# https://docs.conan.io/en/latest/introduction.html
-include(cmake/conan_get_dependencies.cmake)
+ set(CMAKE_MODULE_PATH ${_install_dir})
 
-conan_get_dependencies(
-    ${PROJECT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-find_package(spdlog MODULE REQUIRED)
-find_package(glfw3 MODULE REQUIRED)
-find_package(glm MODULE REQUIRED)
-find_package(GLEW MODULE REQUIRED)
-find_package(imgui MODULE REQUIRED)
-find_package(stb MODULE REQUIRED)
-find_package(assimp MODULE REQUIRED)
+find_package(glfw3)
+find_package(glew)
+find_package(glm)
+find_package(stb)
+find_package(spdlog)
+find_package(imgui)
+find_package(assimp)
 
 include_directories("./bindings")
 

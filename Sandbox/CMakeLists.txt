@@ -63,6 +63,8 @@ set(LIBS
     assimp::assimp
 )
 
+add_definitions( -DASSETS_PATH="${PROJECT_SOURCE_DIR}/assets/" )
+
 add_executable (${PROJECT_NAME} ${HEADERS} ${SOURCES})
 
 set_target_properties(${PROJECT_NAME} 

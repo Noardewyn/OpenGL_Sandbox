@@ -27,11 +27,13 @@ set(SOURCES
 )
 
 set(LIBS
-    opengl32 
-    glfw3
-    GLEW::GLEW
-    spdlog::spdlog
-    stb::stb
+    glfw 
+    GLEW::GLEW 
+    glm::glm 
+    stb::stb 
+    spdlog::spdlog 
+    imgui::imgui 
+    assimp::assimp
 )
 
 add_library( ${PROJECT_NAME} STATIC ${HEADERS} ${SOURCES})
