@@ -1,0 +1,9 @@
+{
+    "version": 4,
+    "vendor": {
+        "conan": {}
+    },
+    "include": [
+        "D:\\gamedev\\OpenGL_Sandbox\\out\\build\\x64-Debug\\CMakePresets.json"
+    ]
+}

@@ -29,11 +29,11 @@ namespace Renderer {
     vbo.bind();
 
     int index = 0;
-    uint32_t offset = 0;
+    size_t offset = 0;
 
     for (const auto &element : layout.getElements()) {
       glEnableVertexAttribArray(index);
-      glVertexAttribPointer(index, element.count, element.type, element.normalized, layout.getStride(), (const void*)offset);
+      glVertexAttribPointer(index, element.count, element.type, element.normalized, layout.getStride(), reinterpret_cast<const void*>(offset));
       
       offset += element.count * VertexBufferElement::getTypeSize(element.type);
       ++index;
