@@ -318,7 +318,7 @@ namespace Sandbox {
     ImVec2 pos = ImGui::GetCursorScreenPos();
 
     ImGui::GetWindowDrawList()->AddImage(
-        (void*)_shadow_map, ImVec2(ImGui::GetCursorScreenPos()),
+        reinterpret_cast<void*>(_shadow_map), ImVec2(ImGui::GetCursorScreenPos()),
         ImVec2(ImGui::GetCursorScreenPos().x + ImGui::GetWindowWidth(), ImGui::GetCursorScreenPos().y + ImGui::GetWindowHeight()), ImVec2(0, 1), ImVec2(1, 0));
 
     ImGui::End();
@@ -328,6 +328,7 @@ namespace Sandbox {
     if (ImGui::CollapsingHeader("Controls legend")) {
       ImGui::Text("F2    - enable/disable camera movement");
       ImGui::Text("F3    - switch Wireframe mode");
+      ImGui::Text("F5    - switch debug render mode");
       ImGui::Text("F10   - fullscreen/windowed");
       ImGui::Text("WASD  - move camera");
       ImGui::Text("Mouse - rotate camera");

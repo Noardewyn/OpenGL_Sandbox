@@ -1,4 +1,4 @@
-conan profile new OpenGL_Sandbox --detect
-conan install . --profile OpenGL_Sandbox --output-folder=out/build/x64-Debug --build=missing
-cd out/build/x64-Debug
+conan profile detect --name OpenGL_Sandbox
+conan install . --profile OpenGL_Sandbox --output-folder=out/build --build=missing 
+cd out/build
 ./conanbuild.bat
