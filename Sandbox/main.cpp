@@ -24,7 +24,7 @@
 #include "examples/StressTestExample.h"
 
 int main() {
-	engine::AssetManager::setAssetsPath("../../../../Sandbox/assets/");
+	engine::AssetManager::setAssetsPath(ASSETS_PATH);
 
 	tools::Logger::Init(spdlog::level::trace);
 
@@ -48,19 +48,19 @@ int main() {
 	menu.registerScene<Sandbox::Camera3DExample>("3d camera", "");
 	menu.registerScene<Sandbox::Lighting3DExample>("3d lighting", "");
 	menu.registerScene<Sandbox::AdvancedLighting3DExample>("advanced 3d lighting", "");
-    menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
-    menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
-    menu.registerScene<Sandbox::StressTestExample>("Stress test", "");
-    menu.registerScene<Sandbox::SceneGraphExample>("Sandbox", "");
+	menu.registerScene<Sandbox::StencilExample>("Stencil buffer", "");
+  menu.registerScene<Sandbox::FramebufferExample>("Frame buffer", "");
+  menu.registerScene<Sandbox::StressTestExample>("Stress test", "");
+  menu.registerScene<Sandbox::SceneGraphExample>("Sandbox", "");
 
-	menu.startScene(menu.scenesCount()-1);
+	menu.startScene(menu.scenesCount() - 1);
 
 	while (window.isOpen()) {
 		window.pollEvents();
 		
-        if (tools::InputManager::instance()->keyDown(GLFW_KEY_ESCAPE)) {
-            window.close();
-        }
+    if (tools::InputManager::instance()->keyDown(GLFW_KEY_ESCAPE)) {
+        window.close();
+    }
 
 		if (tools::InputManager::instance()->keyDown(GLFW_KEY_F3)) {
 			static bool wireframe_enabled = false;
@@ -70,21 +70,21 @@ int main() {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-        if (tools::InputManager::instance()->keyDown(GLFW_KEY_F4)) {
-            static bool normal_map_enabled = false;
-			menu.getCurrentScene()->setDebugMode(engine::DebugMode::ShowNormalMaps, normal_map_enabled = !normal_map_enabled);
-        }
+    if (tools::InputManager::instance()->keyDown(GLFW_KEY_F4)) {
+      static bool normal_map_enabled = false;
+      menu.getCurrentScene()->setDebugMode(engine::DebugMode::ShowNormalMaps, normal_map_enabled = !normal_map_enabled);
+    }
 
-        if (tools::InputManager::instance()->keyDown(GLFW_KEY_F5)) {
-            static int display_mode = 0;
+    if (tools::InputManager::instance()->keyDown(GLFW_KEY_F5)) {
+      static int display_mode = 0;
 
-			if(display_mode >= (uint32_t)engine::DebugDisplayMode::Count)
-				display_mode = 0;
-			else
-				display_mode++;
+      if (display_mode + 1 >= (uint32_t)engine::DebugDisplayMode::Count)
+        display_mode = 0;
+      else
+        display_mode++;
 
-            menu.getCurrentScene()->setDebugDisplayMode((engine::DebugDisplayMode)display_mode);
-        }
+      menu.getCurrentScene()->setDebugDisplayMode((engine::DebugDisplayMode)display_mode);
+    }
 
 		if (tools::InputManager::instance()->mouseKeyPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 			window.setCursorEnabled(false);

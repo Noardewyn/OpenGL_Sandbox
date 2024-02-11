@@ -20,7 +20,7 @@ namespace engine {
     ImGui::Indent(10);
     ImGui::Checkbox("Active", &getActive());
 
-    ImGui::SetNextTreeNodeOpen(true);
+    ImGui::SetNextItemOpen(true);
     if (ImGui::TreeNode("Transform")) {
       ImGui::SliderFloat3("position", &transform.position.x, -100, 100);
       ImGui::SliderFloat3("scale", &transform.scale.x, -10, 10);

@@ -69,6 +69,22 @@ void Scene::onImGuiRender() {
   ImGui::ColorEdit4("Clear color", &_clear_color.r);
   ImGui::InputFloat("Fog distance", &_fog_distance);
 
+  const char* items[] = { "Default", "Normal_TS", "Normal_VS", "NormalTexture", "Tangent", "Bitangent" };
+  const char* current_item = items[static_cast<uint32_t>(_debug_display_mode)];
+
+  if (ImGui::BeginCombo("Display mode##combo", current_item))
+  {
+    for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+    {
+      bool is_selected = (current_item == items[n]);
+      if (ImGui::Selectable(items[n], is_selected))
+        _debug_display_mode = static_cast<DebugDisplayMode>(n);
+      if (is_selected)
+        ImGui::SetItemDefaultFocus();
+    }
+    ImGui::EndCombo();
+  }
+
   if (_main_camera) {
     ImGui::Text("Camera");
 
